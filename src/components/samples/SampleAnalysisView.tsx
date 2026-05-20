@@ -369,8 +369,20 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
   );
 }
 
-function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string }): JSX.Element {
-  const Info = ({ label, value, highlight, mono }: { label: string; value: string; highlight?: boolean; mono?: boolean }) => (
+function DomainInfo({
+  label,
+  value,
+  accent,
+  highlight,
+  mono,
+}: {
+  label: string;
+  value: string;
+  accent: string;
+  highlight?: boolean;
+  mono?: boolean;
+}) {
+  return (
     <div
       style={{
         padding: "10px 12px",
@@ -401,7 +413,9 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
       </p>
     </div>
   );
+}
 
+function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string }): JSX.Element {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div
@@ -411,10 +425,14 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
           gap: 8,
         }}
       >
-        <Info label="DOMAIN" value={data.primaryDomain} highlight />
-        <Info label="INDUSTRY" value={data.industryContext} />
-        {data.frequencyRange && <Info label="FREQUENCY" value={data.frequencyRange} mono />}
-        {data.impedance && <Info label="IMPEDANCE" value={data.impedance} mono />}
+        <DomainInfo label="DOMAIN" value={data.primaryDomain} accent={accent} highlight />
+        <DomainInfo label="INDUSTRY" value={data.industryContext} accent={accent} />
+        {data.frequencyRange && (
+          <DomainInfo label="FREQUENCY" value={data.frequencyRange} accent={accent} mono />
+        )}
+        {data.impedance && (
+          <DomainInfo label="IMPEDANCE" value={data.impedance} accent={accent} mono />
+        )}
       </div>
 
       <div
