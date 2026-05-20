@@ -129,8 +129,14 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           line-height: 0.86;
           letter-spacing: -0.035em;
           font-weight: 900;
-          font-size: clamp(54px, 8.4vw, 128px);
+          font-size: clamp(44px, 10vw, 116px);
           margin: 0;
+        }
+        @media (min-width: 1024px) {
+          /* At lg the headline shares row with the specimen (7 of 12 cols) */
+          .co-hero-headline {
+            font-size: clamp(72px, 7vw, 116px);
+          }
         }
         .co-hero-outline {
           color: transparent;
