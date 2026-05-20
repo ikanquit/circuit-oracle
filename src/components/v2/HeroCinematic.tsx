@@ -335,11 +335,11 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           {/* Sub-deck + action row */}
           <div className="mt-9 sm:mt-12 flex flex-col gap-7">
             <p className="co-hero-rise co-hero-subdeck" style={rise(440)}>
-              Drop in a photo or PDF of any analog or mixed-signal schematic.{" "}
-              <strong>Three Claude agents</strong> dissect components,
-              topology, and intended use in parallel &mdash; a fourth
-              synthesizes them into the kind of brief you&rsquo;d hand a junior
-              engineer before a design review.
+              Paste a photo, screenshot, or PNG of any analog or mixed-signal
+              schematic. <strong>Three Claude agents</strong> dissect
+              components, topology, and intended use in parallel &mdash; a
+              fourth synthesizes them into the brief you&rsquo;d hand a
+              junior engineer before a design review.
             </p>
 
             <div
