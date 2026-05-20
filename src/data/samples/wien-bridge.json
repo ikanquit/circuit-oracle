@@ -1,0 +1,157 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "U1",
+        "type": "Op-amp",
+        "value": "Low-noise, JFET-input",
+        "partNumber": "TL072 (or NE5532 for low-distortion variants)",
+        "functionalRole": "The active gain element. Closed-loop voltage gain is set to exactly 3 at f₀ by the R_f / R3 ratio. Bandwidth must be ≥ 100× f₀ so the op-amp's own phase shift doesn't perturb the carefully-balanced loop phase at the oscillation frequency."
+      },
+      {
+        "designator": "R1, R2",
+        "type": "Resistor (Wien network, matched pair)",
+        "value": "10 kΩ each, 1% or better",
+        "functionalRole": "Series (R1) and shunt (R2) resistors of the Wien bridge. Together with C1/C2 they form a band-pass-like network whose transfer function is exactly +1/3 with zero phase shift at f₀ = 1/(2πRC). Matching matters: mismatched R1≠R2 shifts both the gain peak and the phase-zero crossing, ruining the oscillation condition."
+      },
+      {
+        "designator": "C1, C2",
+        "type": "Capacitor (Wien network, matched pair)",
+        "value": "16 nF each, NP0/C0G or polypropylene",
+        "functionalRole": "Series (C1) and shunt (C2) Wien-network capacitors. Sets oscillation frequency: f₀ = 1/(2π × 10 kΩ × 16 nF) ≈ 994 Hz. Dielectric must be linear (C0G ceramic, polypropylene film, or polystyrene) — using an X7R or electrolytic introduces voltage-coefficient nonlinearity that shows up as 0.5%+ THD."
+      },
+      {
+        "designator": "R_f",
+        "type": "Feedback resistor",
+        "value": "1 kΩ",
+        "functionalRole": "Top leg of the negative-feedback divider, from op-amp output to inverting input. Combined with R3 it sets closed-loop gain G = 1 + R_f/R3. For loop gain = 1 at f₀, this must equal 3 exactly, demanding R_f = 2 × R3 at equilibrium."
+      },
+      {
+        "designator": "RT1",
+        "type": "Incandescent lamp (thermal AGC element)",
+        "value": "#327 or #1869 lamp, 28 V / 40 mA, R_cold ≈ 50 Ω, R_hot ≈ 500 Ω",
+        "partNumber": "Chicago Miniature CM327 (or modern equivalent)",
+        "functionalRole": "Automatic gain control by self-heating. Sits as the bottom leg of the negative-feedback divider (in place of a fixed R3). Cold, its resistance is too low → gain > 3 → oscillation builds. As amplitude grows, RMS current through the filament increases, the tungsten heats, resistance rises, gain falls. The system settles at exactly the amplitude where R_lamp = R_f / 2, locking gain at 3.000. Thermal time constant ~100 ms — far slower than the 1 kHz oscillation period, so the lamp acts as an averaging amplitude detector without distorting individual cycles. Modern designs swap this for a JFET-in-triode controlled by a peak detector (cheaper, no warmup) or an LED + LDR (cleanest distortion)."
+      }
+    ],
+    "totalCount": 5,
+    "summary": "A textbook Wien-bridge sinewave oscillator with thermal automatic gain control. Five-part count belies subtle behavior: two interacting feedback paths (one positive and frequency-selective, one negative and amplitude-regulating) plus a slow thermal feedback loop through the lamp. The original 1939 HP Model 200A — HP's founding product — used exactly this topology."
+  },
+  "topology": {
+    "topologyName": "Wien-Bridge Sinewave Oscillator with Incandescent-Lamp AGC, Non-Inverting Op-Amp Implementation",
+    "stages": [
+      {
+        "name": "Wien band-pass network (positive feedback path)",
+        "description": "R1+C1 in series form the upper arm of a frequency-selective divider; R2 in parallel with C2 form the lower arm. The output of U1 drives the top of this network; the tap (between the two arms) drives U1's non-inverting input. The transfer function has magnitude 1/3 and phase 0° at exactly one frequency: f₀ = 1/(2πRC) when R1=R2=R and C1=C2=C. Off-frequency, both magnitude drops AND phase rotates — so loop gain falls below unity and any noise at those frequencies dies out.",
+        "components": ["R1", "C1", "R2", "C2"]
+      },
+      {
+        "name": "Non-inverting amplifier (gain stage)",
+        "description": "U1 in standard non-inverting configuration. Closed-loop gain = 1 + R_f/R3, where R3 here is the lamp RT1. For oscillation, this must equal exactly 3 (because the Wien network attenuates by 1/3 at f₀ — loop gain must be 1 for sustained oscillation per Barkhausen). The amplifier provides the energy that replaces what the passive network loses on each cycle.",
+        "components": ["U1", "R_f", "RT1"]
+      },
+      {
+        "name": "Negative-feedback divider with AGC (amplitude control)",
+        "description": "R_f and RT1 form a voltage divider from U1's output to ground, with the tap returned to U1's inverting input. Because R_f is fixed but RT1 varies with self-heating, the gain itself is a function of output amplitude — gain ≈ 3 when amplitude reaches the equilibrium value, gain > 3 when amplitude is below, gain < 3 when above. This makes the oscillator's amplitude a stable equilibrium rather than an unbounded exponential growth or a hard clip.",
+        "components": ["R_f", "RT1"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "positive",
+        "description": "Frequency-selective positive feedback through the Wien network (U1 output → R1+C1 → non-inv input → R2 ∥ C2 → ground). Loop phase is exactly 0° at f₀, allowing regenerative amplification at that single frequency. Without this, no oscillation. Magnitude of feedback factor β⁺ = 1/3 at f₀."
+      },
+      {
+        "type": "negative",
+        "description": "Wideband (all-frequency) negative feedback through R_f and RT1 from output to inverting input. Sets the small-signal closed-loop gain. Critically, the gain depends on RT1's thermal state, which depends on output amplitude — closing a second, slow control loop that regulates amplitude."
+      },
+      {
+        "type": "negative",
+        "description": "Thermal AGC loop: output amplitude → RMS current in lamp filament → filament temperature → lamp resistance → closed-loop gain → output amplitude. Has its own loop dynamics with time constant set by the lamp's thermal mass (~100 ms). Slow enough to be invisible at 1 kHz but fast enough to suppress amplitude jitter on the second-scale."
+      }
+    ],
+    "keyNodes": ["V_out", "V_+ (Wien tap)", "V_- (feedback tap)", "GND"],
+    "powerSupplyTopology": "Bipolar ±15 V rail typical for the op-amp. Both supplies must be quiet — supply ripple at any frequency near f₀ shows up directly at the output via the op-amp's finite PSRR."
+  },
+  "domain": {
+    "primaryDomain": "signal processing",
+    "specificApplication": "Precision low-distortion sinewave generation, primarily for audio-band test equipment. The Wien-bridge topology is the audio-frequency analog of a crystal oscillator: it produces an extremely pure single-tone output, with THD as low as 0.0003% (–110 dB) in optimized versions. Used as the reference source in distortion analyzers, audio bench test sets, calibration tones, modem training signals (historically), and laboratory function generators. Modern function generators have moved to DDS, but a well-built Wien-bridge still beats most DDS chips on raw spectral purity at a single frequency.",
+    "frequencyRange": "Single tone at f₀ = 1/(2πRC), typically 1 Hz – 100 kHz depending on R/C choice. Tunable by ganged variable R or switched C. The HP200A covered 20 Hz – 20 kHz in five overlapping bands.",
+    "impedance": "Output impedance of the op-amp stage is in the milliohms below the gain-bandwidth corner; the Wien network presents ~10 kΩ to its tap. A buffer is normally added after U1 for driving real loads.",
+    "industryContext": "Bill Hewlett built this circuit for his Stanford master's thesis (1939); the resulting HP Model 200A audio oscillator was the founding product of Hewlett-Packard. Walt Disney bought eight HP200B units for the multi-channel Fantasound system used to mix Fantasia (1940) — a $71.50 sale that helped launch what became Silicon Valley. The fact that a freshly-graduated engineer could sell precision instruments at a fraction of competitors' prices, by replacing expensive thermocouples and complex AGC schemes with a 5¢ pilot lamp, is one of the foundational stories of American electronics."
+  },
+  "synthesis": {
+    "operatingPrinciple": "The Wien-bridge oscillator works by closing two simultaneous feedback loops around a single op-amp — one positive and frequency-selective, one negative and amplitude-regulating — such that the only stable steady-state solution is a pure sine wave at one specific frequency. Here is the chain of reasoning: (1) The Wien network is a band-pass-like RC divider with the unusual property that its phase shift is exactly zero at one frequency, f₀ = 1/(2πRC). At that frequency, and only that frequency, its magnitude response is exactly 1/3. (2) Wire the output of an amplifier with gain G through the Wien network and back to its own non-inverting input. The loop gain is G/3 at f₀ and less than G/3 everywhere else. (3) By Barkhausen's criterion, sustained oscillation requires loop gain = 1 with zero net phase shift. So set G = 3. Now any noise component at f₀ in the system will be amplified, fed back in phase, and re-amplified — exponentially growing. Components at other frequencies see loop gain < 1, so they die. (4) But fixed G = 3 is fragile: if G > 3 by even 0.1%, the sine grows until the op-amp clips into a distorted square wave. If G < 3, oscillation dies. The solution: make G a function of amplitude. Use a small incandescent lamp as the gain-setting resistor R3. Cold, its resistance is low → G > 3 → amplitude grows from noise. As amplitude grows, more current flows through the filament, it warms up (tungsten has a strong positive temperature coefficient), its resistance rises, G falls. The system equilibrates at exactly the amplitude where R_lamp = R_f / 2 — locking G at 3.000. (5) The thermal time constant of the filament (~100 ms) is ~100× longer than the oscillation period (~1 ms at 1 kHz). This separation of timescales means the lamp 'sees' only the RMS amplitude, not the instantaneous voltage — so it doesn't distort the waveform on a cycle-by-cycle basis. The result is a clean sine whose amplitude is regulated to better than 0.1% over hours.",
+    "keyParameters": [
+      { "name": "f₀ (oscillation frequency)", "value": "994", "unit": "Hz", "notes": "f₀ = 1/(2πRC) with R = 10 kΩ, C = 16 nF" },
+      { "name": "Required loop gain at f₀", "value": "1.000", "notes": "Strictly: G_amp × β_Wien = 1, so G_amp = 3 exactly" },
+      { "name": "Wien-network feedback factor β⁺", "value": "0.333", "notes": "1/3 magnitude at f₀, 0° phase" },
+      { "name": "Closed-loop gain at equilibrium", "value": "3.000", "notes": "1 + R_f/R_lamp; lamp self-adjusts to enforce this" },
+      { "name": "Q of Wien network", "value": "0.5", "notes": "Low Q — a feature, not a bug. Makes the oscillator easy to start but means it needs a separate AGC for amplitude stability." },
+      { "name": "Output amplitude", "value": "3 – 7", "unit": "V_pp", "notes": "Set by the lamp's RMS power-dissipation requirement for the target operating resistance" },
+      { "name": "THD (well-built)", "value": "0.001 – 0.01", "unit": "%", "notes": "Limited mainly by op-amp slew rate and lamp's nonlinear thermal/RMS conversion. The HP200A claimed 0.5%; modern variants reach 0.0003%." },
+      { "name": "Amplitude settling time", "value": "1 – 3", "unit": "s", "notes": "Dominated by lamp thermal time constant. Visible at startup as the output 'breathing' until it locks." },
+      { "name": "Tuning range (per RC pair)", "value": "≈ 1 decade", "notes": "Below this, capacitor leakage and op-amp DC offset start to matter; above, the op-amp's bandwidth limits gain accuracy" }
+    ],
+    "designDecisions": "The choice of an incandescent lamp as the AGC element looks crude — a literal light bulb in a precision instrument — but it is in fact the cleverest part of the circuit. A lamp's thermal time constant (~100 ms for a tiny filament) is precisely the right timescale: long enough relative to the audio period to act as an RMS detector with negligible distortion, short enough relative to human attention to lock within a second of power-on. A faster control loop (JFET + envelope detector) introduces second-harmonic distortion at the AGC corner frequency — the very thing the lamp's slow thermal mass avoids. Hewlett tried thermistors first; the 1869 lamp won because tungsten's α is positive (a thermistor's is negative, which gives the wrong-sign control loop). Component matching matters more than absolute values: R1=R2 and C1=C2 to within 0.1% sets the loop phase at f₀ to <0.01°. The op-amp needs to be much faster than f₀ (gain-bandwidth > 100×f₀) so its own phase shift doesn't shift the oscillation frequency or — worse — introduce excess phase that turns the negative feedback path into another positive one (and destroys the oscillator). Modern derivatives replace the lamp with a JFET in its triode region, gate controlled by a peak detector; cleaner THD but more parts and more failure modes. The lamp is unbeatable when the priority is 'works for 50 years with no calibration.'",
+    "failureModes": [
+      {
+        "scenario": "Op-amp clipping (amplitude runaway)",
+        "description": "If the lamp burns open or RT1 is shorted, the AGC loop breaks. The remaining negative feedback gain (1 + R_f/0 = ∞, or 1 + R_f/short = 1) is wrong: either gain spirals up until the op-amp slams against the supply rails (output becomes a clipped square wave), or gain collapses to 1 and oscillation dies. Either way, the output is no longer sinusoidal.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Slow amplitude breathing / hunting",
+        "description": "If the lamp's thermal time constant is too close to the oscillation period — e.g. a larger lamp at a high frequency — the AGC loop becomes a relaxation oscillator: amplitude swings up, lamp lags, amplitude overshoots, lamp catches up, amplitude swings down, etc. Visible as a slow 1–5 Hz amplitude modulation on top of the carrier. Fix: smaller lamp, or pick a frequency well above the thermal corner.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Frequency drift with temperature",
+        "description": "f₀ depends directly on R and C. C0G capacitors drift ~30 ppm/°C; polypropylene ~200 ppm/°C; X7R is catastrophic at >500 ppm/°C plus a strong voltage coefficient. Resistor TCRs of ~100 ppm/°C are similar. Total drift can hit 0.1% over a 50 °C range — perfectly fine for audio bench work, way too much for a frequency reference.",
+        "severity": "low"
+      },
+      {
+        "scenario": "Mismatched R1≠R2 or C1≠C2",
+        "description": "Asymmetric Wien arms shift the magnitude-1/3 frequency and the phase-zero frequency to two different values. The oscillator will run at whichever frequency the loop can satisfy Barkhausen at, but at degraded amplitude stability and increased distortion. 1% mismatch is barely noticeable; 5% mismatch produces visible THD increase.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Op-amp slew-rate limiting",
+        "description": "At high amplitudes and high f₀, an op-amp slew rate below 2π × f₀ × V_peak distorts the waveform — peaks get triangular. For a 10 Vpp output at 20 kHz, slew rate needs to exceed 0.6 V/µs (TL072: 13 V/µs, plenty; LM741: 0.5 V/µs, borderline). The HP200A's vacuum-tube version had no such limit, ironically — modern IC op-amps reintroduced the failure mode that the tube version didn't have.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Failure to start",
+        "description": "If R_f is set too low (giving G < 3 even with a cold lamp), there's no excess gain to amplify the initial thermal noise, and the oscillator never starts. Always design with a 10–20% gain margin at startup. Some designs add a small diode-clamp across R_f that opens after startup, ensuring guaranteed start-up gain.",
+        "severity": "medium"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "AGC speed without sacrificing distortion",
+        "suggestion": "Replace the lamp with an LED + LDR (vactrol) optocoupler driven by a peak detector with a 50 ms time constant.",
+        "rationale": "Vactrol provides smooth, monotonic resistance vs. drive current without thermal lag asymmetry. Startup settles in ~200 ms instead of 1–2 s, distortion drops below 0.001%, and the AGC element has no end-of-life failure (a lamp is rated for ~1000 hours of continuous use)."
+      },
+      {
+        "area": "Wider tuning range",
+        "suggestion": "Use a ganged dual potentiometer (R1, R2) with switched capacitor banks (C1, C2 pairs) selected by a rotary band switch.",
+        "rationale": "This is exactly the HP200A's solution. One band switch gives 5 decade ranges; the gang covers 10× tuning per band. Achieves 1 Hz to 100 kHz from a single oscillator. Requires tracking of R1=R2 across the pot's rotation — buy a 0.5% tracking dual pot or hand-match a regular one."
+      },
+      {
+        "area": "Quadrature output for I/Q applications",
+        "suggestion": "Add a 90° all-pass filter (or integrator) after U1, gain-matched to f₀.",
+        "rationale": "Gives sin and cos outputs from a single oscillator. Useful for lock-in amplifier reference, SSB modulator, or any phase-sensitive measurement. The all-pass is a 1-op-amp circuit — almost free."
+      },
+      {
+        "area": "Lower THD via output filtering",
+        "suggestion": "Cascade a 4th-order Sallen-Key or state-variable LPF at 2×f₀ after U1.",
+        "rationale": "Whatever harmonics the oscillator generates (mostly 2nd and 3rd from AGC and op-amp nonlinearity) get attenuated by 24 dB/octave. A 0.01% THD source drops to 0.0001% — useful when measuring high-end audio gear's distortion."
+      },
+      {
+        "area": "Digital amplitude lock",
+        "suggestion": "Replace lamp with a multiplying DAC (or VCA) controlled by an ADC + microcontroller running a PI amplitude loop.",
+        "rationale": "Set output amplitude in software to any target with 0.01% precision. Useful for automated test equipment that needs to sweep amplitude. Loses the elegant simplicity of the lamp but gains programmability."
+      }
+    ]
+  }
+}
