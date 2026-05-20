@@ -129,7 +129,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           line-height: 0.86;
           letter-spacing: -0.035em;
           font-weight: 900;
-          font-size: clamp(56px, 11.5vw, 168px);
+          font-size: clamp(54px, 8.4vw, 128px);
           margin: 0;
         }
         .co-hero-outline {
@@ -324,13 +324,11 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
               ANY SCHEMATIC.
             </span>
             <span className="co-hero-rise block" style={rise(220)}>
-              <span className="co-hero-outline">EXPLAINED LIKE</span>
+              <span className="co-hero-outline">EXPLAINED LIKE A</span>
             </span>
             <span className="co-hero-rise block" style={rise(320)}>
-              A <span className="co-hero-glow">SENIOR</span>
-              <br className="hidden sm:block" />
-              <span className="sm:hidden"> </span>
-              ENGINEER<span className="co-hero-caret" aria-hidden="true" />
+              <span className="co-hero-glow">SENIOR</span> ENGINEER
+              <span className="co-hero-caret" aria-hidden="true" />
             </span>
           </h1>
 
