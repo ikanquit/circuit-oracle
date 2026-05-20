@@ -20,6 +20,32 @@ function getClientIP(req: NextRequest): string {
   return "unknown";
 }
 
+/**
+ * Build a user-safe error message. Never echoes raw SDK errors which can
+ * include API keys, internal hostnames, model names, or stack frames.
+ */
+function safeErrorMessage(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  const lower = raw.toLowerCase();
+
+  if (lower.includes("rate") && lower.includes("limit")) {
+    return "Upstream rate limit reached. Try again shortly.";
+  }
+  if (lower.includes("timeout") || lower.includes("etimedout")) {
+    return "Analysis timed out. Try again or use a smaller image.";
+  }
+  if (lower.includes("overloaded") || lower.includes("503")) {
+    return "AI service is overloaded right now. Try again in a moment.";
+  }
+  if (lower.includes("invalid_api_key") || lower.includes("authentication")) {
+    return "Server misconfiguration. The team has been notified.";
+  }
+  if (lower.includes("image") && (lower.includes("decode") || lower.includes("format"))) {
+    return "Could not decode the image. Try re-exporting as PNG or JPG.";
+  }
+  return "Analysis failed. Try again — if it keeps failing, try a different image.";
+}
+
 export async function POST(req: NextRequest): Promise<Response> {
   // Rate limiting
   const ip = getClientIP(req);
@@ -98,8 +124,11 @@ export async function POST(req: NextRequest): Promise<Response> {
 
         send("done", { full: analysis });
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Analysis failed";
-        send("error", { error: message });
+        // Log full error server-side, send sanitized message to client.
+        // Never let raw SDK errors (which may contain auth/model/host
+        // details) propagate to the browser.
+        console.error("[CircuitOracle] orchestrate failed:", err);
+        send("error", { error: safeErrorMessage(err) });
       } finally {
         try {
           controller.close();
