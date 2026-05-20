@@ -1,15 +1,12 @@
 import { ImageResponse } from "next/og";
 
-// Apple touch icon — 180×180 PNG. Slightly more elaborate than the favicon
-// because it shows up on iOS home screens at a larger size.
-export const runtime = "edge";
+// Apple touch icon — generated at build time from JSX.
+// Mirrors the IC-chip mark in public/icon.svg using the brand monochrome palette.
+
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default function AppleIcon() {
-  const phosphor = "#c6ff4d";
-  const phosphorDim = "#7a9e26";
-
   return new ImageResponse(
     (
       <div
@@ -20,52 +17,95 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          borderRadius: 28,
           position: "relative",
         }}
       >
-        {/* Grid */}
+        {/* Chip body */}
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `
-              linear-gradient(rgba(198,255,77,0.10) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(198,255,77,0.10) 1px, transparent 1px)
-            `,
-            backgroundSize: "20px 20px",
-            display: "flex",
-          }}
-        />
-        {/* Glow plate */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(circle at center, rgba(198,255,77,0.18), transparent 65%)",
-            display: "flex",
-          }}
-        />
-        {/* IC chip card */}
-        <div
-          style={{
+            width: 100,
+            height: 100,
+            background: "#0c0e12",
+            border: "4px solid #c6ff4d",
+            borderRadius: 8,
+            position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 124,
-            height: 124,
-            background: "#0c0e12",
-            border: `3px solid ${phosphorDim}`,
-            borderRadius: 18,
-            color: phosphor,
-            fontSize: 78,
-            fontWeight: 900,
-            fontFamily: "monospace",
-            letterSpacing: "-0.05em",
-            boxShadow: `0 0 36px rgba(198,255,77,0.35)`,
           }}
         >
-          C
+          {/* Diagonal "slash" — die mark */}
+          <div
+            style={{
+              position: "absolute",
+              top: 14,
+              left: 24,
+              width: 78,
+              height: 8,
+              background: "#c6ff4d",
+              transform: "rotate(126deg)",
+              transformOrigin: "left top",
+            }}
+          />
+          {/* Pin-1 amber dot */}
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              width: 8,
+              height: 8,
+              borderRadius: 9999,
+              background: "#ffb547",
+            }}
+          />
+          {/* Center die dot */}
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: 9999,
+              background: "#ffb547",
+            }}
+          />
+        </div>
+
+        {/* Pins — left */}
+        <div
+          style={{
+            position: "absolute",
+            left: 22,
+            top: 56,
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+          }}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={`l${i}`}
+              style={{ width: 18, height: 8, background: "#c6ff4d" }}
+            />
+          ))}
+        </div>
+        {/* Pins — right */}
+        <div
+          style={{
+            position: "absolute",
+            right: 22,
+            top: 56,
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+          }}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={`r${i}`}
+              style={{ width: 18, height: 8, background: "#c6ff4d" }}
+            />
+          ))}
         </div>
       </div>
     ),
