@@ -4,10 +4,11 @@ import nextTypescript from "eslint-config-next/typescript";
 const config = [
   {
     ignores: [
-      ".next/**",
-      "node_modules/**",
-      "next-env.d.ts",
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/next-env.d.ts",
       "package-lock.json",
+      ".claude/**",
     ],
   },
   ...nextCoreWebVitals,
