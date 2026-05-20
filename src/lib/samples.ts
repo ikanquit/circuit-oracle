@@ -20,6 +20,7 @@ import voltageDivider from "@/data/samples/voltage-divider.json";
 import hBridge from "@/data/samples/h-bridge.json";
 import multivibrator from "@/data/samples/multivibrator.json";
 import buck from "@/data/samples/buck-converter.json";
+import wienBridge from "@/data/samples/wien-bridge.json";
 
 export type SchematicKey =
   | "inverting-amp"
@@ -29,7 +30,8 @@ export type SchematicKey =
   | "voltage-divider"
   | "h-bridge"
   | "multivibrator"
-  | "buck-converter";
+  | "buck-converter"
+  | "wien-bridge";
 
 export type SampleDifficulty = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 export type SampleAccent = "phosphor" | "amber" | "copper" | "blueprint";
@@ -160,6 +162,18 @@ const META: SampleMeta[] = [
     accent: "phosphor",
     era: "MODERN SWITCHING SUPPLY",
   },
+  {
+    slug: "wien-bridge",
+    archiveId: "S-009",
+    title: "WIEN-BRIDGE OSCILLATOR",
+    subtitle: "TL072 + LAMP AGC",
+    tag: "OSCILLATOR",
+    difficulty: "ADVANCED",
+    teaser:
+      "Bill Hewlett's master's thesis. A pure sine wave from five parts — and a literal light bulb does the precision work.",
+    accent: "amber",
+    era: "1939 · HP MODEL 200A",
+  },
 ];
 
 const ANALYSIS_BY_SLUG: Record<SchematicKey, AnalysisResult> = {
@@ -171,6 +185,7 @@ const ANALYSIS_BY_SLUG: Record<SchematicKey, AnalysisResult> = {
   multivibrator: multivibrator as AnalysisResult,
   "h-bridge": hBridge as AnalysisResult,
   "buck-converter": buck as AnalysisResult,
+  "wien-bridge": wienBridge as AnalysisResult,
 };
 
 export const SAMPLE_META: SampleMeta[] = META;
