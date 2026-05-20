@@ -36,6 +36,40 @@ function parseJSONFromResponse(text: string): unknown {
   return JSON.parse(cleaned);
 }
 
+/**
+ * Build a user-safe agent error message. Avoids leaking raw SDK errors
+ * (which can contain API keys, internal hostnames, model names, or stack
+ * frames) into the SSE stream that reaches the browser.
+ */
+function safeAgentMessage(err: unknown, agentLabel: string): string {
+  // Always log the full error server-side for debugging.
+  console.error(`[CircuitOracle] ${agentLabel} agent error:`, err);
+
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  const lower = raw.toLowerCase();
+
+  if (lower.includes("rate") && lower.includes("limit")) {
+    return "Upstream rate limit reached.";
+  }
+  if (lower.includes("timeout") || lower.includes("etimedout")) {
+    return "Agent timed out.";
+  }
+  if (lower.includes("overloaded") || lower.includes("503")) {
+    return "AI service overloaded.";
+  }
+  if (lower.includes("invalid_api_key") || lower.includes("authentication")) {
+    return "Server misconfiguration.";
+  }
+  if (
+    err instanceof SyntaxError ||
+    lower.includes("json") ||
+    lower.includes("unexpected token")
+  ) {
+    return "Agent returned malformed output.";
+  }
+  return `${agentLabel} agent failed.`;
+}
+
 async function runComponentAgent(
   image: ImageInput,
   question?: string
@@ -67,8 +101,7 @@ async function runComponentAgent(
     const parsed = parseJSONFromResponse(text) as ComponentAgentResult;
     return parsed;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error in component agent";
-    return { error: true, message };
+    return { error: true, message: safeAgentMessage(err, "Component") };
   }
 }
 
@@ -103,8 +136,7 @@ async function runTopologyAgent(
     const parsed = parseJSONFromResponse(text) as TopologyAgentResult;
     return parsed;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error in topology agent";
-    return { error: true, message };
+    return { error: true, message: safeAgentMessage(err, "Topology") };
   }
 }
 
@@ -139,8 +171,7 @@ async function runDomainAgent(
     const parsed = parseJSONFromResponse(text) as DomainAgentResult;
     return parsed;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error in domain agent";
-    return { error: true, message };
+    return { error: true, message: safeAgentMessage(err, "Domain") };
   }
 }
 
@@ -193,8 +224,7 @@ async function runSynthesisAgent(
     const parsed = parseJSONFromResponse(fullText) as SynthesisResult;
     return parsed;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error in synthesis agent";
-    return { error: true, message };
+    return { error: true, message: safeAgentMessage(err, "Synthesis") };
   }
 }
 
@@ -279,13 +309,14 @@ export async function orchestrate(
     question
   );
 
-  if (!("error" in synthesisResult && synthesisResult.error)) {
-    send("agent_done", {
-      agent: "synthesis" as AgentName,
-      result: synthesisResult,
-      durationMs: Date.now() - synthesisStart,
-    });
-  }
+  // Always emit agent_done for synthesis so the UI can reflect both
+  // success and error states. The page reads `result.error === true` to
+  // distinguish, matching the other 3 agents.
+  send("agent_done", {
+    agent: "synthesis" as AgentName,
+    result: synthesisResult,
+    durationMs: Date.now() - synthesisStart,
+  });
 
   // Suppress unused variable warning
   void agentNames;

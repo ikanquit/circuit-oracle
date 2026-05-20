@@ -34,6 +34,17 @@ export default function ScanlineOverlay({
     const turbulence = turbulenceRef.current;
     if (!turbulence) return;
 
+    // Respect prefers-reduced-motion — skip the rAF grain animation
+    // entirely. The static grain texture still renders, just doesn't
+    // shimmer.
+    const mql =
+      typeof window !== "undefined" && window.matchMedia
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    if (mql && mql.matches) {
+      return;
+    }
+
     let last = 0;
     // Throttle to ~12fps for a "film grain" feel without burning the GPU.
     const FRAME_MS = 1000 / 12;
@@ -113,6 +124,7 @@ export default function ScanlineOverlay({
       {/* Layer 4: optional moving scanline beam (medium/strong only) */}
       {showBeam && (
         <div
+          data-co-scanline-beam
           className="absolute left-0 right-0"
           style={{
             top: 0,
@@ -130,6 +142,11 @@ export default function ScanlineOverlay({
         @keyframes co-scanline-beam {
           0%   { transform: translateY(-4px); }
           100% { transform: translateY(100vh); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-co-scanline-beam] {
+            animation: none !important;
+          }
         }
       `}</style>
     </div>

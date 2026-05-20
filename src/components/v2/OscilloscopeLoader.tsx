@@ -214,6 +214,24 @@ export default function OscilloscopeLoader({
       }
     };
 
+    // Respect prefers-reduced-motion — render a single static frame
+    // instead of running the rAF loop. The graticule + trace are still
+    // visible, just frozen.
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+      draw();
+      return () => {
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
+      };
+    }
+
     const tick = (now: number): void => {
       frameRef.current += 1;
 
@@ -241,8 +259,15 @@ export default function OscilloscopeLoader({
     };
   }, [width, height, waveform]);
 
-  // REC indicator blink (~1Hz) — interval, not rAF.
+  // REC indicator blink (~1Hz) — interval, not rAF. Skip under
+  // prefers-reduced-motion so the dot stays solid red.
   useEffect(() => {
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
     const id = window.setInterval(() => {
       setRecBlink((b) => !b);
     }, 600);
@@ -257,6 +282,9 @@ export default function OscilloscopeLoader({
     padding: 16,
     borderRadius: 2,
     display: "inline-block",
+    // Cap to container width on narrow viewports so the oscilloscope
+    // frame never forces horizontal scroll on phones.
+    maxWidth: "100%",
   };
 
   const screenWrapStyle: CSSProperties = {
@@ -266,6 +294,8 @@ export default function OscilloscopeLoader({
     background: "var(--co-bg)",
     border: "1px solid var(--co-border)",
     overflow: "hidden",
+    // Same cap — keep aspect intact, shrink uniformly.
+    maxWidth: "100%",
   };
 
   const hudBase: CSSProperties = {

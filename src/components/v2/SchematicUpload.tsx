@@ -302,7 +302,6 @@ export default function SchematicUpload({
                 : "transparent",
               transition:
                 "border-color 180ms ease, background 180ms ease",
-              outline: "none",
             }}
           >
             {/* tiny ascii-style coordinate marks */}
@@ -595,7 +594,6 @@ export default function SchematicUpload({
               ? "var(--co-phosphor)"
               : "var(--co-border)",
             borderRadius: 2,
-            outline: "none",
             resize: "vertical",
             fontFamily: "var(--co-font-mono)",
             fontSize: 12,
@@ -614,6 +612,12 @@ export default function SchematicUpload({
         type="button"
         onClick={onSubmit}
         disabled={!canSubmit}
+        aria-busy={isAnalyzing}
+        aria-label={
+          isAnalyzing
+            ? "Analyzing schematic, please wait"
+            : "Initiate schematic analysis"
+        }
         className="co-mono relative"
         style={{
           width: "100%",
@@ -666,7 +670,7 @@ export default function SchematicUpload({
             }
           }
         `}</style>
-        <span aria-busy={isAnalyzing ? "true" : "false"}>
+        <span>
           {isAnalyzing ? "■ ANALYZING…" : "▸ INITIATE ANALYSIS"}
         </span>
       </button>
