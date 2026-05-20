@@ -296,7 +296,9 @@ export default function HomePage() {
       <main className="relative z-10">
         <HeroCinematic onCtaClick={scrollToUpload} />
 
-        <SampleAnalysisStrip />
+        <div id="sample-archive">
+          <SampleAnalysisStrip />
+        </div>
 
         <section
           id="upload-section"
