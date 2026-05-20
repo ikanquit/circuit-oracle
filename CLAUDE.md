@@ -8,7 +8,7 @@ AI-powered circuit schematic analysis. Upload a schematic image → 3 Claude age
 npm run dev          # start dev server on :3000
 npm run build        # production build
 npm run lint         # eslint
-npx tsc --noEmit     # type check
+npm run type-check   # tsc --noEmit
 ```
 
 Requires `ANTHROPIC_API_KEY` in `.env.local` (copy `.env.example`).
@@ -76,4 +76,17 @@ Client reads via `ReadableStream` reader, not `EventSource` (allows POST bodies)
 
 ## Commit style
 
-Small and frequent. One thing per commit. Casual messages are fine.
+Small and frequent. Casual messages are fine.
+
+**Commit after each logical unit, not at the end of a session.** Examples of "one thing":
+- adding/renaming one agent
+- one prompt tweak
+- one UI/UX adjustment
+- one bugfix
+- one type/interface change
+
+**Don't bundle unrelated changes.** If you touched the SSE protocol *and* fixed a CSS bug, that's two commits.
+
+**Before committing:** run `npm run lint` and `npm run type-check`. If either fails, fix or stash — don't commit broken state, don't use `--no-verify`.
+
+**Don't wait for "the right moment".** Five commits in a session is normal and good. One commit at the end is a smell.
