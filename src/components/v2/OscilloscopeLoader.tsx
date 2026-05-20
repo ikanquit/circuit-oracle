@@ -282,6 +282,9 @@ export default function OscilloscopeLoader({
     padding: 16,
     borderRadius: 2,
     display: "inline-block",
+    // Cap to container width on narrow viewports so the oscilloscope
+    // frame never forces horizontal scroll on phones.
+    maxWidth: "100%",
   };
 
   const screenWrapStyle: CSSProperties = {
@@ -291,6 +294,8 @@ export default function OscilloscopeLoader({
     background: "var(--co-bg)",
     border: "1px solid var(--co-border)",
     overflow: "hidden",
+    // Same cap — keep aspect intact, shrink uniformly.
+    maxWidth: "100%",
   };
 
   const hudBase: CSSProperties = {
