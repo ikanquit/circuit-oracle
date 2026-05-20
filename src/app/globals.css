@@ -65,3 +65,10 @@ body {
   outline: 1px solid var(--co-phosphor);
   outline-offset: 2px;
 }
+
+/* Smooth anchor jumps for in-page CTAs (e.g. hero → #sample-archive) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
