@@ -1,0 +1,126 @@
+/* CircuitOracle design tokens — hardware lab × cinematic */
+
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500&display=swap');
+
+:root {
+  /* Surfaces */
+  --co-bg: #050608;
+  --co-surface: #0c0e12;
+  --co-surface-2: #14171c;
+  --co-surface-3: #1d2127;
+
+  /* Borders */
+  --co-border: rgba(255, 255, 255, 0.06);
+  --co-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Accents */
+  --co-phosphor: #c6ff4d;
+  --co-phosphor-dim: #7a9e26;
+  --co-amber: #ffb547;
+  --co-blueprint: #4f9eff;
+  --co-copper: #d97742;
+
+  /* Text */
+  --co-text: #f0eee6;
+  --co-text-dim: #b8b6ad;
+  --co-muted: #6a6c75;
+
+  /* States */
+  --co-danger: #ff5454;
+
+  /* Typography */
+  --co-font-display: 'Big Shoulders Display', 'Impact', 'Bebas Neue', system-ui, sans-serif;
+  --co-font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', ui-monospace, monospace;
+  --co-font-body: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Atmosphere */
+  --co-grid: rgba(198, 255, 77, 0.04);
+  --co-scan: rgba(198, 255, 77, 0.02);
+}
+
+/* ============================================================
+   Typography utilities
+   ============================================================ */
+
+.co-display {
+  font-family: var(--co-font-display);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+}
+
+.co-mono {
+  font-family: var(--co-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.co-label {
+  font-family: var(--co-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--co-muted);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Glow effects
+   ============================================================ */
+
+.co-glow-phosphor {
+  color: var(--co-phosphor);
+  text-shadow:
+    0 0 4px rgba(198, 255, 77, 0.6),
+    0 0 12px rgba(198, 255, 77, 0.35),
+    0 0 24px rgba(198, 255, 77, 0.18);
+}
+
+.co-glow-amber {
+  color: var(--co-amber);
+  text-shadow:
+    0 0 4px rgba(255, 181, 71, 0.6),
+    0 0 12px rgba(255, 181, 71, 0.35),
+    0 0 24px rgba(255, 181, 71, 0.18);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+@keyframes co-flicker {
+  0%   { opacity: 1; }
+  20%  { opacity: 0.97; }
+  40%  { opacity: 1; }
+  60%  { opacity: 0.99; }
+  80%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes co-scan {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+.co-flicker {
+  animation: co-flicker 4s infinite;
+}
+
+.co-scanlines {
+  position: relative;
+}
+
+.co-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--co-scan) 0,
+    var(--co-scan) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1;
+}

@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import Header from "@/components/Header";
-import CircuitUploader from "@/components/CircuitUploader";
-import AgentPipeline, { AgentState, AgentStatus } from "@/components/AgentPipeline";
+import { useState, useRef, useCallback, useMemo } from "react";
 import AnalysisResult from "@/components/AnalysisResult";
+import CircuitBackground from "@/components/v2/CircuitBackground";
+import ScanlineOverlay from "@/components/v2/ScanlineOverlay";
+import HeroCinematic from "@/components/v2/HeroCinematic";
+import SchematicUpload from "@/components/v2/SchematicUpload";
+import ICChipAgentCard, { ChipStatus } from "@/components/v2/ICChipAgentCard";
+import OscilloscopeLoader from "@/components/v2/OscilloscopeLoader";
+import BlueprintResults from "@/components/v2/BlueprintResults";
+import StatusHUD from "@/components/v2/StatusHUD";
+import TickerFooter from "@/components/v2/TickerFooter";
+import SampleAnalysisStrip from "@/components/v2/SampleAnalysisStrip";
 import {
   AnalysisResult as AnalysisResultType,
   AgentName,
@@ -15,48 +22,100 @@ import {
 
 type PipelineStage = "idle" | "parallel" | "synthesis" | "done";
 
-const INITIAL_AGENTS: AgentState[] = [
-  { name: "component", status: "pending" },
-  { name: "topology", status: "pending" },
-  { name: "domain", status: "pending" },
-  { name: "synthesis", status: "pending" },
+interface AgentRow {
+  name: AgentName;
+  label: string;
+  partNumber: string;
+  description: string;
+  status: ChipStatus;
+  durationMs?: number;
+}
+
+const INITIAL_AGENTS: AgentRow[] = [
+  {
+    name: "component",
+    label: "COMPONENT",
+    partNumber: "CO-7401N",
+    description: "Catalog components",
+    status: "pending",
+  },
+  {
+    name: "topology",
+    label: "TOPOLOGY",
+    partNumber: "CO-7402T",
+    description: "Map circuit topology",
+    status: "pending",
+  },
+  {
+    name: "domain",
+    label: "DOMAIN",
+    partNumber: "CO-7403D",
+    description: "Classify application",
+    status: "pending",
+  },
+  {
+    name: "synthesis",
+    label: "SYNTHESIS",
+    partNumber: "CO-7499S",
+    description: "Engineering brief",
+    status: "pending",
+  },
 ];
+
+function generateJobId(): string {
+  const now = new Date();
+  const yyyy = now.getUTCFullYear();
+  const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(now.getUTCDate()).padStart(2, "0");
+  const hex = Math.floor(Math.random() * 0xffff)
+    .toString(16)
+    .toUpperCase()
+    .padStart(4, "0");
+  return `JOB-${yyyy}-${mm}-${dd}-${hex}`;
+}
 
 export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [question, setQuestion] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [pipelineStage, setPipelineStage] = useState<PipelineStage>("idle");
-  const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
+  const [agents, setAgents] = useState<AgentRow[]>(INITIAL_AGENTS);
   const [result, setResult] = useState<AnalysisResultType | null>(null);
   const [synthStreaming, setSynthStreaming] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [jobId, setJobId] = useState<string>(() => generateJobId());
 
   const synthRef = useRef("");
-  // Partial agent results as they come in (for rendering while synthesis is running)
   const partialResult = useRef<Partial<AnalysisResultType>>({});
 
   const updateAgentStatus = useCallback(
-    (name: AgentName, status: AgentStatus, durationMs?: number) => {
+    (name: AgentName, status: ChipStatus, durationMs?: number) => {
       setAgents((prev) =>
         prev.map((a) =>
-          a.name === name ? { ...a, status, durationMs: durationMs ?? a.durationMs } : a
+          a.name === name
+            ? { ...a, status, durationMs: durationMs ?? a.durationMs }
+            : a
         )
       );
     },
     []
   );
 
+  const scrollToUpload = useCallback(() => {
+    const el = document.getElementById("upload-section");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     if (!selectedFile) return;
 
-    // Reset state
     setIsAnalyzing(true);
     setPipelineStage("idle");
     setAgents(INITIAL_AGENTS);
     setResult(null);
     setSynthStreaming("");
     setErrorMessage(null);
+    setJobId(generateJobId());
     synthRef.current = "";
     partialResult.current = {};
 
@@ -73,14 +132,16 @@ export default function HomePage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Request failed" }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ error: "Request failed" }));
         const retryAfter = response.headers.get("Retry-After");
         if (response.status === 429) {
           setErrorMessage(
-            `Rate limit reached. Please wait ${retryAfter ?? 60} seconds before trying again.`
+            `Rate limit reached. Wait ${retryAfter ?? 60}s before retrying.`
           );
         } else {
-          setErrorMessage(errorData.error ?? "Analysis failed. Please try again.");
+          setErrorMessage(errorData.error ?? "Analysis failed.");
         }
         setIsAnalyzing(false);
         return;
@@ -95,56 +156,12 @@ export default function HomePage() {
 
       const decoder = new TextDecoder();
       let buffer = "";
-
-      const processLine = (line: string) => {
-        if (!line.trim()) return;
-
-        if (line.startsWith("event: ")) {
-          // handled with next data line
-          return;
-        }
-
-        if (line.startsWith("data: ")) {
-          const jsonStr = line.slice(6);
-          try {
-            const parsed = JSON.parse(jsonStr);
-
-            // We need event type — get it from the last buffered event line
-            // Actually we process event+data together below
-            void parsed;
-          } catch {
-            // not JSON
-          }
-        }
-      };
-
-      void processLine; // used below via buffer parsing
-
-      // Parse SSE properly: collect event + data pairs
       let currentEvent = "";
 
-      const processSSEChunk = (chunk: string) => {
-        buffer += chunk;
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            currentEvent = line.slice(7).trim();
-          } else if (line.startsWith("data: ")) {
-            const jsonStr = line.slice(6);
-            try {
-              const data = JSON.parse(jsonStr);
-              handleSSEEvent(currentEvent, data);
-            } catch {
-              // ignore parse errors
-            }
-            currentEvent = "";
-          }
-        }
-      };
-
-      const handleSSEEvent = (event: string, data: Record<string, unknown>) => {
+      const handleSSEEvent = (
+        event: string,
+        data: Record<string, unknown>
+      ) => {
         if (event === "stage") {
           const stage = data.stage as string;
           if (stage === "parallel") {
@@ -173,30 +190,37 @@ export default function HomePage() {
           updateAgentStatus(agent, hasError ? "error" : "done", duration);
 
           if (agent === "component") {
-            partialResult.current.components = agentResult as ComponentAgentResult;
+            partialResult.current.components =
+              agentResult as ComponentAgentResult;
           } else if (agent === "topology") {
-            partialResult.current.topology = agentResult as TopologyAgentResult;
+            partialResult.current.topology =
+              agentResult as TopologyAgentResult;
           } else if (agent === "domain") {
             partialResult.current.domain = agentResult as DomainAgentResult;
           } else if (agent === "synthesis") {
             updateAgentStatus("synthesis", "done", duration);
           }
 
-          // Show partial results immediately as agents complete
           if (
             partialResult.current.components ||
             partialResult.current.topology ||
             partialResult.current.domain
           ) {
-            setResult((prev) => ({
-              ...(prev ?? {
-                components: { error: true, message: "pending" },
-                topology: { error: true, message: "pending" },
-                domain: { error: true, message: "pending" },
-                synthesis: { error: true, message: "pending" } as unknown as AnalysisResultType["synthesis"],
-              }),
-              ...partialResult.current,
-            }) as AnalysisResultType);
+            setResult(
+              (prev) =>
+                ({
+                  ...(prev ?? {
+                    components: { error: true, message: "pending" },
+                    topology: { error: true, message: "pending" },
+                    domain: { error: true, message: "pending" },
+                    synthesis: {
+                      error: true,
+                      message: "pending",
+                    } as unknown as AnalysisResultType["synthesis"],
+                  }),
+                  ...partialResult.current,
+                }) as AnalysisResultType
+            );
           }
         } else if (event === "synthesis_chunk") {
           const text = data.text as string;
@@ -214,7 +238,27 @@ export default function HomePage() {
         }
       };
 
-      // Read the stream
+      const processSSEChunk = (chunk: string) => {
+        buffer += chunk;
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            currentEvent = line.slice(7).trim();
+          } else if (line.startsWith("data: ")) {
+            const jsonStr = line.slice(6);
+            try {
+              const data = JSON.parse(jsonStr);
+              handleSSEEvent(currentEvent, data);
+            } catch {
+              /* ignore */
+            }
+            currentEvent = "";
+          }
+        }
+      };
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -239,132 +283,135 @@ export default function HomePage() {
     partialResult.current = {};
   }, []);
 
-  const showRightPanel =
-    pipelineStage !== "idle" || result !== null || synthStreaming !== "";
+  const showAnalysisShell = useMemo(
+    () => pipelineStage !== "idle" || result !== null || synthStreaming !== "",
+    [pipelineStage, result, synthStreaming]
+  );
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: "var(--bg)" }}
-    >
-      <Header />
+    <div className="relative min-h-screen">
+      <CircuitBackground />
+      <ScanlineOverlay intensity="subtle" />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8">
-        {/* Hero text — only shown before analysis */}
-        {pipelineStage === "idle" && !result && (
-          <div className="mb-8 text-center">
-            <h2
-              className="text-2xl sm:text-3xl font-bold tracking-tight mb-2"
-              style={{ color: "var(--text)" }}
-            >
-              Understand any circuit, instantly
-            </h2>
-            <p className="text-sm max-w-xl mx-auto" style={{ color: "var(--muted)" }}>
-              Upload a schematic image and three specialized AI agents analyze it in
-              parallel — components, topology, and domain — then a synthesis agent
-              produces an engineering-depth explanation.
-            </p>
-          </div>
-        )}
+      <main className="relative z-10">
+        <HeroCinematic onCtaClick={scrollToUpload} />
 
-        <div
-          className={`grid gap-6 ${
-            showRightPanel ? "lg:grid-cols-[420px_1fr]" : "max-w-md mx-auto"
-          }`}
+        <SampleAnalysisStrip />
+
+        <section
+          id="upload-section"
+          className="px-4 sm:px-8 lg:px-12 py-16 max-w-[1400px] mx-auto w-full"
         >
-          {/* Left panel */}
-          <div className="flex flex-col gap-4">
-            <div
-              className="rounded-xl border p-5"
-              style={{
-                backgroundColor: "var(--surface)",
-                borderColor: "var(--border)",
-              }}
-            >
-              <h3
-                className="text-sm font-semibold mb-4"
-                style={{ color: "var(--text)" }}
-              >
-                Upload Schematic
-              </h3>
-              <CircuitUploader
+          <div
+            className="grid gap-6"
+            style={{
+              gridTemplateColumns: showAnalysisShell
+                ? "minmax(0, 440px) 1fr"
+                : "minmax(0, 540px)",
+              justifyContent: showAnalysisShell ? undefined : "center",
+            }}
+          >
+            {/* Left column — upload + pipeline */}
+            <div className="flex flex-col gap-6 min-w-0">
+              <SchematicUpload
                 onFile={setSelectedFile}
                 onQuestion={setQuestion}
                 onSubmit={handleSubmit}
+                onClear={handleClear}
                 isAnalyzing={isAnalyzing}
                 question={question}
                 selectedFile={selectedFile}
-                onClear={handleClear}
-              />
-            </div>
-
-            {/* Agent pipeline */}
-            {pipelineStage !== "idle" && (
-              <AgentPipeline agents={agents} stage={pipelineStage} />
-            )}
-
-            {/* Error message */}
-            {errorMessage && (
-              <div
-                className="rounded-xl border px-4 py-3 text-sm"
-                style={{
-                  backgroundColor: "color-mix(in srgb, var(--error) 8%, var(--surface))",
-                  borderColor: "color-mix(in srgb, var(--error) 30%, transparent)",
-                  color: "var(--error)",
-                }}
-              >
-                <p className="font-semibold mb-0.5">Analysis Failed</p>
-                <p className="text-xs" style={{ color: "var(--muted)" }}>
-                  {errorMessage}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Right panel */}
-          {showRightPanel && (
-            <div
-              className="rounded-xl border p-5 overflow-y-auto"
-              style={{
-                backgroundColor: "var(--surface)",
-                borderColor: "var(--border)",
-                maxHeight: "calc(100vh - 180px)",
-              }}
-            >
-              <AnalysisResult
-                result={result}
-                synthStreaming={synthStreaming}
-                isStreaming={isAnalyzing && pipelineStage === "synthesis"}
               />
 
-              {/* Placeholder while parallel phase is running */}
-              {pipelineStage === "parallel" && !result && (
-                <div className="flex flex-col items-center justify-center py-16 gap-3">
+              {pipelineStage !== "idle" && (
+                <div>
                   <div
-                    className="w-10 h-10 rounded-full border-2 animate-spin"
-                    style={{
-                      borderColor: "var(--border)",
-                      borderTopColor: "var(--accent)",
-                    }}
-                  />
-                  <p className="text-sm" style={{ color: "var(--muted)" }}>
-                    Running parallel analysis agents…
+                    className="co-label mb-3"
+                    style={{ color: "var(--co-muted)" }}
+                  >
+                    [ AGENT PIPELINE · 04 ]
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {agents.map((a) => (
+                      <ICChipAgentCard
+                        key={a.name}
+                        label={a.label}
+                        partNumber={a.partNumber}
+                        status={a.status}
+                        description={a.description}
+                        durationMs={a.durationMs}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div
+                  className="border px-4 py-3"
+                  style={{
+                    backgroundColor:
+                      "color-mix(in srgb, var(--co-danger) 8%, var(--co-surface))",
+                    borderColor:
+                      "color-mix(in srgb, var(--co-danger) 35%, transparent)",
+                    color: "var(--co-danger)",
+                    fontFamily: "var(--co-font-mono)",
+                  }}
+                >
+                  <p
+                    className="text-xs uppercase tracking-widest font-semibold mb-1"
+                    style={{ color: "var(--co-danger)" }}
+                  >
+                    ▲ FAULT DETECTED
+                  </p>
+                  <p
+                    className="text-xs"
+                    style={{ color: "var(--co-text-dim)" }}
+                  >
+                    {errorMessage}
                   </p>
                 </div>
               )}
             </div>
-          )}
-        </div>
+
+            {/* Right column — analysis output */}
+            {showAnalysisShell && (
+              <BlueprintResults
+                title="ANALYSIS OUTPUT"
+                jobId={jobId}
+                stage={pipelineStage}
+              >
+                {pipelineStage === "parallel" && !result ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-6">
+                    <OscilloscopeLoader
+                      label="ACQUIRING SIGNAL · PARALLEL × 3"
+                      waveform="sine"
+                    />
+                    <p
+                      className="co-mono text-xs"
+                      style={{ color: "var(--co-text-dim)" }}
+                    >
+                      Running component / topology / domain agents
+                    </p>
+                  </div>
+                ) : (
+                  <AnalysisResult
+                    result={result}
+                    synthStreaming={synthStreaming}
+                    isStreaming={
+                      isAnalyzing && pipelineStage === "synthesis"
+                    }
+                  />
+                )}
+              </BlueprintResults>
+            )}
+          </div>
+        </section>
+
+        <TickerFooter />
       </main>
 
-      <footer
-        className="border-t py-4 px-4 sm:px-6 text-center"
-        style={{ borderColor: "var(--border)" }}
-      >
-        <p className="text-xs" style={{ color: "var(--muted)" }}>
-          CircuitOracle — Multi-agent AI schematic analysis
-        </p>
-      </footer>
+      <StatusHUD pipelineStage={pipelineStage} />
     </div>
   );
 }

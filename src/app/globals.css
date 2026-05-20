@@ -1,17 +1,19 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
 :root {
-  --bg: #080808;
-  --surface: #111114;
-  --surface2: #18181c;
-  --border: #2a2a30;
-  --accent: #7c6fff;
-  --accent-hover: #9d90ff;
-  --text: #e8e8ec;
-  --muted: #6b6b7a;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --error: #f87171;
+  /* Legacy tokens — kept for components that still reference them */
+  --bg: var(--co-bg);
+  --surface: var(--co-surface);
+  --surface2: var(--co-surface-2);
+  --border: var(--co-border-strong);
+  --accent: var(--co-phosphor);
+  --accent-hover: #d8ff7a;
+  --text: var(--co-text);
+  --muted: var(--co-muted);
+  --success: var(--co-phosphor);
+  --warning: var(--co-amber);
+  --error: var(--co-danger);
 }
 
 *,
@@ -27,43 +29,39 @@ html {
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-    Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  background-color: var(--co-bg);
+  color: var(--co-text);
+  font-family: var(--co-font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface);
+  background: var(--co-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
+  background: var(--co-border-strong);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: var(--co-phosphor-dim);
 }
 
-/* Selection */
 ::selection {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
-  color: var(--text);
+  background: color-mix(in srgb, var(--co-phosphor) 35%, transparent);
+  color: var(--co-bg);
 }
 
-/* Focus visible */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 1px solid var(--co-phosphor);
   outline-offset: 2px;
 }
