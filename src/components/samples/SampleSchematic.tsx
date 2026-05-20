@@ -476,6 +476,79 @@ function BuckConverter({ c, thick }: FragProps): JSX.Element {
   );
 }
 
+// ---------- 9. WIEN-BRIDGE OSCILLATOR ----------
+function WienBridge({ c, thick }: FragProps): JSX.Element {
+  const sw = thick ? 1.4 : 1;
+  return (
+    <g stroke={c} strokeWidth={sw} fill="none" strokeLinecap="square" strokeLinejoin="miter">
+      {/* Op-amp triangle */}
+      <path d="M78 60 L78 100 L114 80 Z" strokeLinejoin="miter" />
+      <text x={82} y={70} fontSize={7} fontFamily="monospace" fill={c} stroke="none">−</text>
+      <text x={82} y={94} fontSize={7} fontFamily="monospace" fill={c} stroke="none">+</text>
+      {/* Output */}
+      <path d="M114 80 H180" />
+      <text x={155} y={74} fontSize={7} fontFamily="monospace" fill={c} stroke="none">Vout</text>
+      <circle cx={180} cy={80} r={1.8} fill={c} stroke="none" />
+
+      {/* --- Wien network (positive feedback, top) --- */}
+      {/* Vout up to top rail */}
+      <path d="M180 80 V22" />
+      {/* R1 horizontal zigzag */}
+      <path d="M180 22 L176 18 L170 26 L164 18 L158 26 L152 18 L146 22" />
+      <text x={156} y={14} fontSize={5} fontFamily="monospace" fill={c} stroke="none">R1 10k</text>
+      {/* C1 plates */}
+      <path d="M146 22 H140" />
+      <path d="M140 17 V27" />
+      <path d="M136 17 V27" />
+      <text x={130} y={14} fontSize={5} fontFamily="monospace" fill={c} stroke="none">C1 16n</text>
+      <path d="M136 22 H132" />
+      {/* Wien tap node */}
+      <circle cx={132} cy={22} r={1.8} fill={c} stroke="none" />
+      {/* Tap → V+ wire: up + across + down + across to op-amp + input.
+          Routed along the top/left margin (y=8 then x=8) to avoid
+          crossing the negative-feedback path. */}
+      <path d="M132 22 V8 H8 V92 H78" />
+      {/* R2 (left of shunt arm) */}
+      <path d="M132 22 V30 H122 V32" />
+      <path d="M122 32 L116 34 L128 38 L116 42 L128 46 L122 48 V50 H132" />
+      <text x={94} y={42} fontSize={5} fontFamily="monospace" fill={c} stroke="none">R2 10k</text>
+      {/* C2 (right of shunt arm) */}
+      <path d="M132 30 H142 V38" />
+      <path d="M136 38 H148" />
+      <path d="M136 42 H148" />
+      <path d="M142 42 V50 H132" />
+      <text x={150} y={42} fontSize={5} fontFamily="monospace" fill={c} stroke="none">C2 16n</text>
+      {/* Wien shunt → GND */}
+      <path d="M132 50 V60" />
+      <path d="M124 60 H140" />
+      <path d="M126 64 H138" />
+      <path d="M129 68 H135" />
+
+      {/* --- Negative feedback (bottom) --- */}
+      {/* V− summing node at (40, 68) */}
+      <circle cx={40} cy={68} r={1.8} fill={c} stroke="none" />
+      <path d="M40 68 H78" />
+      {/* Rf path: V− → south → east through Rf → north to Vout */}
+      <path d="M40 68 V120" />
+      <path d="M40 120 L46 116 L52 124 L58 116 L64 124 L70 120" />
+      <text x={44} y={132} fontSize={5} fontFamily="monospace" fill={c} stroke="none">Rf 1k</text>
+      <path d="M70 120 H180 V80" />
+      {/* Rlamp: V− → north → lamp glyph → GND at top */}
+      <path d="M40 68 V40" />
+      <circle cx={40} cy={34} r={5} />
+      {/* Lamp filament: × inside circle */}
+      <path d="M37 31 L43 37" />
+      <path d="M43 31 L37 37" />
+      <text x={48} y={36} fontSize={5} fontFamily="monospace" fill={c} stroke="none">RT1</text>
+      <text x={48} y={42} fontSize={5} fontFamily="monospace" fill={c} stroke="none" opacity={0.65}>lamp</text>
+      <path d="M40 29 V20" />
+      <path d="M34 20 H46" />
+      <path d="M36 23 H44" />
+      <path d="M38 26 H42" />
+    </g>
+  );
+}
+
 const SCHEMATICS: Record<SchematicKey, (p: FragProps) => JSX.Element> = {
   "voltage-divider": VoltageDividerSchematic,
   "rc-low-pass": RCLowPass,
@@ -485,6 +558,7 @@ const SCHEMATICS: Record<SchematicKey, (p: FragProps) => JSX.Element> = {
   multivibrator: Multivibrator,
   "h-bridge": HBridge,
   "buck-converter": BuckConverter,
+  "wien-bridge": WienBridge,
 };
 
 export default function SampleSchematic({
