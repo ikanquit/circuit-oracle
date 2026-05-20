@@ -242,7 +242,8 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           inset: 0;
           background: linear-gradient(to right, var(--co-phosphor), color-mix(in srgb, var(--co-phosphor) 30%, transparent));
           transform-origin: left;
-          animation: co-hero-meter 1400ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+          animation: co-hero-meter 1400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+          animation-delay: var(--meter-delay, 900ms);
         }
         .co-hero-proof-label {
           margin-top: 0.6rem;
@@ -376,7 +377,11 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                 <div className="co-hero-proof-num">
                   ~45<span className="unit">s</span>
                 </div>
-                <div className="co-hero-proof-meter" aria-hidden="true" />
+                <div
+                  className="co-hero-proof-meter"
+                  aria-hidden="true"
+                  style={{ ["--meter-delay" as string]: "900ms" }}
+                />
                 <div className="co-hero-proof-label">end-to-end brief</div>
               </div>
               <div className="co-hero-proof-cell">
@@ -386,7 +391,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                 <div
                   className="co-hero-proof-meter"
                   aria-hidden="true"
-                  style={{ animationDelay: "1100ms" }}
+                  style={{ ["--meter-delay" as string]: "1100ms" }}
                 />
                 <div className="co-hero-proof-label">specialist agents</div>
               </div>
@@ -397,7 +402,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                 <div
                   className="co-hero-proof-meter"
                   aria-hidden="true"
-                  style={{ animationDelay: "1300ms" }}
+                  style={{ ["--meter-delay" as string]: "1300ms" }}
                 />
                 <div className="co-hero-proof-label">just paste an image</div>
               </div>
