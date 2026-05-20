@@ -1,0 +1,162 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "Q1, Q3",
+        "type": "P-channel MOSFET",
+        "value": "Rds(on) ≈ 30 mΩ, Vgs(th) = -3 V",
+        "partNumber": "IRF9540N",
+        "functionalRole": "High-side switches — connect the motor terminals to +Vmotor. P-channel chosen so the gate driver only needs to swing between Vmotor and Vmotor-12 V."
+      },
+      {
+        "designator": "Q2, Q4",
+        "type": "N-channel MOSFET",
+        "value": "Rds(on) ≈ 20 mΩ, Vgs(th) = 3 V",
+        "partNumber": "IRF540N",
+        "functionalRole": "Low-side switches — pull the motor terminals to ground. N-channel chosen for low Rds(on) and source referenced to ground (easy gate drive)."
+      },
+      {
+        "designator": "D1–D4",
+        "type": "Schottky diode",
+        "value": "20 A, 60 V",
+        "partNumber": "MBR2060CT",
+        "functionalRole": "Body-diode supplement / freewheel — provides a fast path for inductive kickback current when the motor's coil tries to keep current flowing during switch transitions."
+      },
+      {
+        "designator": "U1",
+        "type": "Half-bridge gate driver",
+        "value": "Bootstrap, 1.5 A peak",
+        "partNumber": "IR2104",
+        "functionalRole": "Translates 5 V logic-level PWM into 10–15 V gate drive with built-in shoot-through interlock and bootstrap supply for the high-side."
+      },
+      {
+        "designator": "Rg",
+        "type": "Resistor",
+        "value": "10 Ω",
+        "functionalRole": "Gate resistor — slows down dV/dt at the switching node to reduce EMI and protect the gate driver from current spikes during the Miller plateau."
+      },
+      {
+        "designator": "Cboot",
+        "type": "Capacitor",
+        "value": "100 nF",
+        "functionalRole": "Bootstrap capacitor — provides charge for the high-side gate drive during the on-period."
+      },
+      {
+        "designator": "Cbulk",
+        "type": "Capacitor",
+        "value": "470 µF / 35 V",
+        "functionalRole": "Bulk supply decoupling — absorbs the large transient currents that the motor commutation pulls from Vmotor."
+      },
+      {
+        "designator": "M1",
+        "type": "DC brushed motor",
+        "value": "12 V, 3 A stall",
+        "functionalRole": "Inductive load — the actual thing being driven."
+      }
+    ],
+    "totalCount": 11,
+    "summary": "Full H-bridge driving a DC motor: two P-channel MOSFETs on the high side, two N-channel on the low side, with an IR2104-style half-bridge driver per arm, freewheel Schottkys, and bootstrap caps."
+  },
+  "topology": {
+    "topologyName": "Full H-Bridge (Four-Quadrant MOSFET Driver)",
+    "stages": [
+      {
+        "name": "High side (P-channel arm)",
+        "description": "Q1 connects motor terminal A to Vmotor; Q3 does the same for terminal B. Only one is on at a time during a given drive direction.",
+        "components": ["Q1", "Q3"]
+      },
+      {
+        "name": "Low side (N-channel arm)",
+        "description": "Q2 pulls terminal A to ground; Q4 pulls terminal B to ground. The diagonal pair (Q1+Q4 or Q3+Q2) determines motor direction.",
+        "components": ["Q2", "Q4"]
+      },
+      {
+        "name": "Freewheel network",
+        "description": "Schottky diodes D1–D4 conduct inductive current when the active MOSFET turns off, before the opposite-side MOSFET turns on (dead time). MOSFET body diodes also conduct but with higher Vf and reverse-recovery loss.",
+        "components": ["D1", "D2", "D3", "D4"]
+      },
+      {
+        "name": "Gate drive",
+        "description": "Half-bridge driver U1 takes logic-level PWM in, produces ~12 V swing on the MOSFET gates with built-in dead-time to prevent shoot-through. Bootstrap capacitor refreshes during the low-side on-time.",
+        "components": ["U1", "Rg", "Cboot"]
+      },
+      {
+        "name": "Bus capacitance",
+        "description": "Cbulk holds the motor supply rail up during commutation transients — without it, every PWM cycle would dip the rail and modulate the next cycle.",
+        "components": ["Cbulk"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "unknown",
+        "description": "Open-loop in this drawing — no current sense, no encoder feedback. In practice the control loop is closed externally (microcontroller PWM)."
+      }
+    ],
+    "keyNodes": ["VMOTOR", "GND", "TERM_A", "TERM_B", "PWM_A", "PWM_B"],
+    "powerSupplyTopology": "Two rails: +12 V motor power (Vmotor) and +5 V or +12 V driver logic. Bootstrap caps provide a floating +12 V relative to each switch node for high-side gate drive."
+  },
+  "domain": {
+    "primaryDomain": "motor control",
+    "specificApplication": "Bidirectional speed and torque control of brushed DC motors. Same topology drives stepper motors (one bridge per phase), small brushless DC motors (three half-bridges), and is the output stage of class-D audio amplifiers.",
+    "frequencyRange": "PWM frequency typically 10–25 kHz (above human hearing, below the point where switching losses dominate).",
+    "impedance": "Output impedance during conduction ≈ 50 mΩ per MOSFET (Q1 + Q4 = ~100 mΩ total). Motor sees a nearly-stiff voltage source.",
+    "industryContext": "Universal motor-driving topology. Used in robotics (everything from Arduino bots to industrial servos), electric vehicles (scaled up to IGBTs), audio amps, RC vehicles, and CNC. Integrated versions (DRV8871, BTS7960) collapse all of this into one IC."
+  },
+  "synthesis": {
+    "operatingPrinciple": "Four switches arranged like the letter H, with the motor as the crossbar. Closing diagonal switches (Q1 + Q4) connects the motor +→A→M→B→ground, spinning one way. The other diagonal (Q3 + Q2) reverses polarity and the motor spins the other way. Closing both top switches or both bottom switches shorts the motor across itself — useful for dynamic braking. The dangerous case is closing both switches on one side simultaneously (Q1 + Q2 or Q3 + Q4) — this is 'shoot-through' and creates a near-direct short from Vmotor to ground through both MOSFETs, destroying them in microseconds. PWM is applied to vary the average voltage across the motor — at 50% duty the motor sees roughly half of Vmotor. During the freewheel portion of each cycle, the motor inductance forces current to keep flowing; the Schottky diodes (and MOSFET body diodes) provide a return path so the inductor energy doesn't spike the supply or zap a transistor.",
+    "keyParameters": [
+      { "name": "Continuous output current", "value": "20", "unit": "A", "notes": "Limited by MOSFET Rds(on) thermal dissipation — 20² × 0.05 = 20 W per MOSFET pair" },
+      { "name": "Peak / stall current", "value": "40", "unit": "A", "notes": "Limited by motor stall current and MOSFET pulsed-current rating" },
+      { "name": "Motor supply voltage", "value": "12", "unit": "V", "notes": "Up to 55 V — set by MOSFET Vds rating with margin" },
+      { "name": "PWM frequency", "value": "20", "unit": "kHz" },
+      { "name": "Dead time", "value": "~500", "unit": "ns", "notes": "Set by IR2104 internal timing — non-overlapping high/low-side drive" },
+      { "name": "Switching losses (per FET, est.)", "value": "0.8", "unit": "W", "notes": "0.5 × Vmotor × I × (t_r + t_f) × f_sw" },
+      { "name": "Bootstrap voltage", "value": "12", "unit": "V", "notes": "Above the switch node — refreshes every low-side on-time" }
+    ],
+    "designDecisions": "Asymmetric MOSFET choice (P-channel on top, N-channel on bottom) was the standard for cost-sensitive designs in the 1990s — P-channel parts are 2–3× more expensive and have ~2× the Rds(on) of equivalent N-channel, but they eliminate the need for a bootstrap or charge-pump on the high side. Modern designs almost always use all-N-channel with bootstrap (cheaper, lower losses) — the IR2104 in this design handles bootstrap automatically. The 10 Ω gate resistor is a compromise: too small (1 Ω) gives fast switching but rings, radiates EMI, and stresses the gate driver during the Miller plateau; too large (100 Ω) slows switching and increases switching loss. Adding external Schottky freewheels in parallel with the MOSFET body diodes catches the recovery current the body diodes would otherwise dissipate. Bulk capacitance must be sized to keep Vmotor stable under the worst-case current transient: 470 µF × ΔV = I × dt → ΔV ≈ 0.2 V at 10 A peak.",
+    "failureModes": [
+      {
+        "scenario": "Shoot-through / cross-conduction",
+        "description": "If both MOSFETs in one half-bridge turn on even momentarily (slow turn-off + fast turn-on, or external EMI on the gate drive), a current path forms directly from Vmotor to ground through both MOSFETs. This regularly produces 100+ A spikes that destroy MOSFETs in microseconds. Dead time and the IR2104's interlock are the primary defenses; gate-to-source pulldown resistors are a secondary defense.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Bootstrap capacitor depletion",
+        "description": "If PWM duty cycle exceeds ~99% (very long high-side on-time), the bootstrap cap discharges through gate leakage and the high-side MOSFET fails to stay fully enhanced. Rds(on) rises, dissipation climbs, MOSFET cooks. Software should enforce a maximum duty cycle of ~95%.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Body-diode reverse recovery",
+        "description": "MOSFET body diodes have ~200 ns reverse recovery. During this window, current flows backward through the diode while the opposite MOSFET is turning on — a brief shoot-through that drives current spikes through the bridge. Adding Schottky parallels (D1–D4) shorts out the body diodes and prevents this.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Inductive voltage spike on supply",
+        "description": "Motor stops abruptly (e.g. mechanical brake engages) and its kinetic energy charges Cbulk back through the freewheel diodes — Vmotor can rise 20–30% above nominal. If a TVS clamp is not present, the next switching event sees over-voltage on the MOSFETs.",
+        "severity": "high"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "All-N-channel topology",
+        "suggestion": "Replace Q1/Q3 with N-channel MOSFETs and use a dedicated bootstrap or charge-pump driver.",
+        "rationale": "Lower Rds(on), better availability, and cheaper. The IR2104 already supports this — just swap the P-channel for an equivalent N-channel and add the bootstrap cap on each high side."
+      },
+      {
+        "area": "Current sensing",
+        "suggestion": "Add a low-side shunt resistor (10 mΩ, ~2 W) in series with the GND return of the bridge, feeding an instrumentation amp.",
+        "rationale": "Enables current-mode control, over-current protection, and torque measurement. Essential for any closed-loop motor control."
+      },
+      {
+        "area": "Integrated driver",
+        "suggestion": "Replace the discrete H-bridge with a DRV8871, TB6612, or BTS7960 integrated driver.",
+        "rationale": "Saves 8 components and a layout headache. Modern integrated drivers handle shoot-through, dead time, and thermal protection internally. Loses some configurability."
+      },
+      {
+        "area": "TVS clamp on Vmotor",
+        "suggestion": "Add a unidirectional TVS diode (e.g. SMCJ15A) from Vmotor to GND.",
+        "rationale": "Clamps inductive over-voltage spikes from rapid stops or rotor blockage. Critical for any motor over a few watts."
+      }
+    ]
+  }
+}

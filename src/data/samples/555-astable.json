@@ -1,0 +1,137 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "U1",
+        "type": "Timer IC",
+        "value": "NE555",
+        "partNumber": "NE555P",
+        "functionalRole": "Monolithic timer — contains two comparators, an SR latch, a discharge transistor, and a 5 kΩ × 3 internal divider. Configured as an astable to generate a continuous square wave."
+      },
+      {
+        "designator": "Ra",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Charge path from Vcc to the threshold/trigger node — defines the high-time portion of the duty cycle."
+      },
+      {
+        "designator": "Rb",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Charge/discharge path between the discharge pin and the timing capacitor — both directions for charge, only this direction for discharge."
+      },
+      {
+        "designator": "C1",
+        "type": "Capacitor",
+        "value": "100 nF",
+        "functionalRole": "Timing capacitor — charges through Ra+Rb and discharges through Rb, setting the oscillation period via t = 0.693·(Ra+2Rb)·C."
+      },
+      {
+        "designator": "C2",
+        "type": "Capacitor",
+        "value": "10 nF",
+        "functionalRole": "Control-pin bypass — decouples the internal 2/3·Vcc reference from supply noise. Standard 'always include this' part."
+      },
+      {
+        "designator": "Cby",
+        "type": "Capacitor",
+        "value": "100 nF",
+        "functionalRole": "Power-supply decoupling at the IC — the 555's output stage has notoriously large transients (~100 mA peaks during switching)."
+      }
+    ],
+    "totalCount": 6,
+    "summary": "NE555 in textbook astable configuration: two resistors (Ra, Rb) and a timing capacitor (C1) generate a free-running square wave. Standard control-pin cap (C2) and supply bypass (Cby)."
+  },
+  "topology": {
+    "topologyName": "Astable Multivibrator (NE555-based, Resistor-Capacitor Timing)",
+    "stages": [
+      {
+        "name": "Timing network",
+        "description": "C1 charges from Vcc through (Ra + Rb), discharges through Rb to the internal NPN open-collector switch on pin 7.",
+        "components": ["Ra", "Rb", "C1"]
+      },
+      {
+        "name": "Threshold/trigger detector",
+        "description": "Internal upper comparator trips when C1 reaches 2/3·Vcc; lower comparator trips when it falls to 1/3·Vcc. SR latch toggles between charge and discharge phases.",
+        "components": ["U1"]
+      },
+      {
+        "name": "Output buffer",
+        "description": "Push-pull output stage on pin 3 — sources or sinks up to 200 mA. Toggles between Vcc-1.5 V and 0.1 V each half-cycle.",
+        "components": ["U1"]
+      },
+      {
+        "name": "Reference bypass",
+        "description": "C2 holds the internal 2/3·Vcc reference clean against supply noise — without it, jitter increases dramatically.",
+        "components": ["C2"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "positive",
+        "description": "The internal SR latch + discharge transistor + comparators create a hysteretic positive-feedback loop. Each comparator trip flips the latch, which immediately changes the charge/discharge direction, which then drives the cap toward the next threshold."
+      }
+    ],
+    "keyNodes": ["VCC", "GND", "THRESHOLD/TRIGGER (pin 2/6)", "DISCHARGE (pin 7)", "OUTPUT (pin 3)", "CONTROL (pin 5)"],
+    "powerSupplyTopology": "Single +5 V supply, decoupled at the IC. NE555 tolerates 4.5–16 V; bipolar version (NE555) is 200 mA capable on the output."
+  },
+  "domain": {
+    "primaryDomain": "digital logic",
+    "specificApplication": "Free-running oscillator / clock generator / LED blinker. Used as a clock source for 4000-series logic, PWM generator for motors and LEDs, timing reference for one-shots, and a debug-blinker on a thousand demo boards.",
+    "frequencyRange": "Spec'd 0.1 Hz to 500 kHz; the part is reliable to ~200 kHz before propagation delay starts asymmetrizing the duty cycle.",
+    "impedance": "Output drive: 200 mA source/sink (bipolar 555), <10 Ω during steady-state.",
+    "industryContext": "Designed by Hans Camenzind at Signetics in 1972; Forrest Mims popularized it. Still ships over a billion units per year — most heavily used IC in history alongside the 741 op-amp."
+  },
+  "synthesis": {
+    "operatingPrinciple": "The astable 555 alternates between charging and discharging the timing capacitor C1 between two voltage thresholds set by an internal resistor divider (1/3·Vcc and 2/3·Vcc). When C1 < 1/3·Vcc, the internal SR latch is set, the discharge transistor (pin 7) turns off, and C1 charges through Ra+Rb toward Vcc. When C1 hits 2/3·Vcc, the upper comparator flips the latch, pin 7 turns on (acts as a switch to ground), and C1 discharges through Rb. The output (pin 3) toggles in lockstep with the latch. Because the charge path is (Ra+Rb)·C and the discharge path is only Rb·C, the high time is always longer than the low time — the duty cycle is asymmetric by design, > 50%. The 5kΩ ×3 internal divider gave the chip its name.",
+    "keyParameters": [
+      { "name": "Frequency", "value": "481", "unit": "Hz", "notes": "1.44 / ((Ra + 2Rb) · C1) = 1.44 / (30k · 100nF)" },
+      { "name": "Period", "value": "2.08", "unit": "ms" },
+      { "name": "High time (t_H)", "value": "1.39", "unit": "ms", "notes": "0.693 · (Ra + Rb) · C1" },
+      { "name": "Low time (t_L)", "value": "0.69", "unit": "ms", "notes": "0.693 · Rb · C1" },
+      { "name": "Duty cycle", "value": "66.7", "unit": "%", "notes": "(Ra + Rb) / (Ra + 2Rb)" },
+      { "name": "Vcc range", "value": "4.5 – 16", "unit": "V", "notes": "Frequency is essentially supply-independent" },
+      { "name": "Output drive", "value": "200", "unit": "mA", "notes": "Source or sink — drives LEDs and small speakers directly" }
+    ],
+    "designDecisions": "Choosing Ra = Rb = 10 kΩ is a sweet spot: low enough that the leakage in the discharge transistor doesn't matter, high enough that the supply current stays under ~1 mA. C1 = 100 nF gives a few-hundred-Hz oscillation, useful as an audible blinker or a slow LED PWM. The CMOS variant (TLC555, LMC555) is preferable for battery work — the bipolar NE555 draws ~3 mA quiescent plus huge supply spikes during switching, which is why supply bypassing is non-negotiable. Always 10 nF on pin 5 (Control Voltage) — Camenzind designed pin 5 as a frequency-modulation input, but if you don't intend to modulate it, that node will pick up coupled noise and jitter the thresholds. Setting Ra = Rb gives the duty cycle of 66.7% — a perfect 50% duty cycle requires either a diode trick across Rb or a CMOS variant with a separate discharge resistor.",
+    "failureModes": [
+      {
+        "scenario": "Supply spikes propagating to other circuits",
+        "description": "The NE555's internal totem-pole has both transistors momentarily on during transitions, producing 100 mA-scale current spikes from Vcc to GND lasting ~50 ns each. Without bypass, these crash sensitive analog circuits sharing the same rail.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Floating control pin (no C2)",
+        "description": "Pin 5 left open picks up enough ambient EMI to wobble the threshold by hundreds of mV, jittering the period by 5–20%. Common 'why is my oscillator unstable' bug.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Reset pin (4) floating",
+        "description": "Floating reset (pin 4) can drop low momentarily, killing the oscillator. Always tie pin 4 to Vcc when not actively using reset.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Duty cycle stuck above 50%",
+        "description": "Beginners often want 50% duty cycle and don't realize the math forbids it with this topology. Without intervention (diode across Rb or different topology), 50% is unreachable — minimum duty cycle is 50% only in the limit Ra → 0, which exceeds the discharge transistor's current rating.",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "50% duty cycle",
+        "suggestion": "Add a diode (1N4148) in parallel with Rb, anode toward C1.",
+        "rationale": "The diode shunts the charge current around Rb, so the charge path becomes Ra·C and the discharge path stays Rb·C. Set Ra = Rb for true 50% duty cycle."
+      },
+      {
+        "area": "CMOS version",
+        "suggestion": "Swap NE555 for TLC555 or LMC555.",
+        "rationale": "CMOS variants drop supply current from 3 mA to ~100 µA, eliminate the supply current spikes, and work down to 2 V instead of 4.5 V. The only loss is output drive — 100 mA instead of 200 mA."
+      },
+      {
+        "area": "Wider frequency tuning",
+        "suggestion": "Replace Ra with a potentiometer + 1 kΩ minimum fixed resistor.",
+        "rationale": "Lets the user tune frequency over a 10:1 range while protecting against ever shorting Ra to zero (which would lock the part up)."
+      }
+    ]
+  }
+}

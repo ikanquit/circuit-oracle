@@ -1,0 +1,130 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "U1",
+        "type": "Operational amplifier",
+        "value": "TL072",
+        "partNumber": "TL072CP",
+        "functionalRole": "Active gain element — JFET-input op-amp providing the high open-loop gain that makes the feedback math work."
+      },
+      {
+        "designator": "Rin",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Input resistor — converts the input voltage into a current flowing into the virtual ground summing node."
+      },
+      {
+        "designator": "Rf",
+        "type": "Resistor",
+        "value": "100 kΩ",
+        "functionalRole": "Feedback resistor — sets the closed-loop gain as -Rf/Rin = -10."
+      },
+      {
+        "designator": "Rb",
+        "type": "Resistor",
+        "value": "9.1 kΩ",
+        "functionalRole": "Bias-compensation resistor on the non-inverting input — matches the DC source impedance seen at the inverting input to cancel input-bias-current offset."
+      },
+      {
+        "designator": "C1, C2",
+        "type": "Capacitor",
+        "value": "100 nF",
+        "functionalRole": "Power-supply bypass capacitors on ±V rails — supply transient current to the output stage during fast slewing."
+      }
+    ],
+    "totalCount": 5,
+    "summary": "TL072 op-amp configured as an inverting amplifier with a gain of -10 V/V. Standard textbook topology with bias compensation and supply bypassing."
+  },
+  "topology": {
+    "topologyName": "Inverting Voltage Amplifier (Closed-Loop, Series-Shunt Feedback)",
+    "stages": [
+      {
+        "name": "Input current conversion",
+        "description": "Rin converts Vin into a current flowing into the inverting summing node (which the op-amp holds at virtual ground).",
+        "components": ["Rin"]
+      },
+      {
+        "name": "Active gain stage",
+        "description": "U1 senses any imbalance at its inverting input and drives the output to keep it at the same potential as the grounded non-inverting input.",
+        "components": ["U1"]
+      },
+      {
+        "name": "Feedback / current return",
+        "description": "Rf carries the input current from the summing node to the output. Because the op-amp's input draws ~0 current, all of Iin must flow through Rf, forcing Vout = -Vin × (Rf/Rin).",
+        "components": ["Rf"]
+      },
+      {
+        "name": "Bias-current compensation",
+        "description": "Rb matches the impedance at V+ to (Rin ∥ Rf), so equal input bias currents create equal voltage drops and cancel at the output.",
+        "components": ["Rb"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "negative",
+        "description": "Rf carries the output back to the inverting input — classic shunt-shunt negative feedback. The loop drives the summing node to a virtual ground."
+      }
+    ],
+    "keyNodes": ["VIN", "V- (virtual ground)", "V+ (ground)", "VOUT", "+Vcc", "-Vee"],
+    "powerSupplyTopology": "Dual rail, typically ±15 V or ±12 V, bypassed with 100 nF ceramics at the chip pins."
+  },
+  "domain": {
+    "primaryDomain": "audio",
+    "specificApplication": "Inverting gain block — appears in audio preamps, instrumentation chains, summing mixers, current-to-voltage converters (photodiode amplifiers), and as the active element inside virtually every active filter topology.",
+    "frequencyRange": "DC to ~300 kHz (closed-loop, limited by TL072's 3 MHz GBW divided by closed-loop gain of 10)",
+    "impedance": "Input impedance = Rin = 10 kΩ. Output impedance < 1 Ω at audio frequencies thanks to feedback.",
+    "industryContext": "Pro audio, instrumentation, sensor signal conditioning, and lab equipment. The TL072 has been in continuous production since 1978 and is still the default jellybean op-amp for non-precision audio work."
+  },
+  "synthesis": {
+    "operatingPrinciple": "The op-amp's enormous open-loop gain (~200,000) combined with negative feedback through Rf forces the inverting input to track the grounded non-inverting input — creating a 'virtual ground'. Any input voltage at Vin produces a current Iin = Vin/Rin into the summing node. Because the op-amp's input current is negligible, all of that current must flow through Rf to the output, dropping a voltage of Iin × Rf across it. Since the summing node is at 0 V, Vout = -Iin × Rf = -Vin × (Rf/Rin). The output is inverted because positive Iin must come from the output side of Rf, requiring Vout to swing negative.",
+    "keyParameters": [
+      { "name": "Closed-loop gain", "value": "-10", "unit": "V/V", "notes": "-Rf/Rin = -100kΩ/10kΩ" },
+      { "name": "Input impedance", "value": "10", "unit": "kΩ", "notes": "Equal to Rin — independent of frequency" },
+      { "name": "Bandwidth (-3dB)", "value": "~300", "unit": "kHz", "notes": "GBW / |gain| = 3 MHz / 10" },
+      { "name": "Slew rate", "value": "13", "unit": "V/µs", "notes": "Limits large-signal bandwidth above ~200 kHz at 10 Vpp" },
+      { "name": "Output noise (10 kHz)", "value": "180", "unit": "nV/√Hz", "notes": "Dominated by TL072's 18 nV/√Hz input noise × gain" },
+      { "name": "DC offset (typical)", "value": "±3", "unit": "mV", "notes": "Vio × (1 + Rf/Rin), trimmable" }
+    ],
+    "designDecisions": "Choosing Rf = 100 kΩ and Rin = 10 kΩ is a deliberate balance. Going larger increases noise (Johnson noise of the resistors grows with √R) and makes the circuit more sensitive to PCB leakage and stray capacitance. Going smaller wastes drive current — at high signal levels the op-amp output stage has to supply Vout/Rf into the feedback resistor. Ten-to-one is a popular gain because it gives ample headroom (TL072 GBW of 3 MHz / gain of 10 = 300 kHz, comfortably above the 20 kHz audio band) while still being useful gain. The 9.1 kΩ bias-compensation resistor equals 10k ∥ 100k = 9.09k — picking 9.1k (E96 series) keeps mismatch under 0.2%. The TL072 specifically is chosen for JFET inputs (low bias current, no need for tight bias-Z matching at high source impedances), low noise, and bulletproof availability.",
+    "failureModes": [
+      {
+        "scenario": "Saturation / clipping",
+        "description": "If |Vin × 10| exceeds the supply rails minus a couple of volts of headroom, the output clips. On ±15 V supplies the TL072 will clip at about ±13 V, so input must stay below ±1.3 V to keep the output linear.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Capacitive load instability",
+        "description": "Driving more than ~100 pF on the output (e.g. a long cable, a piezo, or a CMOS input through a long trace) introduces phase shift in the feedback loop and can cause oscillation or ringing on transients. Adds a small series resistor (50–100 Ω) at the output to isolate the load.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Missing supply bypass",
+        "description": "Without C1/C2 on the supply pins, the rails sag during fast slewing and the output develops a peak-detected ripple. Worst at high signal frequencies and loud signal levels.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "DC offset accumulation in cascades",
+        "description": "The ~3 mV input offset is multiplied by 10 — at the output, that's 30 mV of DC. In a multi-stage chain this can stack up and eat headroom. Use AC coupling between stages where DC is irrelevant.",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Lower-noise op-amp",
+        "suggestion": "Swap TL072 for OPA1612 or NE5532 if noise matters.",
+        "rationale": "TL072's 18 nV/√Hz is fine for line-level signals but limits sensitivity in microphone or low-impedance sensor work. OPA1612 brings it down to 1.1 nV/√Hz at the cost of higher bias current and price."
+      },
+      {
+        "area": "Compensation cap across Rf",
+        "suggestion": "Add a small (3–10 pF) capacitor in parallel with Rf.",
+        "rationale": "Forms a low-pass at the desired bandwidth limit and rolls off out-of-band noise and any tendency toward HF oscillation. Trade-off: extra capacitance reduces large-signal slew capability."
+      },
+      {
+        "area": "Rail-to-rail variant",
+        "suggestion": "For single-supply operation (e.g. 5 V or 3.3 V), use a rail-to-rail op-amp like the MCP6022 or OPA340 and bias V+ to mid-supply.",
+        "rationale": "TL072 needs at least 1.5 V of headroom from each rail; on 5 V single-supply that leaves only ~2 V of swing. RRIO parts recover nearly the full rail."
+      }
+    ]
+  }
+}

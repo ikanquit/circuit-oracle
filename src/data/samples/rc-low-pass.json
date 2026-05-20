@@ -1,0 +1,112 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "R1",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Series element — limits current into the capacitor, sets the time constant with C1."
+      },
+      {
+        "designator": "C1",
+        "type": "Capacitor",
+        "value": "100 nF",
+        "partNumber": "Ceramic X7R or film",
+        "functionalRole": "Shunt element to ground — accumulates charge through R1, attenuating signals above the corner frequency."
+      },
+      {
+        "designator": "VIN",
+        "type": "Signal input",
+        "functionalRole": "Source delivering the wideband signal to be filtered."
+      },
+      {
+        "designator": "VOUT",
+        "type": "Net / probe point",
+        "functionalRole": "Output tap at the R1–C1 junction — feeds the downstream high-impedance load."
+      }
+    ],
+    "totalCount": 4,
+    "summary": "A single resistor and a single capacitor in series-shunt configuration. The textbook first-order RC low-pass filter."
+  },
+  "topology": {
+    "topologyName": "First-Order RC Low-Pass Filter",
+    "stages": [
+      {
+        "name": "Series resistor",
+        "description": "R1 forms one half of the divider — its impedance is constant (10 kΩ) regardless of frequency.",
+        "components": ["R1"]
+      },
+      {
+        "name": "Shunt capacitor",
+        "description": "C1 forms the other half — its impedance Xc = 1 / (2πfC) falls inversely with frequency, so high frequencies are shunted to ground while DC sees an open circuit.",
+        "components": ["C1"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "unknown",
+        "description": "Passive network — no feedback. Response is determined entirely by the impedance ratio at each frequency."
+      }
+    ],
+    "keyNodes": ["VIN", "VOUT", "GND"],
+    "powerSupplyTopology": "None — signal-only network, no DC bias path required."
+  },
+  "domain": {
+    "primaryDomain": "signal processing",
+    "specificApplication": "Anti-aliasing or anti-noise filter ahead of an ADC, op-amp, or comparator. Also used as a debouncer on mechanical switches and as a glitch filter on logic inputs.",
+    "frequencyRange": "Passband DC to fc ≈ 160 Hz; -3 dB at fc, -20 dB/decade roll-off above.",
+    "impedance": "Source impedance must be ≪ 10 kΩ; load impedance must be ≫ 10 kΩ for the response to match the textbook.",
+    "industryContext": "Ubiquitous — every audio codec, every sensor amplifier, every microcontroller ADC pin worth its salt has one of these in front of it. The first filter every EE student designs."
+  },
+  "synthesis": {
+    "operatingPrinciple": "R1 and C1 form a frequency-dependent voltage divider. At DC, C1 is an open circuit and Vout = Vin. At very high frequencies, C1 looks like a short to ground and Vout → 0. The corner frequency fc = 1 / (2πRC) is the point where Xc = R and the output is attenuated by exactly 3 dB (a factor of 1/√2). Above fc, the gain rolls off at 20 dB per decade — every tenfold increase in frequency divides the output amplitude by ten. The filter also introduces a 45° phase lag at fc, asymptoting to 90° at high frequencies.",
+    "keyParameters": [
+      { "name": "Corner frequency fc", "value": "159.2", "unit": "Hz", "notes": "1 / (2π × 10kΩ × 100nF)" },
+      { "name": "Time constant τ", "value": "1.0", "unit": "ms", "notes": "R × C — settles to 99.3% in 5τ" },
+      { "name": "DC gain", "value": "0", "unit": "dB", "notes": "Unity passband" },
+      { "name": "Roll-off rate", "value": "-20", "unit": "dB/decade" },
+      { "name": "Phase shift @ fc", "value": "-45", "unit": "°" },
+      { "name": "Source-Z spec", "value": "< 1", "unit": "kΩ", "notes": "Keep input source ≥ 10× lower than R1" }
+    ],
+    "designDecisions": "The 10 kΩ + 100 nF pairing is a sweet spot for audio-band anti-aliasing: it's far enough above DC to not bleed signal energy on slow inputs, and the capacitor is small enough that a cheap ceramic stays affordable and reliable. Going to higher resistor values (100 kΩ+) saves current but starts to interact with op-amp bias currents and PCB leakage; going lower (1 kΩ) wastes drive current and demands a low-impedance source. A 100 nF ceramic is preferable to electrolytic because it has no polarity, virtually no ESR at audio frequencies, and a 50+ year lifetime. For better than ~5% corner-frequency accuracy, use a film capacitor (e.g. polypropylene) — ceramics have voltage-dependent capacitance.",
+    "failureModes": [
+      {
+        "scenario": "Source impedance too high",
+        "description": "If the input source is anything but a stiff voltage (e.g. coming off another high-impedance divider, or a slow op-amp output), it forms a second voltage divider with R1 and the actual corner frequency shifts upward. The cleanest fix is buffering the input.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Load impedance too low",
+        "description": "If the downstream stage has input impedance comparable to R1, the load draws current and the DC gain drops below unity. The corner also shifts since the load is in parallel with C1.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Capacitor dielectric absorption",
+        "description": "Cheap ceramic (Y5V/Z5U) capacitors can lose 30%+ of their nominal value at full rated voltage. For a precision filter use C0G/NP0 or film.",
+        "severity": "low"
+      },
+      {
+        "scenario": "Not enough roll-off for anti-aliasing",
+        "description": "20 dB/decade is gentle. If aliasing energy is large at frequencies just above fc, a first-order filter won't be sharp enough — you'll get fold-back into the passband.",
+        "severity": "medium"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Filter order",
+        "suggestion": "Cascade two RC stages or move to an active Sallen-Key filter for a steeper -40 dB/decade roll-off.",
+        "rationale": "Single-pole isn't sharp enough when the aliasing energy sits just above the Nyquist frequency. A two-pole Sallen-Key with a TL072 doubles the slope without doubling the parts count."
+      },
+      {
+        "area": "Buffering",
+        "suggestion": "Add a unity-gain op-amp buffer at the input and/or output.",
+        "rationale": "Decouples the filter from source and load impedance, which is the only way to guarantee the corner frequency in a real system."
+      },
+      {
+        "area": "Capacitor selection",
+        "suggestion": "Specify C0G/NP0 ceramic or polypropylene film for C1.",
+        "rationale": "Eliminates the voltage and temperature coefficient errors that plague X7R/Y5V dielectrics. For audio, also kills microphonic and piezoelectric artifacts."
+      }
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "Q1",
+        "type": "NPN BJT",
+        "value": "β ≈ 200",
+        "partNumber": "2N3904",
+        "functionalRole": "Active gain element — converts small base-current variations into much larger collector-current variations, producing voltage gain across Rc."
+      },
+      {
+        "designator": "R1",
+        "type": "Resistor",
+        "value": "47 kΩ",
+        "functionalRole": "Upper base-bias resistor — forms a divider with R2 to set the DC base voltage."
+      },
+      {
+        "designator": "R2",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Lower base-bias resistor — completes the divider, fixing Vb ≈ 2.1 V."
+      },
+      {
+        "designator": "Rc",
+        "type": "Resistor",
+        "value": "4.7 kΩ",
+        "functionalRole": "Collector load resistor — drops a quiescent voltage across itself; output swing happens across this resistor."
+      },
+      {
+        "designator": "Re",
+        "type": "Resistor",
+        "value": "1 kΩ",
+        "functionalRole": "Emitter degeneration resistor — provides DC bias stability and reduces sensitivity to β variations, at the cost of voltage gain."
+      },
+      {
+        "designator": "Cin",
+        "type": "Capacitor",
+        "value": "1 µF",
+        "functionalRole": "AC coupling — blocks DC from the source so the bias point is preserved while passing audio-band signal."
+      },
+      {
+        "designator": "Ce",
+        "type": "Capacitor",
+        "value": "100 µF",
+        "functionalRole": "Emitter bypass — shorts Re at signal frequencies, restoring full AC gain while keeping DC degeneration."
+      },
+      {
+        "designator": "Cout",
+        "type": "Capacitor",
+        "value": "1 µF",
+        "functionalRole": "Output coupling — blocks the ~6 V collector DC bias from reaching the load."
+      }
+    ],
+    "totalCount": 8,
+    "summary": "Single-stage 2N3904 common-emitter amplifier with voltage-divider bias, emitter degeneration, and an AC-bypass capacitor on the emitter. Classroom-canonical discrete BJT amp."
+  },
+  "topology": {
+    "topologyName": "Common-Emitter BJT Amplifier (Voltage-Divider Biased, AC-Bypassed Emitter)",
+    "stages": [
+      {
+        "name": "Bias network",
+        "description": "R1 and R2 form a voltage divider from Vcc to set Vb ≈ 2.1 V. With Vbe ≈ 0.7 V, that puts Ve ≈ 1.4 V and Ie ≈ 1.4 mA through Re.",
+        "components": ["R1", "R2"]
+      },
+      {
+        "name": "Input coupling",
+        "description": "Cin AC-couples the source to the base, blocking DC interactions with the bias network.",
+        "components": ["Cin"]
+      },
+      {
+        "name": "Active stage",
+        "description": "Q1 amplifies the base voltage variation, producing a large inverted swing at the collector.",
+        "components": ["Q1"]
+      },
+      {
+        "name": "Load",
+        "description": "Rc converts collector current variations into voltage swing.",
+        "components": ["Rc"]
+      },
+      {
+        "name": "Emitter bypass",
+        "description": "Ce shorts Re at audio frequencies (Xc ≪ Re above ~10 Hz), restoring full small-signal gain of -gm × Rc.",
+        "components": ["Re", "Ce"]
+      },
+      {
+        "name": "Output coupling",
+        "description": "Cout removes the ~6 V DC bias on the collector so the load only sees the AC signal.",
+        "components": ["Cout"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "negative",
+        "description": "DC feedback via Re — any tendency of Ie to rise increases Ve, which reduces Vbe, which counter-acts the original increase. Stabilizes the bias point against temperature and β spread."
+      }
+    ],
+    "keyNodes": ["VIN", "BASE", "COLLECTOR", "EMITTER", "VOUT", "VCC", "GND"],
+    "powerSupplyTopology": "Single-ended +12 V referenced to GND."
+  },
+  "domain": {
+    "primaryDomain": "audio",
+    "specificApplication": "General-purpose voltage gain stage — guitar pedal front ends, microphone preamps, RF/IF gain blocks at lower frequencies, and the building block taught in every analog electronics course.",
+    "frequencyRange": "~20 Hz to ~5 MHz (lower limit set by Cin/Cout, upper limit set by 2N3904's fT ≈ 300 MHz divided by stage gain)",
+    "impedance": "Input impedance ≈ R1 ∥ R2 ∥ β·re ≈ 2 kΩ. Output impedance ≈ Rc = 4.7 kΩ.",
+    "industryContext": "Discrete BJT amplification — once the dominant architecture in consumer electronics, now mostly used in audio (guitar pedals, hi-fi front ends), RF, and as a teaching tool. The 2N3904 is the most-produced transistor in history."
+  },
+  "synthesis": {
+    "operatingPrinciple": "Q1 is biased so that a small DC current (~1.4 mA) flows from collector to emitter at all times. Vbe ≈ 0.7 V, so any AC voltage applied at the base directly modulates the base-emitter junction's exponential I-V curve. The result is that collector current swings proportionally to the input voltage with a transconductance gm = Ic/Vt ≈ 54 mA/V at room temperature. That current swing drops across Rc, producing an output voltage swing of -gm·Rc ≈ -250 (about -48 dB of gain) — except Re degenerates the gain at DC. Adding Ce in parallel with Re shorts the emitter to ground at signal frequencies, restoring the full -gm·Rc gain in the audio band while keeping DC stability. The collector output is inverted because rising base voltage means more collector current means more drop across Rc means lower Vc.",
+    "keyParameters": [
+      { "name": "Quiescent collector current", "value": "1.4", "unit": "mA", "notes": "Ie ≈ (Vb - Vbe) / Re" },
+      { "name": "Quiescent Vce", "value": "4.4", "unit": "V", "notes": "Vcc - Ic·(Rc+Re) — comfortably out of saturation" },
+      { "name": "Voltage gain (AC, Ce bypassed)", "value": "-45", "unit": "V/V", "notes": "Approximate; gm·Rc'/(1 + gm·re_internal)" },
+      { "name": "Voltage gain (DC, Ce removed)", "value": "-4.7", "unit": "V/V", "notes": "-Rc/Re — set by ratio only, β-independent" },
+      { "name": "Input impedance", "value": "~2", "unit": "kΩ" },
+      { "name": "Output impedance", "value": "~4.7", "unit": "kΩ" },
+      { "name": "Low-frequency cutoff", "value": "~7", "unit": "Hz", "notes": "Set by Ce — 1/(2π·Re·Ce)" }
+    ],
+    "designDecisions": "Voltage-divider bias plus emitter degeneration was the genius of 1950s discrete design — it tolerated huge β spread (50 to 400) without changing the operating point. The 47k/10k divider sets the base at about Vcc × R2/(R1+R2) = 2.1 V, stiff enough that base current loading doesn't perturb it as long as I_R2 ≫ I_b (rule of thumb: divider current ≥ 10× base current). Ic = 1.4 mA gives gm = 54 mA/V — sweet spot for low noise without burning excessive supply current. The Ce = 100 µF emitter bypass sets the LF -3 dB corner at 1/(2π·1k·100µF) = ~1.6 Hz; in practice the input/output coupling caps set the actual LF rolloff. Re = 1 kΩ is enough degeneration to absorb a ±50% β spread without shifting the bias point more than ~10%.",
+    "failureModes": [
+      {
+        "scenario": "Clipping on large inputs",
+        "description": "Output can swing from saturation (Vce_sat ≈ 0.2 V, so Vout ≈ 1.6 V) up to nearly Vcc (12 V). At Iq = 1.4 mA the symmetric peak-to-peak headroom is roughly ±5 V at the collector, which after the cap is ±5 V. Inputs > ~110 mV peak start to clip asymmetrically.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Thermal runaway (no Re or weak bias)",
+        "description": "If Re is removed or shorted, Ic increases with temperature → die heats further → β rises → Ic rises further. The 2N3904 in TO-92 will happily eat itself this way. Re prevents it by sensing the rising current and pulling Vbe down.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Ce missing or wrong polarity",
+        "description": "Without Ce, gain drops from -45 to -4.7 — a 20 dB loss. Reverse-biasing an electrolytic Ce will eventually short it and remove Re's stabilization too.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Distortion on large signals",
+        "description": "Vbe's exponential curve makes the stage's gain non-linear at large signal swings — typically 1–3% THD at 100 mV peak input. Audible as warmth at low levels, fuzz at high levels. (This is why guitar pedals love this circuit.)",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Lower distortion",
+        "suggestion": "Remove Ce and accept the lower gain, or use a cascode (add a second BJT in series with Q1's collector).",
+        "rationale": "Heavy emitter degeneration linearizes the stage — distortion drops by an order of magnitude. Cascode keeps the gain by eliminating the Miller effect from Cbc."
+      },
+      {
+        "area": "Higher input impedance",
+        "suggestion": "Add an emitter-follower (BJT common collector) buffer in front of the base.",
+        "rationale": "Raises input impedance from ~2 kΩ to tens of kΩ, so high-impedance sources (guitar pickups, piezo discs) don't get loaded down."
+      },
+      {
+        "area": "Higher bandwidth",
+        "suggestion": "Reduce Rc and Re proportionally, or swap to a higher-fT transistor (2N5179, MMBR901).",
+        "rationale": "Bandwidth is limited by Rc·Ccb (Miller capacitance). Halving Rc doubles the high-frequency corner at the cost of gain."
+      }
+    ]
+  }
+}
