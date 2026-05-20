@@ -393,7 +393,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
               </div>
               <div className="co-hero-proof-cell">
                 <div className="co-hero-proof-num">
-                  3<span className="unit">// parallel</span>
+                  3<span className="unit">{"// parallel"}</span>
                 </div>
                 <div
                   className="co-hero-proof-meter"
@@ -404,7 +404,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
               </div>
               <div className="co-hero-proof-cell">
                 <div className="co-hero-proof-num">
-                  0<span className="unit">// signup</span>
+                  0<span className="unit">{"// signup"}</span>
                 </div>
                 <div
                   className="co-hero-proof-meter"
