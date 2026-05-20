@@ -25,7 +25,7 @@ export default function HeroSpecimen(): JSX.Element {
           width: 100%;
           max-width: 360px;
           aspect-ratio: 4 / 5;
-          border: 1px solid var(--co-border-strong, rgba(255,255,255,0.12));
+          border: 1px solid var(--co-border-strong, rgba(255,255,255,0.18));
           background:
             linear-gradient(
               to bottom,
@@ -37,6 +37,10 @@ export default function HeroSpecimen(): JSX.Element {
           flex-direction: column;
           gap: 10px;
           overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(0,0,0,0.4),
+            0 18px 60px -28px rgba(198,255,77,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.04);
         }
         .co-specimen::before {
           content: "";
