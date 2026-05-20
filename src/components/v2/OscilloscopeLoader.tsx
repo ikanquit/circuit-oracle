@@ -214,6 +214,24 @@ export default function OscilloscopeLoader({
       }
     };
 
+    // Respect prefers-reduced-motion — render a single static frame
+    // instead of running the rAF loop. The graticule + trace are still
+    // visible, just frozen.
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+      draw();
+      return () => {
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
+      };
+    }
+
     const tick = (now: number): void => {
       frameRef.current += 1;
 
@@ -241,8 +259,15 @@ export default function OscilloscopeLoader({
     };
   }, [width, height, waveform]);
 
-  // REC indicator blink (~1Hz) — interval, not rAF.
+  // REC indicator blink (~1Hz) — interval, not rAF. Skip under
+  // prefers-reduced-motion so the dot stays solid red.
   useEffect(() => {
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
     const id = window.setInterval(() => {
       setRecBlink((b) => !b);
     }, 600);

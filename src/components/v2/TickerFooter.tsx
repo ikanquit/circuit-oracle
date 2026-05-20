@@ -97,6 +97,11 @@ export default function TickerFooter(): JSX.Element {
   const tickerKeyframes = `@keyframes co-ticker {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-co-ticker-track] {
+    animation: none !important;
+  }
 }`;
 
   const tickerTrackStyle: CSSProperties = {
@@ -136,7 +141,7 @@ export default function TickerFooter(): JSX.Element {
           alignItems: "center",
         }}
       >
-        <div style={tickerTrackStyle}>
+        <div data-co-ticker-track style={tickerTrackStyle}>
           <TickerRun />
           <TickerRun ariaHidden />
         </div>

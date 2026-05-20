@@ -88,7 +88,7 @@ export default function BlueprintResults({
           50%      { opacity: 0.4; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .co-blueprint-no-motion {
+          [data-co-stage-badge] {
             animation: none !important;
           }
         }
@@ -188,7 +188,8 @@ export default function BlueprintResults({
 
         {/* Right: stage badge */}
         <div
-          className="co-mono co-blueprint-no-motion"
+          data-co-stage-badge
+          className="co-mono"
           style={{
             fontSize: 10,
             letterSpacing: "0.18em",

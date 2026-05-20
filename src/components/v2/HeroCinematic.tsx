@@ -215,6 +215,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
               <button
                 type="button"
                 onClick={onCtaClick}
+                aria-label="Upload schematic"
                 className="co-mono co-hero-cta"
               >
                 <span>[ UPLOAD SCHEMATIC</span>

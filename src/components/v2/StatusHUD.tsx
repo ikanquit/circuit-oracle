@@ -143,6 +143,11 @@ export default function StatusHUD({
         .co-hud-square {
           animation: co-hud-square-pulse 1.6s ease-in-out infinite;
         }
+        @media (prefers-reduced-motion: reduce) {
+          .co-hud-pulse, .co-hud-square {
+            animation: none !important;
+          }
+        }
       `}</style>
 
       {/* 1. System status — always visible */}

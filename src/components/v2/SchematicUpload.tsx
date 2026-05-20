@@ -614,6 +614,12 @@ export default function SchematicUpload({
         type="button"
         onClick={onSubmit}
         disabled={!canSubmit}
+        aria-busy={isAnalyzing}
+        aria-label={
+          isAnalyzing
+            ? "Analyzing schematic, please wait"
+            : "Initiate schematic analysis"
+        }
         className="co-mono relative"
         style={{
           width: "100%",
@@ -666,7 +672,7 @@ export default function SchematicUpload({
             }
           }
         `}</style>
-        <span aria-busy={isAnalyzing ? "true" : "false"}>
+        <span>
           {isAnalyzing ? "■ ANALYZING…" : "▸ INITIATE ANALYSIS"}
         </span>
       </button>
