@@ -302,7 +302,6 @@ export default function SchematicUpload({
                 : "transparent",
               transition:
                 "border-color 180ms ease, background 180ms ease",
-              outline: "none",
             }}
           >
             {/* tiny ascii-style coordinate marks */}
@@ -595,7 +594,6 @@ export default function SchematicUpload({
               ? "var(--co-phosphor)"
               : "var(--co-border)",
             borderRadius: 2,
-            outline: "none",
             resize: "vertical",
             fontFamily: "var(--co-font-mono)",
             fontSize: 12,
