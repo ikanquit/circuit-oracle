@@ -22,34 +22,6 @@ interface FragProps {
 }
 
 // ---------- 1. VOLTAGE DIVIDER ----------
-function VoltageDivider({ c, thick }: FragProps): JSX.Element {
-  const sw = thick ? 1.6 : 1.2;
-  return (
-    <g stroke={c} strokeWidth={sw} fill="none" strokeLinecap="square" strokeLinejoin="miter">
-      {/* Vin label */}
-      <text x={20} y={20} fontSize={8} fontFamily="monospace" fill={c} stroke="none">+5V</text>
-      <circle cx={40} cy={30} r={2.5} fill={c} stroke="none" />
-      {/* Top rail */}
-      <path d="M40 30 V52" />
-      {/* R1 (zigzag) */}
-      <path d="M40 52 L34 56 L46 62 L34 68 L46 74 L34 80 L46 86 L34 92 L40 96" />
-      <text x={58} y={75} fontSize={7} fontFamily="monospace" fill={c} stroke="none">R1</text>
-      {/* Tap node */}
-      <path d="M40 96 V104" />
-      <circle cx={40} cy={104} r={2.5} fill={c} stroke="none" />
-      <path d="M40 104 H120" />
-      <text x={124} y={107} fontSize={8} fontFamily="monospace" fill={c} stroke="none">Vout</text>
-      {/* R2 (zigzag) */}
-      <path d="M40 104 V108 L34 112 L46 118 L34 124 L46 130 L34 136 L46 142 L34 148 L40 152" />
-      <text x={58} y={130} fontSize={7} fontFamily="monospace" fill={c} stroke="none">R2</text>
-      {/* GND - moved up to fit */}
-      <path d="M40 152 V160" opacity={0} />
-      {/* fix proportions: rescale within viewBox */}
-    </g>
-  );
-}
-
-// Better version with proper proportions
 function VoltageDividerSchematic({ c, thick }: FragProps): JSX.Element {
   const sw = thick ? 1.4 : 1;
   return (
@@ -514,9 +486,6 @@ const SCHEMATICS: Record<SchematicKey, (p: FragProps) => JSX.Element> = {
   "h-bridge": HBridge,
   "buck-converter": BuckConverter,
 };
-
-// Suppress unused-export warning by referencing the unused helper indirectly
-void VoltageDivider;
 
 export default function SampleSchematic({
   schematic,
