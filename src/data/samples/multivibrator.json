@@ -1,0 +1,129 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "Q1, Q2",
+        "type": "NPN BJT",
+        "value": "β ≈ 200",
+        "partNumber": "2N3904",
+        "functionalRole": "Cross-coupled switching transistors — each saturates while the other is cut off, and they take turns."
+      },
+      {
+        "designator": "R1, R4",
+        "type": "Resistor",
+        "value": "1 kΩ",
+        "functionalRole": "Collector load resistors — set the saturated collector current and pull each collector to Vcc when its transistor is off."
+      },
+      {
+        "designator": "R2, R3",
+        "type": "Resistor",
+        "value": "100 kΩ",
+        "functionalRole": "Base-bias resistors — supply current to drive each transistor into saturation when the timing capacitor is no longer holding the base low."
+      },
+      {
+        "designator": "C1, C2",
+        "type": "Capacitor",
+        "value": "10 µF",
+        "functionalRole": "Cross-coupling timing capacitors — each carries the falling edge of one transistor's collector to the other transistor's base, holding it off for a precise time interval."
+      },
+      {
+        "designator": "LED1, LED2",
+        "type": "LED",
+        "value": "Red, 2.0 V Vf @ 10 mA",
+        "functionalRole": "Visual indicators — light when their transistor is off and the collector swings to Vcc."
+      }
+    ],
+    "totalCount": 8,
+    "summary": "Two cross-coupled 2N3904 NPN transistors in the classic Abraham-Bloch astable multivibrator topology, with optional LED indicators. The simplest free-running oscillator that works."
+  },
+  "topology": {
+    "topologyName": "Astable Multivibrator (Cross-Coupled BJT, RC-Timed)",
+    "stages": [
+      {
+        "name": "Half A — Q1 + R1 + C1 + R3",
+        "description": "When Q2 turns on, its collector drops from Vcc to ~0.2 V. C1 (which had been charged to ~Vcc-Vbe) carries this negative-going edge to Q1's base, driving it below 0 V and cutting it off.",
+        "components": ["Q1", "R1", "C1", "R3"]
+      },
+      {
+        "name": "Half B — Q2 + R4 + C2 + R2",
+        "description": "Symmetric partner — the same dynamics in mirror image. Q1's collector falling cuts off Q2.",
+        "components": ["Q2", "R4", "C2", "R2"]
+      },
+      {
+        "name": "Timing recovery",
+        "description": "While Q1 is held off, C1 recharges through R3 toward Vcc. When the base reaches Vbe ≈ 0.6 V, Q1 turns on, its collector falls, and the cycle hands over to the other half.",
+        "components": ["C1", "C2", "R2", "R3"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "positive",
+        "description": "Each transistor's collector is cross-coupled through a capacitor to the other's base. Positive feedback in regenerative form — a tiny perturbation gets amplified into a full state flip."
+      },
+      {
+        "type": "negative",
+        "description": "Slow negative feedback via the base resistors recharging the timing caps — this is what eventually breaks each stable state and triggers the next transition."
+      }
+    ],
+    "keyNodes": ["VCC", "GND", "C1 (Q1 collector)", "C2 (Q2 collector)", "B1 (Q1 base)", "B2 (Q2 base)"],
+    "powerSupplyTopology": "Single +5 V (or anything from 3 V to 12 V — extremely tolerant)."
+  },
+  "domain": {
+    "primaryDomain": "digital logic",
+    "specificApplication": "Pre-IC oscillator / blinker / clock / square-wave generator. Today: an electronics teaching tool, alternating-LED 'blinker' kits, and the historical predecessor to every clock generator built since.",
+    "frequencyRange": "Fractional Hz to ~1 MHz depending on capacitor choice. Hand-wired discrete versions get sloppy above ~100 kHz.",
+    "impedance": "Output impedance from each collector ≈ R1 or R4 = 1 kΩ.",
+    "industryContext": "Invented by Henri Abraham and Eugène Bloch in 1918 as a frequency reference for early radio. Powered TV horizontal/vertical oscillators, early computer clocks, and the first electronic music. Every CMOS or 555-based oscillator is conceptually this circuit."
+  },
+  "synthesis": {
+    "operatingPrinciple": "Two NPN BJTs are wired so each transistor's collector drives the other's base through a capacitor. The circuit is bistable in the limit, but the RC time constants on the base lines prevent either stable state from lasting: whichever transistor is currently off has its base capacitor slowly charging toward Vcc through the base resistor; when the base voltage reaches ~0.6 V, that transistor turns on, its collector slams to ground, and the falling edge couples through its other capacitor to slam the partner's base below zero — cutting it off. The newly-off partner now starts its own recharge cycle. The period is t = 2 × 0.693 × R_base × C ≈ 1.4 × R × C, set by the bigger of the two RC time constants. The two halves are perfectly symmetric, so the duty cycle is 50% even with imperfect components — symmetry mismatches just shift the absolute frequency, not the ratio.",
+    "keyParameters": [
+      { "name": "Period", "value": "1.39", "unit": "s", "notes": "2 × 0.693 × 100kΩ × 10µF" },
+      { "name": "Frequency", "value": "0.72", "unit": "Hz", "notes": "Slow-blink rate, visible to the eye" },
+      { "name": "Duty cycle", "value": "50", "unit": "%", "notes": "Symmetric topology — naturally balanced" },
+      { "name": "Saturated collector current", "value": "~5", "unit": "mA", "notes": "(Vcc - Vce_sat) / R1 = (5 - 0.2) / 1k" },
+      { "name": "Quiescent supply current", "value": "~5", "unit": "mA", "notes": "Only one transistor is saturated at a time" },
+      { "name": "Vcc range", "value": "3 – 12", "unit": "V" }
+    ],
+    "designDecisions": "Base resistors ≫ collector resistors (100 kΩ vs 1 kΩ) is mandatory — the base needs to be driven hard enough to saturate, but not so hard that base current loads down the partner's collector. The 100:1 ratio is conservative and forgiving. The 10 µF timing caps were chosen to make the LEDs blink at human-visible speed (~0.7 Hz). Substituting 100 nF would give a 70 Hz oscillator — too fast for LEDs to register as blink, useful as a clock. Symmetry matters more than absolute values: matched R and C between the two halves give exactly 50% duty cycle regardless of supply voltage. Adding LEDs in series with R1 and R4 is the classic 'alternating blinker' party trick — the slight extra Vf shifts the saturation voltage a bit but doesn't break the circuit.",
+    "failureModes": [
+      {
+        "scenario": "Failure to start",
+        "description": "If components are matched too perfectly and Vcc is applied with both bases initially at ground, both transistors could (in theory) turn on simultaneously and the circuit gets stuck. In practice, real-world component asymmetry and shot noise always tip it one way within microseconds. The first oscillation may take a noticeable fraction of a second.",
+        "severity": "low"
+      },
+      {
+        "scenario": "Reverse-bias breakdown of B-E junction",
+        "description": "During each transition, the off transistor's base is driven to roughly -Vcc + Vbe (which can be -4 V or worse on a 5 V supply). The 2N3904's spec'd V_BE_reverse is only 6 V, so on a 12 V supply this circuit slowly degrades the transistors. For long life, add a diode from each base to ground (anode at base) to clamp the reverse swing.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Slow rise time on the collector edges",
+        "description": "When a transistor turns off, its collector ramps from 0 V toward Vcc via R1 charging the load capacitance — not as crisp as the falling edge. This RC charge time eats into the off-time accuracy at high frequencies.",
+        "severity": "low"
+      },
+      {
+        "scenario": "Frequency drift with temperature",
+        "description": "Vbe changes ~-2 mV/°C, so the recharge threshold shifts and the period drifts ~0.3% per °C. Useless as a precision oscillator — fine as a blinker.",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Sharper edges / higher frequency",
+        "suggestion": "Add a small (10–100 Ω) base-current-limiting resistor in series with each timing cap.",
+        "rationale": "Reduces the peak negative spike on the off-transistor's base, protecting the B-E junction and letting the transistor turn back on faster."
+      },
+      {
+        "area": "Adjustable frequency",
+        "suggestion": "Replace R2 and R3 with a dual-gang potentiometer (matched 100 kΩ).",
+        "rationale": "Tunes frequency over a 10:1 range while keeping the two halves symmetric. The matched gang ensures duty cycle stays at 50%."
+      },
+      {
+        "area": "Use as a clock",
+        "suggestion": "Buffer the collector through an inverter or Schmitt trigger (74HC14).",
+        "rationale": "The raw collector signal has ringing and slow edges unsuitable for clocking modern logic. A Schmitt trigger cleans it into a square wave good for 10+ MHz fan-out."
+      }
+    ]
+  }
+}

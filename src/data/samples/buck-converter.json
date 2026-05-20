@@ -1,0 +1,157 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "U1",
+        "type": "Step-down switching regulator IC",
+        "value": "150 kHz, 3 A",
+        "partNumber": "LM2596S-5.0",
+        "functionalRole": "Monolithic buck controller + power switch in one package — contains the high-side switch, oscillator, error amplifier, and current-limit comparator. The -5.0 variant has the 5 V feedback ratio baked in."
+      },
+      {
+        "designator": "D1",
+        "type": "Schottky diode",
+        "value": "3 A, 40 V, Vf = 0.4 V",
+        "partNumber": "1N5822",
+        "functionalRole": "Freewheel rectifier — provides a current return path for the inductor when the switch is open. Schottky is mandatory: a regular diode's reverse recovery would destroy efficiency."
+      },
+      {
+        "designator": "L1",
+        "type": "Power inductor",
+        "value": "33 µH, 3.5 A_sat",
+        "partNumber": "Shielded ferrite drum",
+        "functionalRole": "Energy storage / current smoother — accumulates current when the switch is closed, releases it through D1 when open. The 'flywheel' that makes a switching supply work."
+      },
+      {
+        "designator": "Cin",
+        "type": "Capacitor",
+        "value": "680 µF / 25 V, 100 mΩ ESR",
+        "partNumber": "Low-ESR electrolytic",
+        "functionalRole": "Input bulk decoupling — absorbs the chopped 3 A current draw the switch presents to Vin. Must handle high RMS ripple current."
+      },
+      {
+        "designator": "Cout",
+        "type": "Capacitor",
+        "value": "220 µF / 25 V, 80 mΩ ESR",
+        "partNumber": "Low-ESR electrolytic",
+        "functionalRole": "Output filter — smooths the triangle-wave inductor current into a low-ripple DC output. ESR sets the output voltage ripple."
+      },
+      {
+        "designator": "Vcc bypass",
+        "type": "Capacitor",
+        "value": "100 nF ceramic",
+        "functionalRole": "High-frequency bypass at the IC supply pin — kills switching spikes on the local rail."
+      }
+    ],
+    "totalCount": 6,
+    "summary": "LM2596 fixed-5V step-down switching regulator with the manufacturer-recommended external network: input cap, output cap, catch diode, and freewheel inductor. The canonical 'cheap and reliable 12→5 V' design."
+  },
+  "topology": {
+    "topologyName": "Step-Down (Buck) Switching Converter, Asynchronous Rectification, Voltage-Mode Control",
+    "stages": [
+      {
+        "name": "Input bus",
+        "description": "Vin (12 V) feeds the IC's drain and the input bulk cap. Switching current is chopped at 150 kHz, so Cin sees ~1 A_RMS ripple.",
+        "components": ["Cin"]
+      },
+      {
+        "name": "Power switch",
+        "description": "U1's internal high-side BJT/MOSFET connects Vin to the switch node during the on-time, disconnecting during the off-time.",
+        "components": ["U1"]
+      },
+      {
+        "name": "Catch diode",
+        "description": "D1 conducts during the off-time, holding the switch node at -0.4 V (one Schottky drop below ground) so the inductor current has a path to flow.",
+        "components": ["D1"]
+      },
+      {
+        "name": "LC filter",
+        "description": "L1 + Cout form a low-pass filter with corner around 1.5 kHz, well below the 150 kHz switching frequency. The output is the average of the chopped switch-node waveform.",
+        "components": ["L1", "Cout"]
+      },
+      {
+        "name": "Feedback / control",
+        "description": "Internal feedback divider compares Vout to a 1.23 V reference; the error amp + PWM comparator modulate the switch duty cycle to hold Vout constant. Current-limit comparator monitors switch current cycle-by-cycle.",
+        "components": ["U1"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "negative",
+        "description": "Output voltage is sensed (internally in the -5.0 variant) and compared to a 1.23 V band-gap reference. Error amp output sets the PWM duty cycle. Standard voltage-mode buck control loop."
+      }
+    ],
+    "keyNodes": ["VIN", "SW (switch node)", "VOUT", "GND", "FB"],
+    "powerSupplyTopology": "Asynchronous buck (diode + switch). Async means a diode is used for the low-side conduction instead of a synchronous MOSFET — simpler, but ~5% less efficient than a synchronous design."
+  },
+  "domain": {
+    "primaryDomain": "power electronics",
+    "specificApplication": "Step-down DC-DC conversion — generating 5 V (or 3.3 V, 12 V, etc.) from a higher input bus. Found in literally every laptop charger, USB power adapter, automotive 12V-to-5V rail, embedded board with PoL regulation, and as a starting point for any board-level voltage rail.",
+    "frequencyRange": "Switches at 150 kHz. Control loop bandwidth ≈ 5–15 kHz (set by the LC filter and compensation network).",
+    "impedance": "Output impedance: a few milliohms in the loop bandwidth, climbing to ~100 mΩ (ESR of Cout) above.",
+    "industryContext": "The LM2596 was Texas Instruments' (originally National Semi's) bread-and-butter switcher from the 1990s onward — over a billion shipped. Modern designs use synchronous successors (LM2675, TPS62xxx) for efficiency, but the LM2596 remains the canonical learning topology and is still in production for repair/replacement markets."
+  },
+  "synthesis": {
+    "operatingPrinciple": "The buck converter generates a low DC output from a higher DC input by switching the input on and off rapidly and filtering the result. During each on-time (~3.3 µs of every 6.7 µs cycle for a 12→5 V conversion), the switch closes and current ramps up linearly in the inductor at a rate dI/dt = (Vin - Vout) / L. During the off-time, the switch opens and the inductor — which fights any change in current — drives the switch node negative until the Schottky catches it; current now ramps down at -Vout / L. The average voltage at the switch node equals Vin × D (where D is the duty cycle) — set D = Vout / Vin = 5/12 ≈ 0.42, and you get 5 V average. The LC filter (L1 + Cout) averages this triangle-wave switch-node voltage into a smooth DC. The feedback loop continuously adjusts D to compensate for input voltage variation, load current, and component drift, holding Vout at exactly 5.00 V.",
+    "keyParameters": [
+      { "name": "Vout", "value": "5.0", "unit": "V", "notes": "Fixed by the -5.0 part variant" },
+      { "name": "Vin range", "value": "7 – 40", "unit": "V", "notes": "Vin must be ≥ Vout + 2.5 V dropout" },
+      { "name": "Iout (max continuous)", "value": "3", "unit": "A" },
+      { "name": "Switching frequency", "value": "150", "unit": "kHz", "notes": "Internally set; some variants have 52 kHz" },
+      { "name": "Efficiency @ 5V/2A", "value": "~80", "unit": "%", "notes": "Limited by Schottky Vf and IC's bipolar switch saturation drop" },
+      { "name": "Duty cycle (12→5V)", "value": "0.42", "notes": "D = Vout / Vin" },
+      { "name": "Inductor ripple current", "value": "~30", "unit": "% of Iout" },
+      { "name": "Output ripple voltage", "value": "~50", "unit": "mV pk-pk", "notes": "Dominated by ESR × ΔI_L" }
+    ],
+    "designDecisions": "The LM2596's recommended 33 µH / 220 µF / 1N5822 cookbook is a workable but not optimal choice — it prioritizes reliability and ease of layout over efficiency. The 33 µH inductor was sized to keep ripple current under 30% of full-load Iout: ΔI_L = (Vout × (1-D)) / (L × f_sw) = (5 × 0.58) / (33µ × 150k) = 0.59 A. The catch diode is a Schottky because its low Vf (0.4 V vs 0.7 V for a fast silicon diode) saves about 2% efficiency at 3 A, and its near-zero reverse recovery time avoids the switching losses that would otherwise turn the switch node into a noise source. Electrolytic output caps with 80 mΩ ESR are the limiting factor for output ripple — replacing with a polymer cap (~10 mΩ) would drop ripple from 50 mV to under 10 mV. The fixed-5V variant eliminates an external divider (and an opportunity for the user to get the resistor ratio wrong); the adjustable variant requires R1 = 1k, R2 = (Vout/1.23 - 1) × 1k.",
+    "failureModes": [
+      {
+        "scenario": "Inductor saturation",
+        "description": "If the load draws more than ~3.5 A (inductor saturation current) or the inductor was undersized, the inductor core saturates — inductance drops abruptly, switch current spikes uncontrolled, the cycle-by-cycle current limit fires every cycle, and the part hiccups (loud audible buzz). Sustained operation in this mode overheats the inductor and IC.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Insufficient output capacitance ESR (paradoxically)",
+        "description": "LM2596 is a voltage-mode controller that relies on a small amount of ESR for compensation. Replacing electrolytics with ultra-low-ESR ceramics (< 10 mΩ) can make the control loop unstable — output oscillates at the LC corner frequency. Either keep some ESR or add a series resistor to a ceramic.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Catch diode reversed or missing",
+        "description": "With no path for inductor current during the off-time, the switch node flies up to whatever voltage breaks down something — usually the IC's switch transistor. Fatal in under one switching cycle.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Thermal shutdown",
+        "description": "At 3 A continuous in still air without a heatsink, the LM2596 dissipates roughly 1.5 W internally. Junction temperature reaches ~150 °C with default board copper. The internal thermal shutdown kicks in and the supply hiccups. A 2 cm² copper pad solves it.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "EMI / radiated noise",
+        "description": "The switching node ringing at the diode reverse-recovery (10–50 MHz) radiates into nearby analog circuits and any unshielded cables. A snubber (10 Ω + 1 nF across D1) tames it.",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Synchronous rectification",
+        "suggestion": "Replace D1 with a low-side MOSFET (and use a synchronous-buck IC like LM2675 or TPS54331).",
+        "rationale": "Schottky drop (0.4 V × 3 A = 1.2 W lost) becomes Rds(on) × I² (0.02 Ω × 9 A² = 0.18 W). Efficiency climbs from ~80% to ~92%, and there's no hot diode to manage thermally."
+      },
+      {
+        "area": "Higher-frequency / smaller components",
+        "suggestion": "Move to a 1 MHz controller (e.g. TPS62130).",
+        "rationale": "Inductor and output cap shrink by ~7× (everything scales as 1/f_sw). An entire 3 A buck can fit in a 1 cm² footprint with a 2.2 µH inductor and 22 µF ceramic output cap."
+      },
+      {
+        "area": "Better output cap",
+        "suggestion": "Replace electrolytic Cout with a polymer or low-ESR ceramic + small series R.",
+        "rationale": "Drops output ripple from 50 mV to <10 mV. Use 1 Ω + ceramic if needed to maintain control-loop stability."
+      },
+      {
+        "area": "Soft-start",
+        "suggestion": "Add a 10 nF capacitor on the SS pin (if available on the chosen variant).",
+        "rationale": "Reduces inrush current at power-on from ~5 A (charging Cout from 0) to ~1 A — kinder to the input supply and prevents brown-outs."
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "components": {
+    "components": [
+      {
+        "designator": "R1",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Upper (series) resistor of the divider — sets the source impedance seen by the load and, together with R2, the divide ratio."
+      },
+      {
+        "designator": "R2",
+        "type": "Resistor",
+        "value": "10 kΩ",
+        "functionalRole": "Lower (shunt) resistor to ground — fixes the output node voltage at Vin × R2 / (R1 + R2)."
+      },
+      {
+        "designator": "VIN",
+        "type": "Voltage source",
+        "value": "+5 V",
+        "functionalRole": "Reference rail being divided down."
+      },
+      {
+        "designator": "VOUT",
+        "type": "Net / probe point",
+        "functionalRole": "Tap point between R1 and R2 — feeds the downstream high-impedance load (ADC, op-amp input, comparator)."
+      }
+    ],
+    "totalCount": 4,
+    "summary": "Two equal resistors in series between +5 V and ground, with the output tap at their junction. Classic 2:1 voltage divider."
+  },
+  "topology": {
+    "topologyName": "Resistive Voltage Divider (2-element ladder)",
+    "stages": [
+      {
+        "name": "Reference rail",
+        "description": "Stiff DC source supplies current into the series resistor.",
+        "components": ["VIN"]
+      },
+      {
+        "name": "Series element",
+        "description": "R1 carries the divider current to the tap node.",
+        "components": ["R1"]
+      },
+      {
+        "name": "Shunt element",
+        "description": "R2 sinks the divider current to ground, fixing the tap voltage.",
+        "components": ["R2"]
+      }
+    ],
+    "feedbackPaths": [
+      {
+        "type": "unknown",
+        "description": "No feedback — open-loop passive network. Output depends entirely on the divider ratio and the impedance of the downstream load."
+      }
+    ],
+    "keyNodes": ["VIN", "VOUT", "GND"],
+    "powerSupplyTopology": "Single-ended +5 V referenced to GND. No bypass."
+  },
+  "domain": {
+    "primaryDomain": "signal processing",
+    "specificApplication": "Reference / bias generation. Used to derive a stable mid-rail voltage, scale a signal into an ADC range, or set a bias point for a transistor or op-amp.",
+    "frequencyRange": "DC to ~1 MHz (limited by stray capacitance at the tap node)",
+    "impedance": "Source impedance at VOUT = R1 ∥ R2 = 5 kΩ",
+    "industryContext": "Universal — appears in every analog front end ever designed. The first building block in any electronics curriculum and the unsung hero of bandgap references, level translators, and feedback networks."
+  },
+  "synthesis": {
+    "operatingPrinciple": "Two resistors in series form a current path from Vin to ground; the voltage at their midpoint equals the input scaled by the ratio R2 / (R1 + R2). With R1 = R2, the output is exactly Vin / 2. The divider only behaves ideally when the load impedance is much larger than the parallel combination of R1 and R2 — otherwise the load draws current that pulls the tap voltage down and changes the effective ratio.",
+    "keyParameters": [
+      { "name": "Divide ratio", "value": "0.5", "notes": "R2 / (R1 + R2) — output is half the input" },
+      { "name": "Vout (no load)", "value": "2.5", "unit": "V" },
+      { "name": "Source impedance", "value": "5", "unit": "kΩ", "notes": "R1 in parallel with R2" },
+      { "name": "Quiescent current", "value": "250", "unit": "µA", "notes": "5 V / 20 kΩ — wasted as heat in the divider" },
+      { "name": "Bandwidth limit", "value": "~3", "unit": "MHz", "notes": "Approximate, set by ~10 pF of stray capacitance" }
+    ],
+    "designDecisions": "Choosing 10 kΩ for both resistors is the standard compromise between two competing failures: too small and you waste current (1 kΩ each would burn 2.5 mA continuously); too large and the source impedance starts to interact with ADC sampling capacitors, op-amp input bias currents, and stray PCB capacitance. 10 kΩ keeps the bleed current under a quarter milliamp while staying comfortably below the ~100 kΩ region where leakage and op-amp bias currents start to dominate. Using 1% metal-film resistors keeps the ratio error under ~1.4% worst case.",
+    "failureModes": [
+      {
+        "scenario": "Loading the output with a low-impedance device",
+        "description": "If the downstream stage has input impedance comparable to 5 kΩ (e.g. a bipolar op-amp's bias current path, or a relay coil), the tap voltage sags and the divide ratio is no longer R2 / (R1 + R2). The output collapses toward ground.",
+        "severity": "high"
+      },
+      {
+        "scenario": "Driving a switching capacitive load (ADC SAR)",
+        "description": "An ADC's sample-and-hold capacitor wants to charge through the 5 kΩ source impedance every conversion. If the ADC's acquisition time is shorter than ~5 × R × C_sample, the divider can't keep up and the reading is wrong.",
+        "severity": "medium"
+      },
+      {
+        "scenario": "Resistor tolerance stack-up",
+        "description": "5% carbon-film resistors can give a divide ratio anywhere from 0.476 to 0.526 in the worst case — enough error to matter for any precision application.",
+        "severity": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "area": "Buffering",
+        "suggestion": "Add a unity-gain op-amp buffer (e.g. OPA340) between the tap and the load.",
+        "rationale": "Drops the effective source impedance from 5 kΩ to a few milliohms, isolating the divider from anything the load does. Essential if the load is variable or capacitive."
+      },
+      {
+        "area": "Bypass capacitor",
+        "suggestion": "Place a 100 nF ceramic from VOUT to ground.",
+        "rationale": "Filters high-frequency noise on the input rail and gives ADC sample-and-hold circuits a local charge reservoir, fixing the acquisition-time problem above."
+      },
+      {
+        "area": "Precision",
+        "suggestion": "Use a single matched resistor network (e.g. Vishay MORN, 0.1% ratio match) instead of two discrete resistors.",
+        "rationale": "Ratio accuracy goes from ~1.4% to ~0.1%, and temperature drift tracks because both elements are on the same die."
+      }
+    ]
+  }
+}
