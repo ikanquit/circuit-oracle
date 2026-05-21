@@ -1,5 +1,9 @@
 # CircuitOracle
 
+[![CI](https://github.com/ikanquit/circuit-oracle/actions/workflows/ci.yml/badge.svg)](https://github.com/ikanquit/circuit-oracle/actions/workflows/ci.yml)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fikanquit%2Fcircuit-oracle&env=ANTHROPIC_API_KEY&envDescription=Anthropic%20API%20key%20with%20vision-capable%20model%20access&envLink=https%3A%2F%2Fconsole.anthropic.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A multi-agent pipeline that reads circuit schematics the way a senior analog
 engineer would.
 
@@ -8,7 +12,20 @@ parallel — one catalogs every component, one traces the topology, one
 classifies what the circuit is *for* — then a fourth synthesizes a full
 engineering review and streams it back token by token.
 
-Live demo: <https://circuitoracle.app>
+![Hero — drop a schematic, get an engineering review](docs/01-hero.jpg)
+
+> Live demo (if deployed): <https://circuitoracle.app>
+
+## Sample analyses, curated
+
+The repo ships with nine hand-authored sample analyses (op-amps, BJT
+amplifiers, RC filters, the NE555, an H-bridge, a Wien-bridge oscillator,
+and more) so you can read what the pipeline produces without spending an
+API call.
+
+![Sample archive on the home page](docs/02-archive.jpg)
+
+![Sample detail page — buck converter analysis](docs/03-sample-detail.jpg)
 
 ## What you get back
 
@@ -87,6 +104,19 @@ npm run type-check   tsc --noEmit
 
 No database, no queues, no background workers. The whole thing is one
 Next.js route streaming back from three to four concurrent SDK calls.
+
+## Deploy
+
+The fastest path is Vercel — the project is a vanilla Next.js App Router
+build, no special infra. Click the button at the top of this README, or:
+
+1. Import the repo at <https://vercel.com/new>.
+2. Add `ANTHROPIC_API_KEY` under **Environment Variables**.
+3. Deploy. Vercel detects Next.js automatically; no `vercel.json` needed.
+
+The `analyze` route is configured with `runtime = "nodejs"` and
+`maxDuration = 60` so synthesis has room to stream. CI runs lint,
+type-check, and a full build on every push to `main` and every PR.
 
 ## Limits
 
