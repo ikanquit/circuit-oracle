@@ -49,9 +49,9 @@ export default function SamplesPage(): JSX.Element {
         {/* Breadcrumb / nav */}
         <nav
           style={{
-            padding: "16px 24px",
+            padding: "18px 24px",
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             color: "var(--co-muted)",
@@ -89,7 +89,7 @@ export default function SamplesPage(): JSX.Element {
             <span
               style={{
                 fontFamily: "var(--co-font-mono)",
-                fontSize: 10,
+                fontSize: 12,
                 letterSpacing: "0.22em",
                 color: "var(--co-muted)",
               }}
@@ -120,8 +120,8 @@ export default function SamplesPage(): JSX.Element {
           <p
             style={{
               fontFamily: "var(--co-font-body)",
-              fontSize: 17,
-              lineHeight: 1.55,
+              fontSize: 18,
+              lineHeight: 1.6,
               color: "var(--co-text-dim)",
               maxWidth: 720,
               marginTop: 4,
@@ -138,12 +138,12 @@ export default function SamplesPage(): JSX.Element {
               flexWrap: "wrap",
               gap: 24,
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: "var(--co-text-dim)",
               borderTop: "1px solid var(--co-border)",
-              paddingTop: 16,
+              paddingTop: 18,
             }}
           >
             <div>
