@@ -255,18 +255,18 @@ export default function CircuitBackground(): JSX.Element {
             100% { transform: translate3d(-32px, -32px, 0); }
           }
           .co-grid-layer {
-            animation: co-grid-drift 24s linear infinite;
+            animation: co-grid-drift 60s linear infinite;
             transform-origin: 0 0;
           }
           .co-node {
-            animation: co-node-pulse 4.2s ease-in-out infinite;
+            animation: co-node-pulse 8s ease-in-out infinite;
             transform-origin: center;
           }
           .co-trace-pulse {
             animation: co-signal-pulse linear infinite;
           }
           .co-chip {
-            animation: co-chip-breathe 9s ease-in-out infinite;
+            animation: co-chip-breathe 14s ease-in-out infinite;
           }
           @media (prefers-reduced-motion: reduce) {
             .co-grid-layer,

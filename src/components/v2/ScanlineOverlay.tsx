@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useRef, type JSX } from "react";
+import type { JSX } from "react";
 
 interface ScanlineOverlayProps {
   intensity?: "subtle" | "medium" | "strong";
@@ -27,44 +25,6 @@ const VIGNETTE_OPACITY: Record<NonNullable<ScanlineOverlayProps["intensity"]>, n
 export default function ScanlineOverlay({
   intensity = "subtle",
 }: ScanlineOverlayProps): JSX.Element {
-  const turbulenceRef = useRef<SVGFETurbulenceElement | null>(null);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const turbulence = turbulenceRef.current;
-    if (!turbulence) return;
-
-    // Respect prefers-reduced-motion — skip the rAF grain animation
-    // entirely. The static grain texture still renders, just doesn't
-    // shimmer.
-    const mql =
-      typeof window !== "undefined" && window.matchMedia
-        ? window.matchMedia("(prefers-reduced-motion: reduce)")
-        : null;
-    if (mql && mql.matches) {
-      return;
-    }
-
-    let last = 0;
-    // Throttle to ~12fps for a "film grain" feel without burning the GPU.
-    const FRAME_MS = 1000 / 12;
-
-    const tick = (now: number) => {
-      if (now - last >= FRAME_MS) {
-        last = now;
-        // Vary baseFrequency in a tiny range so the noise pattern shifts every frame.
-        const f = 0.85 + Math.random() * 0.15;
-        turbulence.setAttribute("baseFrequency", f.toFixed(3));
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
   const scanlineAlpha = SCANLINE_ALPHA[intensity];
   const grainOpacity = GRAIN_OPACITY[intensity];
   const vignetteOpacity = VIGNETTE_OPACITY[intensity];
@@ -96,7 +56,6 @@ export default function ScanlineOverlay({
       >
         <filter id="co-grain-filter">
           <feTurbulence
-            ref={turbulenceRef}
             type="fractalNoise"
             baseFrequency="0.9"
             numOctaves={2}
