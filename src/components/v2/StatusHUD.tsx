@@ -55,7 +55,7 @@ export default function StatusHUD({
 }: StatusHUDProps): JSX.Element {
   const [uptimeSeconds, setUptimeSeconds] = useState<number>(0);
   const [latencyMs, setLatencyMs] = useState<number>(42);
-  const [clock, setClock] = useState<string>(() => formatUTCClock(new Date()));
+  const [clock, setClock] = useState<string>("");
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -70,8 +70,9 @@ export default function StatusHUD({
     return () => clearInterval(interval);
   }, []);
 
-  // UTC clock: updates every second
+  // UTC clock: set immediately on mount, then update every second
   useEffect(() => {
+    setClock(formatUTCClock(new Date()));
     const interval = setInterval(() => {
       setClock(formatUTCClock(new Date()));
     }, 1000);
@@ -230,7 +231,7 @@ export default function StatusHUD({
         aria-hidden="true"
       >
         <span style={labelStyle}>UTC:</span>
-        <span style={valueStyle("var(--co-text-dim)")}>{clock}</span>
+        <span style={valueStyle("var(--co-text-dim)")}>{mounted ? clock : "--:--:-- UTC"}</span>
       </div>
     </div>
   );
