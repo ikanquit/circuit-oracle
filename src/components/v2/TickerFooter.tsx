@@ -25,18 +25,6 @@ const METADATA: ReadonlyArray<MetadataCell> = [
     label: "PIPELINE",
     value: "4 AGENTS · COMPONENT ▸ TOPOLOGY ▸ DOMAIN ▸ SYNTHESIS",
   },
-  {
-    label: "PROTOCOL",
-    value: "SSE · POST /api/analyze · application/x-ndjson",
-  },
-  {
-    label: "RUNTIME",
-    value: "NODE · max-duration 60s · maxFileSize 10MB",
-  },
-  {
-    label: "DEPLOY",
-    value: "vercel edge · region auto · build 2026.05",
-  },
 ];
 
 function TickerRun({ ariaHidden }: { ariaHidden?: boolean }): JSX.Element {
@@ -155,7 +143,7 @@ export default function TickerFooter(): JSX.Element {
         style={{
           padding: "48px 32px 24px",
           display: "grid",
-          gridTemplateColumns: "repeat(var(--co-footer-cols, 4), minmax(0, 1fr))",
+          gridTemplateColumns: "minmax(0, 1fr)",
           gap: "32px",
           position: "relative",
           zIndex: 2,
@@ -307,17 +295,25 @@ export default function TickerFooter(): JSX.Element {
           SYSTEM NOMINAL
         </span>
 
-        <span
+        <a
+          href="https://github.com/ikanquit/circuit-oracle"
+          target="_blank"
+          rel="noopener noreferrer"
           className="co-mono"
           style={{
-            color: "var(--co-muted)",
+            color: "var(--co-text-dim)",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            textAlign: "right",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "color 120ms ease",
           }}
         >
-          REV 02 · BUILT WITH NEXT.JS · DEPLOYED ON VERCEL
-        </span>
+          GITHUB
+          <span aria-hidden style={{ color: "var(--co-muted)", fontSize: "11px" }}>↗</span>
+        </a>
       </div>
 
       {/* Responsive: collapse grid to 2 cols and bump min-height on mobile */}
@@ -327,13 +323,6 @@ export default function TickerFooter(): JSX.Element {
         }
       `}</style>
 
-      {/* Anchor for the media-query selector above + responsive grid var */}
-      <style>{`
-        footer { --co-footer-cols: 4; }
-        @media (max-width: 768px) {
-          footer { --co-footer-cols: 2; }
-        }
-      `}</style>
     </footer>
   );
 }

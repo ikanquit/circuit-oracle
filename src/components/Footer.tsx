@@ -16,7 +16,7 @@ const NAV_LINKS: ReadonlyArray<{ label: string; href: string; external?: boolean
   { label: "ABOUT", href: "/about" },
   {
     label: "GITHUB",
-    href: "https://github.com/circuit-oracle/circuit-oracle",
+    href: "https://github.com/ikanquit/circuit-oracle",
     external: true,
   },
 ];
