@@ -395,8 +395,8 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
 
   const cardStyle: CSSProperties = {
     flex: "none",
-    width: 280,
-    height: 360,
+    width: 288,
+    height: 376,
     scrollSnapAlign: "start",
     backgroundColor: "var(--co-surface-2)",
     border: "1px solid var(--co-border-strong)",
@@ -424,7 +424,7 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
     backgroundColor: `rgba(${accentRgb}, 0.2)`,
     color: accentVar,
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     borderBottom: "1px solid var(--co-border)",
@@ -441,7 +441,7 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
 
   const partLabelStyle: CSSProperties = {
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 11,
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     color: "var(--co-muted)",
@@ -450,7 +450,7 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
 
   const subtitleStyle: CSSProperties = {
     fontFamily: "var(--co-font-mono)",
-    fontSize: 12,
+    fontSize: 13,
     color: "var(--co-text-dim)",
     letterSpacing: "0.06em",
     marginTop: 2,
@@ -494,23 +494,24 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
   };
 
   const bottomStripStyle: CSSProperties = {
-    height: 28,
+    height: 32,
     borderTop: "1px solid var(--co-border)",
     padding: "0 12px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
+    fontWeight: 500,
   };
 
   const specsRows: ReactNode = sample.specs.map(([label, value]) => (
     <div key={label} style={{ display: "contents" }}>
       <span
         style={{
-          fontSize: 10,
+          fontSize: 11,
           color: "var(--co-muted)",
           letterSpacing: "0.15em",
           textTransform: "uppercase",
@@ -521,7 +522,7 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
       </span>
       <span
         style={{
-          fontSize: 12,
+          fontSize: 13,
           color: "var(--co-text)",
           letterSpacing: "0.04em",
           textAlign: "right",
@@ -606,7 +607,7 @@ export default function SampleAnalysisStrip(): JSX.Element {
 
   const headerRightStyle: CSSProperties = {
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     color: "var(--co-muted)",
