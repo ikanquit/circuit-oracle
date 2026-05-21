@@ -108,7 +108,7 @@ export default function CircuitUploader({
               ✕
             </button>
             <div
-              className="absolute bottom-0 left-0 right-0 px-3 py-2 text-xs font-mono"
+              className="absolute bottom-0 left-0 right-0 px-3 py-2 text-[13px] font-mono"
               style={{
                 backgroundColor: "color-mix(in srgb, black 70%, transparent)",
                 color: "var(--muted)",
@@ -122,10 +122,10 @@ export default function CircuitUploader({
           <div className="flex flex-col items-center justify-center h-full py-12 px-6 gap-3 select-none">
             <div className="text-4xl opacity-60">🖼</div>
             <div className="text-center">
-              <p className="font-medium text-sm" style={{ color: "var(--text)" }}>
+              <p className="font-medium text-base" style={{ color: "var(--text)" }}>
                 Drop your schematic here
               </p>
-              <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>
+              <p className="text-[13px] mt-1" style={{ color: "var(--muted)" }}>
                 or click to browse — PNG, JPG, GIF, WebP up to 10MB
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function CircuitUploader({
       {/* Question input */}
       <div className="flex flex-col gap-1.5">
         <label
-          className="text-xs font-medium"
+          className="text-[13px] font-medium"
           style={{ color: "var(--muted)" }}
           htmlFor="question-input"
         >
