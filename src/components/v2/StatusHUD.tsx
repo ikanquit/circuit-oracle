@@ -85,9 +85,7 @@ export default function StatusHUD({
 
   const barStyle: CSSProperties = {
     height: 32,
-    background: "color-mix(in srgb, var(--co-bg) 70%, transparent)",
-    backdropFilter: "blur(10px) saturate(140%)",
-    WebkitBackdropFilter: "blur(10px) saturate(140%)",
+    background: "var(--co-surface)",
     borderTop: "1px solid var(--co-border-strong)",
     color: "var(--co-text)",
     fontFamily: "var(--co-font-mono)",
