@@ -116,11 +116,14 @@ export async function POST(req: NextRequest): Promise<Response> {
       };
 
       try {
-        const analysis = await orchestrate(
+        const { analysis, synthesisText } = await orchestrate(
           { base64, mediaType },
           send,
           questionStr
         );
+
+        // synthesisText is captured for the verifier agent (T5/T6)
+        void synthesisText;
 
         send("done", { full: analysis });
       } catch (err) {

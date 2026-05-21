@@ -175,6 +175,12 @@ async function runDomainAgent(
   }
 }
 
+interface SynthesisAgentOutput {
+  result: AgentResult<SynthesisResult>;
+  synthesisText: string;
+  synthesisComplete: boolean;
+}
+
 async function runSynthesisAgent(
   image: ImageInput,
   componentResult: AgentResult<ComponentAgentResult>,
@@ -182,7 +188,7 @@ async function runSynthesisAgent(
   domainResult: AgentResult<DomainAgentResult>,
   send: SSESender,
   question?: string
-): Promise<AgentResult<SynthesisResult>> {
+): Promise<SynthesisAgentOutput> {
   try {
     const prompt = buildSynthesisPrompt(componentResult, topologyResult, domainResult, question);
 
@@ -222,17 +228,26 @@ async function runSynthesisAgent(
     }
 
     const parsed = parseJSONFromResponse(fullText) as SynthesisResult;
-    return parsed;
+    return { result: parsed, synthesisText: fullText, synthesisComplete: true };
   } catch (err) {
-    return { error: true, message: safeAgentMessage(err, "Synthesis") };
+    return {
+      result: { error: true, message: safeAgentMessage(err, "Synthesis") },
+      synthesisText: "",
+      synthesisComplete: false,
+    };
   }
+}
+
+export interface OrchestrateResult {
+  analysis: AnalysisResult;
+  synthesisText: string;
 }
 
 export async function orchestrate(
   image: ImageInput,
   send: SSESender,
   question?: string
-): Promise<AnalysisResult> {
+): Promise<OrchestrateResult> {
   // Phase 1: parallel agents
   send("stage", {
     stage: "parallel",
@@ -300,7 +315,7 @@ export async function orchestrate(
   send("stage", { stage: "synthesis" });
 
   const synthesisStart = Date.now();
-  const synthesisResult = await runSynthesisAgent(
+  const { result: synthesisResult, synthesisText } = await runSynthesisAgent(
     image,
     componentResult,
     topologyResult,
@@ -329,5 +344,5 @@ export async function orchestrate(
     synthesis: synthesisResult as SynthesisResult,
   };
 
-  return analysis;
+  return { analysis, synthesisText };
 }
