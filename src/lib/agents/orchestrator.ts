@@ -243,8 +243,7 @@ async function runSynthesisAgent(
 
 async function runVerifierAgent(
   image: ImageInput,
-  synthesisText: string,
-  send: SSESender
+  synthesisText: string
 ): Promise<AgentResult<VerifierResult>> {
   try {
     const response = await anthropic.messages.create({
@@ -273,7 +272,6 @@ async function runVerifierAgent(
     const parsed = parseJSONFromResponse(text) as VerifierResult;
     return parsed;
   } catch (err) {
-    void send; // send is available for future streaming use
     return { error: true, message: safeAgentMessage(err, "Verifier") };
   }
 }
@@ -390,7 +388,7 @@ export async function orchestrate(
     send("stage", { stage: "verification" });
 
     const verifierStart = Date.now();
-    const verifierResult = await runVerifierAgent(image, synthesisText, send);
+    const verifierResult = await runVerifierAgent(image, synthesisText);
 
     send("agent_done", {
       agent: "verifier" as AgentName,

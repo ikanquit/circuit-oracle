@@ -356,9 +356,9 @@ export default function HomePage() {
                     className="co-label mb-3"
                     style={{ color: "var(--co-muted)" }}
                   >
-                    [ AGENT PIPELINE · 04 ]
+                    [ AGENT PIPELINE · 05 ]
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {agents.map((a) => (
                       <ICChipAgentCard
                         key={a.name}
