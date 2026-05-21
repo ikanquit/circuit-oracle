@@ -160,7 +160,7 @@ export default function BlueprintResults({
           <span
             className="co-mono"
             style={{
-              fontSize: 11,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-text)",
               whiteSpace: "nowrap",
@@ -176,7 +176,7 @@ export default function BlueprintResults({
         <div
           className="co-mono hidden sm:block"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.15em",
             color: "var(--co-muted)",
             textAlign: "center",
@@ -191,7 +191,7 @@ export default function BlueprintResults({
           data-co-stage-badge
           className="co-mono"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.18em",
             flexShrink: 0,
             ...badgeStyle,
@@ -229,7 +229,7 @@ export default function BlueprintResults({
         <span
           className="co-mono"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.18em",
             color: "var(--co-muted)",
           }}
@@ -239,7 +239,7 @@ export default function BlueprintResults({
         <span
           className="co-mono hidden md:inline"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.4em",
             color: "var(--co-muted)",
             opacity: 0.5,
@@ -251,7 +251,7 @@ export default function BlueprintResults({
         <span
           className="co-mono"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.18em",
             color: "var(--co-muted)",
           }}
