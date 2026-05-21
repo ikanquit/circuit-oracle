@@ -60,15 +60,15 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
         {/* Top strip: archive ID + tag */}
         <div
           style={{
-            height: 32,
+            height: 34,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "0 12px",
+            padding: "0 14px",
             backgroundColor: `rgba(${accentRgb}, 0.16)`,
             color: accent,
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
             borderBottom: "1px solid var(--co-border)",
@@ -156,7 +156,7 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
         {/* Middle: title + subtitle + teaser */}
         <div
           style={{
-            padding: "16px 16px 14px",
+            padding: "18px 16px 16px",
             display: "flex",
             flexDirection: "column",
             gap: 6,
@@ -166,7 +166,7 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
           <span
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 11,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: "var(--co-text-dim)",
@@ -178,7 +178,7 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
             style={{
               fontFamily: "var(--co-font-display)",
               fontWeight: 900,
-              fontSize: 24,
+              fontSize: 26,
               lineHeight: 0.95,
               letterSpacing: "-0.01em",
               color: "var(--co-text)",
@@ -191,10 +191,10 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
           <p
             style={{
               fontFamily: "var(--co-font-body)",
-              fontSize: 13,
+              fontSize: 14,
               lineHeight: 1.5,
               color: "var(--co-text-dim)",
-              marginTop: 4,
+              marginTop: 6,
             }}
           >
             {sample.teaser}
@@ -204,14 +204,14 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
         {/* Bottom strip: difficulty + CTA */}
         <div
           style={{
-            height: 32,
+            height: 36,
             borderTop: "1px solid var(--co-border)",
-            padding: "0 12px",
+            padding: "0 14px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
           }}
@@ -219,8 +219,11 @@ export default function SampleCard({ sample }: SampleCardProps): JSX.Element {
           <span style={{ color: "var(--co-muted)" }}>
             {DIFFICULTY_LABEL[sample.difficulty]}
           </span>
-          <span className="co-sample-card-view-v2" style={{ color: accent }}>
-            VIEW ▸
+          <span
+            className="co-sample-card-view-v2"
+            style={{ color: accent, fontWeight: 700 }}
+          >
+            READ ANALYSIS ▸
           </span>
         </div>
       </article>
