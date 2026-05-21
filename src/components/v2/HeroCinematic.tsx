@@ -351,6 +351,17 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           <span className="hidden sm:inline">4 AGENTS &middot; PARALLEL</span>
           <span className="opacity-50">/</span>
           <span className="co-hero-marker">T+00:00:14</span>
+          <span className="opacity-50">/</span>
+          <a
+            href="https://github.com/ikanquit/circuit-oracle"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="co-hero-link flex items-center gap-1"
+            style={{ textDecoration: "none" }}
+          >
+            GITHUB
+            <span aria-hidden style={{ fontSize: "10px" }}>↗</span>
+          </a>
         </span>
       </div>
 
