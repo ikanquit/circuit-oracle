@@ -59,14 +59,14 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.95rem 1.35rem;
+          padding: 1.05rem 1.5rem;
           border: 1px solid var(--co-phosphor);
           color: var(--co-phosphor);
           background: transparent;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          font-size: 0.82rem;
-          font-weight: 500;
+          font-size: 0.875rem;
+          font-weight: 600;
           transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
           cursor: pointer;
           box-shadow: 0 0 0 0 var(--co-phosphor), inset 0 0 0 1px rgba(198,255,77,0.0);
@@ -254,7 +254,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
         .co-hero-proof-label {
           margin-top: 0.6rem;
           font-family: var(--co-font-mono);
-          font-size: 9px;
+          font-size: 11px;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           color: var(--co-muted);
@@ -291,7 +291,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
 
       {/* Top row: badge + coordinate */}
       <div
-        className="co-hero-rise co-mono co-label flex items-center justify-between text-[10px] sm:text-[11px]"
+        className="co-hero-rise co-mono co-label flex items-center justify-between text-[11px] sm:text-[12px]"
         style={rise(0)}
       >
         <span className="tracking-[0.18em]">
@@ -314,7 +314,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
       <div className="relative mt-10 sm:mt-14 grid grid-cols-12 gap-6 lg:gap-8">
         {/* Left rail: small meta column */}
         <aside
-          className="co-hero-rise co-mono co-label hidden lg:flex col-span-1 flex-col gap-3 pt-4 text-[10px] tracking-[0.2em]"
+          className="co-hero-rise co-mono co-label hidden lg:flex col-span-1 flex-col gap-3 pt-4 text-[11px] tracking-[0.2em]"
           style={rise(80)}
         >
           <span className="co-hero-marker">001</span>
@@ -374,7 +374,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                   e.preventDefault();
                   target.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
-                className="co-mono co-label text-[11px] co-hero-link"
+                className="co-mono co-label text-[12px] co-hero-link"
               >
                 or see one we already read
               </a>
@@ -423,7 +423,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
 
             {/* Status line */}
             <div
-              className="co-hero-rise co-mono co-label flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] sm:text-[11px] tracking-[0.2em]"
+              className="co-hero-rise co-mono co-label flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-[12px] tracking-[0.2em]"
               style={rise(820)}
             >
               <span className="co-hero-dot" aria-hidden="true" />
@@ -449,7 +449,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
 
       {/* Bottom HUD strip */}
       <div
-        className="co-hero-rise co-mono co-hero-hud absolute left-0 right-0 bottom-0 px-6 sm:px-12 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-6 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase"
+        className="co-hero-rise co-mono co-hero-hud absolute left-0 right-0 bottom-0 px-6 sm:px-12 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-6 text-[11px] sm:text-[12px] tracking-[0.22em] uppercase"
         style={rise(920)}
       >
         <span className="opacity-80">
