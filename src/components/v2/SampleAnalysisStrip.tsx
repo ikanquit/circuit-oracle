@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { CSSProperties, JSX, ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
@@ -10,6 +11,7 @@ type AccentKey = "phosphor" | "amber" | "copper" | "blueprint";
 
 interface Sample {
   id: string;
+  slug: string;
   title: string;
   subtitle: string;
   tag: string;
@@ -20,6 +22,7 @@ interface Sample {
 const SAMPLES: Sample[] = [
   {
     id: "S-001",
+    slug: "inverting-amp",
     title: "INVERTING AMPLIFIER",
     subtitle: "TL072 · OP-AMP",
     tag: "ANALOG",
@@ -32,6 +35,7 @@ const SAMPLES: Sample[] = [
   },
   {
     id: "S-002",
+    slug: "555-astable",
     title: "555 ASTABLE",
     subtitle: "NE555 · TIMER",
     tag: "TIMING",
@@ -44,6 +48,7 @@ const SAMPLES: Sample[] = [
   },
   {
     id: "S-003",
+    slug: "common-emitter",
     title: "COMMON-EMITTER",
     subtitle: "2N3904 · BJT",
     tag: "AMP",
@@ -56,6 +61,7 @@ const SAMPLES: Sample[] = [
   },
   {
     id: "S-004",
+    slug: "rc-low-pass",
     title: "RC LOW-PASS",
     subtitle: "1st ORDER · PASSIVE",
     tag: "FILTER",
@@ -68,6 +74,7 @@ const SAMPLES: Sample[] = [
   },
   {
     id: "S-005",
+    slug: "buck-converter",
     title: "BUCK CONVERTER",
     subtitle: "LM2596 · SMPS",
     tag: "POWER",
@@ -535,48 +542,55 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
   ));
 
   return (
-    <article className="co-sample-card" style={cardStyle}>
-      {/* Top strip */}
-      <div style={topStripStyle}>
-        <span>{sample.id}</span>
-        <span>{sample.tag}</span>
-      </div>
-
-      {/* Middle text area */}
-      <div style={middleStyle}>
-        <span style={partLabelStyle}>PART</span>
-        <span style={subtitleStyle}>{sample.subtitle}</span>
-        <h3 style={titleStyle}>{sample.title}</h3>
-      </div>
-
-      {/* Schematic fragment */}
-      <div style={schematicStyle}>
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            maxWidth: 220,
-            maxHeight: 100,
-          }}
-        >
-          <Fragment color={accentVar} />
+    <Link
+      href={`/samples/${sample.slug}`}
+      className="co-sample-card-link"
+      style={{ textDecoration: "none", color: "inherit", display: "block" }}
+      aria-label={`Read analysis of ${sample.title}`}
+    >
+      <article className="co-sample-card" style={cardStyle}>
+        {/* Top strip */}
+        <div style={topStripStyle}>
+          <span>{sample.id}</span>
+          <span>{sample.tag}</span>
         </div>
-      </div>
 
-      {/* Specs */}
-      <div style={specsStyle}>{specsRows}</div>
+        {/* Middle text area */}
+        <div style={middleStyle}>
+          <span style={partLabelStyle}>PART</span>
+          <span style={subtitleStyle}>{sample.subtitle}</span>
+          <h3 style={titleStyle}>{sample.title}</h3>
+        </div>
 
-      {/* Spacer to push bottom strip down */}
-      <div style={{ flex: 1, minHeight: 4 }} />
+        {/* Schematic fragment */}
+        <div style={schematicStyle}>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              maxWidth: 220,
+              maxHeight: 100,
+            }}
+          >
+            <Fragment color={accentVar} />
+          </div>
+        </div>
 
-      {/* Bottom strip */}
-      <div style={bottomStripStyle}>
-        <span style={{ color: "var(--co-muted)" }}>ANALYSIS COMPLETE</span>
-        <span className="co-sample-card-view" style={{ color: accentVar }}>
-          {"▸ VIEW"}
-        </span>
-      </div>
-    </article>
+        {/* Specs */}
+        <div style={specsStyle}>{specsRows}</div>
+
+        {/* Spacer to push bottom strip down */}
+        <div style={{ flex: 1, minHeight: 4 }} />
+
+        {/* Bottom strip */}
+        <div style={bottomStripStyle}>
+          <span style={{ color: "var(--co-muted)" }}>ANALYSIS COMPLETE</span>
+          <span className="co-sample-card-view" style={{ color: accentVar }}>
+            {"▸ VIEW"}
+          </span>
+        </div>
+      </article>
+    </Link>
   );
 }
 
