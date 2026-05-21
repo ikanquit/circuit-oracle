@@ -69,7 +69,7 @@ export default function HeroSpecimen(): JSX.Element {
           justify-content: space-between;
           align-items: center;
           font-family: var(--co-font-mono);
-          font-size: 9px;
+          font-size: 11px;
           letter-spacing: 0.18em;
           color: var(--co-muted);
           text-transform: uppercase;
@@ -118,7 +118,7 @@ export default function HeroSpecimen(): JSX.Element {
         }
         .co-specimen-label {
           font-family: var(--co-font-mono);
-          font-size: 8px;
+          font-size: 10px;
           letter-spacing: 0.1em;
           fill: var(--co-text-dim);
           text-transform: uppercase;
@@ -169,10 +169,10 @@ export default function HeroSpecimen(): JSX.Element {
         .co-specimen-callout {
           position: absolute;
           font-family: var(--co-font-mono);
-          font-size: 8.5px;
+          font-size: 11px;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          padding: 3px 6px;
+          padding: 4px 7px;
           border: 1px solid currentColor;
           background: color-mix(in srgb, var(--co-bg) 80%, transparent);
           backdrop-filter: blur(2px);
@@ -234,7 +234,7 @@ export default function HeroSpecimen(): JSX.Element {
           padding-top: 8px;
           border-top: 1px solid var(--co-border, rgba(255,255,255,0.08));
           font-family: var(--co-font-mono);
-          font-size: 9px;
+          font-size: 11px;
           letter-spacing: 0.16em;
           color: var(--co-muted);
           text-transform: uppercase;
