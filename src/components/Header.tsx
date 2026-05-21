@@ -21,7 +21,10 @@ export default function Header() {
             >
               CircuitOracle
             </h1>
-            <p className="text-[13px]" style={{ color: "var(--muted)" }}>
+            <p
+              className="text-[14px]"
+              style={{ color: "var(--co-text-dim)" }}
+            >
               AI-powered schematic analysis
             </p>
           </div>
@@ -32,7 +35,7 @@ export default function Header() {
             className="text-[13px] px-2.5 py-1 rounded font-mono"
             style={{
               backgroundColor: "var(--surface2)",
-              color: "var(--muted)",
+              color: "var(--co-text-dim)",
               border: "1px solid var(--border)",
             }}
           >
