@@ -29,13 +29,13 @@ const META_CELLS: ReadonlyArray<{ label: string; value: string }> = [
 
 const baseLinkStyle: CSSProperties = {
   fontFamily: "var(--co-font-mono)",
-  fontSize: "11px",
+  fontSize: "13px",
   letterSpacing: "0.14em",
   textTransform: "uppercase",
   color: "var(--co-text-dim)",
   textDecoration: "none",
   transition: "color 120ms ease",
-  paddingBlock: "2px",
+  paddingBlock: "3px",
 };
 
 export default function Footer(): JSX.Element {
@@ -115,10 +115,10 @@ export default function Footer(): JSX.Element {
             className="co-mono"
             style={{
               color: "var(--co-muted)",
-              fontSize: "11px",
-              letterSpacing: "0.12em",
-              lineHeight: 1.5,
-              maxWidth: "32ch",
+              fontSize: "13px",
+              letterSpacing: "0.1em",
+              lineHeight: 1.55,
+              maxWidth: "34ch",
               margin: 0,
             }}
           >
@@ -144,9 +144,9 @@ export default function Footer(): JSX.Element {
               className="co-label"
               style={{
                 color: "var(--co-muted)",
-                fontSize: "10px",
+                fontSize: "11px",
                 letterSpacing: "0.18em",
-                marginBottom: "6px",
+                marginBottom: "8px",
               }}
             >
               [ NAV ]
@@ -164,7 +164,7 @@ export default function Footer(): JSX.Element {
                   {link.label}{" "}
                   <span
                     aria-hidden
-                    style={{ color: "var(--co-muted)", fontSize: "9px" }}
+                    style={{ color: "var(--co-muted)", fontSize: "11px" }}
                   >
                     ↗
                   </span>
@@ -188,7 +188,7 @@ export default function Footer(): JSX.Element {
               className="co-label"
               style={{
                 color: "var(--co-muted)",
-                fontSize: "10px",
+                fontSize: "11px",
                 letterSpacing: "0.18em",
               }}
             >
@@ -208,7 +208,7 @@ export default function Footer(): JSX.Element {
                   className="co-mono"
                   style={{
                     color: "var(--co-muted)",
-                    fontSize: "10px",
+                    fontSize: "11px",
                     letterSpacing: "0.16em",
                   }}
                 >
@@ -218,8 +218,8 @@ export default function Footer(): JSX.Element {
                   className="co-mono"
                   style={{
                     color: "var(--co-text-dim)",
-                    fontSize: "11px",
-                    letterSpacing: "0.06em",
+                    fontSize: "13px",
+                    letterSpacing: "0.05em",
                     wordBreak: "break-word",
                   }}
                 >
@@ -251,7 +251,7 @@ export default function Footer(): JSX.Element {
           className="co-mono"
           style={{
             color: "var(--co-muted)",
-            fontSize: "10px",
+            fontSize: "12px",
             letterSpacing: "0.14em",
           }}
         >
@@ -265,7 +265,7 @@ export default function Footer(): JSX.Element {
             alignItems: "center",
             gap: "8px",
             color: "var(--co-text-dim)",
-            fontSize: "10px",
+            fontSize: "12px",
             letterSpacing: "0.14em",
           }}
         >
