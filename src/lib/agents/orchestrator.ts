@@ -5,6 +5,7 @@ import {
   DomainAgentResult,
   AgentResult,
   SynthesisResult,
+  VerifierResult,
   AnalysisResult,
   AgentName,
 } from "./types";
@@ -13,10 +14,12 @@ import {
   TOPOLOGY_AGENT_SYSTEM,
   DOMAIN_AGENT_SYSTEM,
   SYNTHESIS_AGENT_SYSTEM,
+  VERIFIER_AGENT_SYSTEM,
   buildComponentPrompt,
   buildTopologyPrompt,
   buildDomainPrompt,
   buildSynthesisPrompt,
+  buildVerifierPrompt,
 } from "./prompts";
 import type { SupportedImageMediaType } from "@/lib/validation";
 
@@ -238,6 +241,43 @@ async function runSynthesisAgent(
   }
 }
 
+async function runVerifierAgent(
+  image: ImageInput,
+  synthesisText: string,
+  send: SSESender
+): Promise<AgentResult<VerifierResult>> {
+  try {
+    const response = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 512,
+      system: VERIFIER_AGENT_SYSTEM,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: image.mediaType,
+                data: image.base64,
+              },
+            },
+            { type: "text", text: buildVerifierPrompt(synthesisText) },
+          ],
+        },
+      ],
+    });
+
+    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const parsed = parseJSONFromResponse(text) as VerifierResult;
+    return parsed;
+  } catch (err) {
+    void send; // send is available for future streaming use
+    return { error: true, message: safeAgentMessage(err, "Verifier") };
+  }
+}
+
 export interface OrchestrateResult {
   analysis: AnalysisResult;
   synthesisText: string;
@@ -344,6 +384,20 @@ export async function orchestrate(
     domain: domainResult,
     synthesis: synthesisResult as SynthesisResult,
   };
+
+  // Phase 3: verification (runs only when synthesis produced text to verify)
+  if (synthesisText) {
+    send("stage", { stage: "verification" });
+
+    const verifierStart = Date.now();
+    const verifierResult = await runVerifierAgent(image, synthesisText, send);
+
+    send("agent_done", {
+      agent: "verifier" as AgentName,
+      result: verifierResult,
+      durationMs: Date.now() - verifierStart,
+    });
+  }
 
   return { analysis, synthesisText };
 }

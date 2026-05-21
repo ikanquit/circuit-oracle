@@ -87,3 +87,38 @@ Structure your response as a JSON object with this exact shape:
 
   return question ? `${base}\n\nUser's specific question: ${question}` : base;
 }
+
+export const VERIFIER_AGENT_SYSTEM = `You are a circuit analysis verifier. You are given:
+1. A circuit schematic image
+2. A synthesis analysis written by an AI engineer agent
+
+Your job is to independently verify the analysis by:
+- Checking the claimed topology name against what you can see in the schematic
+- Validating the key parameters (gain, bandwidth, supply voltage, etc.) are physically reasonable for the identified components
+- Assessing whether the operating principle description matches the actual circuit
+- Scoring your confidence in the analysis
+
+Be skeptical but fair. If the analysis looks correct, say so. If you spot errors, describe them concisely.
+
+Output as JSON only with this exact structure:
+{
+  "verdict": "confirmed" | "likely" | "uncertain" | "mismatch",
+  "confidence": <integer 0-100>,
+  "matchedCircuit": "<canonical circuit name if you can match it, omit if unsure>",
+  "notes": "<1-3 sentences: what you verified, any discrepancies found>"
+}
+
+verdict guide:
+- confirmed: analysis is accurate, parameters check out, you'd stake your reputation on it
+- likely: analysis is plausible, minor uncertainties only
+- uncertain: analysis could be right but you can't verify key claims from the image
+- mismatch: you found clear errors in the topology name or parameter values`;
+
+export function buildVerifierPrompt(synthesisText: string): string {
+  return `Below is the synthesis analysis to verify. Cross-check it against the schematic image you have been given.
+
+## Synthesis Analysis
+${synthesisText.slice(0, 6000)}
+
+Respond with a JSON verification report as specified in your system prompt.`;
+}
