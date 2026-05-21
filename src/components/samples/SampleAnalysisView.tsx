@@ -121,7 +121,7 @@ function BlueprintPanel({
 function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent: string }): JSX.Element {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <p style={{ fontSize: 13, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
+      <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
         {data.summary}
       </p>
       <div
@@ -131,17 +131,17 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
           overflowX: "auto",
         }}
       >
-        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ backgroundColor: "var(--co-surface-2)" }}>
               {["REF", "TYPE", "VALUE", "ROLE"].map((h) => (
                 <th
                   key={h}
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     textAlign: "left",
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 9,
+                    fontSize: 11,
                     letterSpacing: "0.18em",
                     color: "var(--co-muted)",
                     fontWeight: 600,
@@ -164,32 +164,32 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
               >
                 <td
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     fontFamily: "var(--co-font-mono)",
                     color: accent,
-                    fontSize: 12,
+                    fontSize: 13,
                     whiteSpace: "nowrap",
                     verticalAlign: "top",
                   }}
                 >
                   {comp.designator ?? "—"}
                 </td>
-                <td style={{ padding: "8px 12px", color: "var(--co-text)", verticalAlign: "top" }}>
+                <td style={{ padding: "10px 14px", color: "var(--co-text)", verticalAlign: "top" }}>
                   {comp.type}
                 </td>
                 <td
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     fontFamily: "var(--co-font-mono)",
                     color: "var(--co-text)",
-                    fontSize: 12,
+                    fontSize: 13,
                     whiteSpace: "nowrap",
                     verticalAlign: "top",
                   }}
                 >
                   {comp.value ?? comp.partNumber ?? "—"}
                 </td>
-                <td style={{ padding: "8px 12px", color: "var(--co-text-dim)", verticalAlign: "top" }}>
+                <td style={{ padding: "10px 14px", color: "var(--co-text-dim)", verticalAlign: "top" }}>
                   {comp.functionalRole}
                 </td>
               </tr>
@@ -200,7 +200,7 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
       <p
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 10,
+          fontSize: 11,
           letterSpacing: "0.18em",
           color: "var(--co-muted)",
         }}
