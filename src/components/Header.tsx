@@ -21,7 +21,7 @@ export default function Header() {
             >
               CircuitOracle
             </h1>
-            <p className="text-xs" style={{ color: "var(--muted)" }}>
+            <p className="text-[13px]" style={{ color: "var(--muted)" }}>
               AI-powered schematic analysis
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function Header() {
 
         <div className="hidden sm:flex items-center gap-4">
           <span
-            className="text-xs px-2 py-1 rounded font-mono"
+            className="text-[13px] px-2.5 py-1 rounded font-mono"
             style={{
               backgroundColor: "var(--surface2)",
               color: "var(--muted)",
@@ -39,7 +39,7 @@ export default function Header() {
             claude-sonnet-4-6
           </span>
           <span
-            className="text-xs px-2 py-1 rounded font-mono"
+            className="text-[13px] px-2.5 py-1 rounded font-mono"
             style={{
               backgroundColor: "color-mix(in srgb, var(--success) 15%, transparent)",
               color: "var(--success)",
