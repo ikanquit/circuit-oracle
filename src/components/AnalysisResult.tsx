@@ -77,36 +77,36 @@ function Section({
 function ComponentsTable({ data }: { data: ComponentAgentResult }) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs" style={{ color: "var(--muted)" }}>
+      <p className="text-[13px] leading-relaxed" style={{ color: "var(--muted)" }}>
         {data.summary}
       </p>
       <div
         className="rounded-lg overflow-hidden border"
         style={{ borderColor: "var(--border)" }}
       >
-        <table className="w-full text-xs">
+        <table className="w-full text-[13px]">
           <thead>
             <tr style={{ backgroundColor: "var(--surface)" }}>
               <th
-                className="px-3 py-2 text-left font-semibold"
+                className="px-3 py-2 text-left font-semibold text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--muted)" }}
               >
                 Ref
               </th>
               <th
-                className="px-3 py-2 text-left font-semibold"
+                className="px-3 py-2 text-left font-semibold text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--muted)" }}
               >
                 Type
               </th>
               <th
-                className="px-3 py-2 text-left font-semibold"
+                className="px-3 py-2 text-left font-semibold text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--muted)" }}
               >
                 Value
               </th>
               <th
-                className="px-3 py-2 text-left font-semibold"
+                className="px-3 py-2 text-left font-semibold text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--muted)" }}
               >
                 Role
@@ -169,7 +169,7 @@ function TopologyView({ data }: { data: TopologyAgentResult }) {
 
       {data.stages.length > 0 && (
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--muted)" }}>
             STAGES
           </p>
           {data.stages.map((stage, i) => (
@@ -181,10 +181,10 @@ function TopologyView({ data }: { data: TopologyAgentResult }) {
                 border: "1px solid var(--border)",
               }}
             >
-              <p className="text-xs font-semibold" style={{ color: "var(--text)" }}>
+              <p className="text-[13px] font-semibold" style={{ color: "var(--text)" }}>
                 {stage.name}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
+              <p className="text-[13px] leading-relaxed mt-0.5" style={{ color: "var(--muted)" }}>
                 {stage.description}
               </p>
               {stage.components && stage.components.length > 0 && (
@@ -202,7 +202,7 @@ function TopologyView({ data }: { data: TopologyAgentResult }) {
 
       {data.feedbackPaths.length > 0 && (
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--muted)" }}>
             FEEDBACK PATHS
           </p>
           {data.feedbackPaths.map((fb, i) => (
@@ -226,7 +226,7 @@ function TopologyView({ data }: { data: TopologyAgentResult }) {
               >
                 {fb.type}
               </span>
-              <p className="text-xs" style={{ color: "var(--muted)" }}>
+              <p className="text-[13px] leading-relaxed" style={{ color: "var(--muted)" }}>
                 {fb.description}
               </p>
             </div>
@@ -269,17 +269,17 @@ function DomainView({ data }: { data: DomainAgentResult }) {
         )}
       </div>
       <div
-        className="px-3 py-2.5 rounded-lg text-xs"
+        className="px-3 py-2.5 rounded-lg"
         style={{
           backgroundColor: "var(--surface)",
           color: "var(--text)",
           border: "1px solid var(--border)",
         }}
       >
-        <p className="font-semibold mb-1" style={{ color: "var(--muted)" }}>
+        <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--muted)" }}>
           APPLICATION
         </p>
-        <p>{data.specificApplication}</p>
+        <p className="text-[13px] leading-relaxed">{data.specificApplication}</p>
       </div>
     </div>
   );
@@ -310,11 +310,11 @@ function InfoCard({
         }`,
       }}
     >
-      <p className="text-[10px] uppercase tracking-widest" style={{ color: "var(--muted)" }}>
+      <p className="text-[11px] uppercase tracking-widest" style={{ color: "var(--muted)" }}>
         {label}
       </p>
       <p
-        className={`text-xs font-semibold mt-0.5 ${mono ? "font-mono" : ""}`}
+        className={`text-[13px] font-semibold mt-0.5 ${mono ? "font-mono" : ""}`}
         style={{ color: highlight ? "var(--accent)" : "var(--text)" }}
       >
         {value}
@@ -336,7 +336,7 @@ function SynthesisView({
     return (
       <div className="flex flex-col gap-3">
         <div
-          className="text-xs font-mono whitespace-pre-wrap leading-relaxed"
+          className="text-[13px] font-mono whitespace-pre-wrap leading-relaxed"
           style={{ color: "var(--text)" }}
         >
           {streaming}
@@ -355,7 +355,7 @@ function SynthesisView({
     <div className="flex flex-col gap-4">
       {/* Operating Principle */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
+        <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
           OPERATING PRINCIPLE
         </p>
         <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
@@ -366,7 +366,7 @@ function SynthesisView({
       {/* Key Parameters */}
       {data.keyParameters && data.keyParameters.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
             KEY PARAMETERS
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -379,7 +379,7 @@ function SynthesisView({
                   border: "1px solid var(--border)",
                 }}
               >
-                <p className="text-[10px]" style={{ color: "var(--muted)" }}>
+                <p className="text-[11px] uppercase tracking-wider" style={{ color: "var(--muted)" }}>
                   {param.name}
                 </p>
                 <p
@@ -390,7 +390,7 @@ function SynthesisView({
                   {param.unit ? ` ${param.unit}` : ""}
                 </p>
                 {param.notes && (
-                  <p className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>
+                  <p className="text-[11px] mt-0.5 leading-snug" style={{ color: "var(--muted)" }}>
                     {param.notes}
                   </p>
                 )}
@@ -403,7 +403,7 @@ function SynthesisView({
       {/* Design Decisions */}
       {data.designDecisions && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
             DESIGN DECISIONS
           </p>
           <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
@@ -415,7 +415,7 @@ function SynthesisView({
       {/* Failure Modes */}
       {data.failureModes && data.failureModes.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
             FAILURE MODES
           </p>
           <div className="flex flex-col gap-2">
@@ -430,7 +430,7 @@ function SynthesisView({
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span
-                    className="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase"
+                    className="text-[11px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider"
                     style={{
                       backgroundColor:
                         fm.severity === "high"
@@ -448,11 +448,11 @@ function SynthesisView({
                   >
                     {fm.severity}
                   </span>
-                  <p className="text-xs font-semibold" style={{ color: "var(--text)" }}>
+                  <p className="text-[13px] font-semibold" style={{ color: "var(--text)" }}>
                     {fm.scenario}
                   </p>
                 </div>
-                <p className="text-xs" style={{ color: "var(--muted)" }}>
+                <p className="text-[13px] leading-relaxed" style={{ color: "var(--muted)" }}>
                   {fm.description}
                 </p>
               </div>
@@ -464,7 +464,7 @@ function SynthesisView({
       {/* Improvements */}
       {data.improvements && data.improvements.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--muted)" }}>
             IMPROVEMENT SUGGESTIONS
           </p>
           <div className="flex flex-col gap-2">
@@ -478,15 +478,15 @@ function SynthesisView({
                 }}
               >
                 <p
-                  className="text-xs font-semibold mb-1"
+                  className="text-[13px] font-semibold mb-1"
                   style={{ color: "var(--success)" }}
                 >
                   {imp.area}
                 </p>
-                <p className="text-xs" style={{ color: "var(--text)" }}>
+                <p className="text-[13px] leading-relaxed" style={{ color: "var(--text)" }}>
                   {imp.suggestion}
                 </p>
-                <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>
+                <p className="text-[13px] leading-relaxed mt-1" style={{ color: "var(--muted)" }}>
                   {imp.rationale}
                 </p>
               </div>
@@ -520,7 +520,7 @@ export default function AnalysisResult({
       {components && (
         <Section title="Component Catalog" icon="⚡">
           {isAgentError(components) ? (
-            <p className="text-xs" style={{ color: "var(--error)" }}>
+            <p className="text-[13px]" style={{ color: "var(--error)" }}>
               Agent error: {components.message}
             </p>
           ) : (
@@ -533,7 +533,7 @@ export default function AnalysisResult({
       {topology && (
         <Section title="Circuit Topology" icon="🔗">
           {isAgentError(topology) ? (
-            <p className="text-xs" style={{ color: "var(--error)" }}>
+            <p className="text-[13px]" style={{ color: "var(--error)" }}>
               Agent error: {topology.message}
             </p>
           ) : (
@@ -546,7 +546,7 @@ export default function AnalysisResult({
       {domain && (
         <Section title="Application Domain" icon="🎯">
           {isAgentError(domain) ? (
-            <p className="text-xs" style={{ color: "var(--error)" }}>
+            <p className="text-[13px]" style={{ color: "var(--error)" }}>
               Agent error: {domain.message}
             </p>
           ) : (
