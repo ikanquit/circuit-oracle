@@ -145,7 +145,7 @@ export default function AgentPipeline({ agents, stage }: AgentPipelineProps) {
 
                 <div className="text-center">
                   <p
-                    className="text-xs font-medium leading-tight"
+                    className="text-[13px] font-medium leading-tight"
                     style={{
                       color: isActive
                         ? "var(--warning)"
@@ -161,15 +161,15 @@ export default function AgentPipeline({ agents, stage }: AgentPipelineProps) {
 
                   {agent.durationMs !== undefined ? (
                     <p
-                      className="text-[10px] font-mono mt-0.5"
+                      className="text-[11px] font-mono mt-0.5"
                       style={{ color: "var(--muted)" }}
                     >
                       {agent.durationMs}ms
                     </p>
                   ) : (
                     <p
-                      className="text-[10px] mt-0.5"
-                      style={{ color: "var(--muted)", opacity: 0.6 }}
+                      className="text-[11px] mt-0.5"
+                      style={{ color: "var(--muted)", opacity: 0.65 }}
                     >
                       {agent.status === "running"
                         ? "running…"
@@ -186,7 +186,7 @@ export default function AgentPipeline({ agents, stage }: AgentPipelineProps) {
       </div>
 
       {stage === "synthesis" && (
-        <p className="text-xs mt-3 text-center" style={{ color: "var(--muted)" }}>
+        <p className="text-[13px] mt-3 text-center" style={{ color: "var(--muted)" }}>
           Streaming synthesis from senior engineer agent…
         </p>
       )}
