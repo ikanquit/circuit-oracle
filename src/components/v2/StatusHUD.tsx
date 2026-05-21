@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, JSX } from "react";
 
 interface StatusHUDProps {
@@ -59,34 +59,24 @@ export default function StatusHUD({
   const [latencyMs, setLatencyMs] = useState<number>(42);
   const [clock, setClock] = useState<string>("");
   const [mounted, setMounted] = useState<boolean>(false);
+  const latencyTickRef = useRef<number>(0);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  // Uptime ticker: increments every second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUptimeSeconds((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // UTC clock: set immediately on mount, then update every second
-  useEffect(() => {
     setClock(formatUTCClock(new Date()));
-    const interval = setInterval(() => {
-      setClock(formatUTCClock(new Date()));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
-  // Latency mock: fluctuates every 800ms between 25 and 95
-  useEffect(() => {
     const interval = setInterval(() => {
-      const next = Math.floor(25 + Math.random() * 71); // 25..95
-      setLatencyMs(next);
-    }, 800);
+      const now = new Date();
+      setUptimeSeconds((prev) => prev + 1);
+      setClock(formatUTCClock(now));
+
+      // Latency mock drifts at ~1/3 the frequency to save re-renders.
+      latencyTickRef.current += 1;
+      if (latencyTickRef.current % 3 === 0) {
+        setLatencyMs(Math.floor(25 + Math.random() * 71));
+      }
+    }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
