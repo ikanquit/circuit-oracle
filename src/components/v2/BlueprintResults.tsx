@@ -5,7 +5,7 @@ import type { CSSProperties, JSX, ReactNode } from "react";
 interface BlueprintResultsProps {
   title?: string;
   jobId?: string;
-  stage?: "idle" | "parallel" | "synthesis" | "done";
+  stage?: "idle" | "parallel" | "synthesis" | "done" | "verification";
   children: ReactNode;
 }
 
@@ -40,6 +40,12 @@ const STAGE_CONFIG: Record<NonNullable<BlueprintResultsProps["stage"]>, StageCon
     color: "var(--co-phosphor)",
     shadow: "0 0 10px rgba(198, 255, 77, 0.55)",
     pulse: false,
+  },
+  verification: {
+    label: "● VERIFYING",
+    color: "var(--co-blueprint)",
+    shadow: "0 0 10px rgba(79, 158, 255, 0.55)",
+    pulse: true,
   },
 };
 

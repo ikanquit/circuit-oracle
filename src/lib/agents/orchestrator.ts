@@ -260,6 +260,7 @@ export async function orchestrate(
     topology: Date.now(),
     domain: Date.now(),
     synthesis: 0,
+    verifier: 0,
   };
 
   const [componentSettled, topologySettled, domainSettled] = await Promise.allSettled([

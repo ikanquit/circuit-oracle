@@ -93,7 +93,7 @@ export interface AnalysisResult {
   synthesis: SynthesisResult;
 }
 
-export type AgentName = "component" | "topology" | "domain" | "synthesis";
+export type AgentName = "component" | "topology" | "domain" | "synthesis" | "verifier";
 
 export interface AgentDoneEvent {
   agent: AgentName;
@@ -102,7 +102,7 @@ export interface AgentDoneEvent {
 }
 
 export interface StageEvent {
-  stage: "parallel" | "synthesis";
+  stage: "parallel" | "synthesis" | "verification";
   agents?: AgentName[];
 }
 

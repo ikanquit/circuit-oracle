@@ -12,7 +12,7 @@ export interface AgentState {
 
 interface AgentPipelineProps {
   agents: AgentState[];
-  stage: "idle" | "parallel" | "synthesis" | "done";
+  stage: "idle" | "parallel" | "synthesis" | "done" | "verification";
 }
 
 const AGENT_META: Record<AgentName, { label: string; icon: string; description: string }> = {
@@ -35,6 +35,11 @@ const AGENT_META: Record<AgentName, { label: string; icon: string; description: 
     label: "Synthesis",
     icon: "🧠",
     description: "Engineering-depth analysis",
+  },
+  verifier: {
+    label: "Verifier",
+    icon: "✓",
+    description: "Cross-checking against known circuits",
   },
 };
 
