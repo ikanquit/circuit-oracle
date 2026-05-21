@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRef, useCallback } from "react";
 import type { CSSProperties, JSX, ReactNode } from "react";
 import SampleSchematic from "@/components/samples/SampleSchematic";
 import type { SchematicKey } from "@/lib/samples";
@@ -311,6 +312,14 @@ function SampleCard({ sample }: { sample: Sample }): JSX.Element {
 /* ------------------------------------------------------------------ */
 
 export default function SampleAnalysisStrip(): JSX.Element {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = useCallback((dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "right" ? 320 : -320, behavior: "smooth" });
+  }, []);
+
   const headerStyle: CSSProperties = {
     padding: "16px 32px",
     display: "flex",
@@ -381,6 +390,10 @@ export default function SampleAnalysisStrip(): JSX.Element {
           transition: transform 200ms ease;
           display: inline-block;
         }
+        .co-sample-scroll-btn:hover {
+          border-color: var(--co-phosphor) !important;
+          color: var(--co-phosphor) !important;
+        }
       `}</style>
 
       {/* Section header */}
@@ -391,11 +404,45 @@ export default function SampleAnalysisStrip(): JSX.Element {
             {"[ SAMPLE ARCHIVE · 05/09 ]"}
           </span>
         </div>
-        <span style={headerRightStyle}>{"← SCROLL →"}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            onClick={() => scroll("left")}
+            aria-label="Scroll left"
+            style={{
+              ...headerRightStyle,
+              background: "none",
+              border: "1px solid var(--co-border-strong)",
+              cursor: "pointer",
+              padding: "4px 10px",
+              lineHeight: 1,
+              transition: "border-color 120ms ease, color 120ms ease",
+            }}
+            className="co-sample-scroll-btn"
+          >
+            ←
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            aria-label="Scroll right"
+            style={{
+              ...headerRightStyle,
+              background: "none",
+              border: "1px solid var(--co-border-strong)",
+              cursor: "pointer",
+              padding: "4px 10px",
+              lineHeight: 1,
+              transition: "border-color 120ms ease, color 120ms ease",
+            }}
+            className="co-sample-scroll-btn"
+          >
+            →
+          </button>
+        </div>
       </div>
 
       {/* Scroll strip */}
       <div
+        ref={scrollRef}
         className="co-sample-strip flex gap-4 px-8 pb-6 overflow-x-auto snap-x snap-mandatory"
         style={scrollStyle}
       >
