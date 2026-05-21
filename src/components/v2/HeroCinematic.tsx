@@ -368,6 +368,12 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
 
               <a
                 href="#sample-archive"
+                onClick={(e) => {
+                  const target = document.getElementById("sample-archive");
+                  if (!target) return;
+                  e.preventDefault();
+                  target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
                 className="co-mono co-label text-[11px] co-hero-link"
               >
                 or see one we already read
