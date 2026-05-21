@@ -233,7 +233,7 @@ export default function ICChipAgentCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            fontSize: 9,
+            fontSize: 11,
             letterSpacing: "0.2em",
             color: "var(--co-muted)",
             paddingLeft: 12,
@@ -284,7 +284,7 @@ export default function ICChipAgentCard({
             />
             <span
               style={{
-                fontSize: 9,
+                fontSize: 11,
                 letterSpacing: "0.22em",
                 color: statusColor(status),
                 fontFamily: "var(--co-font-mono)",
@@ -327,10 +327,11 @@ export default function ICChipAgentCard({
               marginTop: 6,
               paddingLeft: 12,
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 13,
               color: "var(--co-muted)",
               letterSpacing: "0.04em",
               textTransform: "none",
+              lineHeight: 1.4,
             }}
           >
             {description}
@@ -401,7 +402,7 @@ export default function ICChipAgentCard({
               alignItems: "center",
               marginTop: 6,
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 11,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
             }}
