@@ -57,7 +57,7 @@
 
 .co-label {
   font-family: var(--co-font-mono);
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--co-muted);
