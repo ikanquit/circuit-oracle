@@ -38,8 +38,6 @@ yarn-error.log*
 next-env.d.ts
 
 # tooling caches / local artifacts
-/.claude/*
-!/.claude/hooks/
-!/.claude/settings.json
+/.claude
 /.playwright-mcp
 /home-full.jpg
