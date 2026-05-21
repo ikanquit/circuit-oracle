@@ -463,20 +463,20 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
 
 function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: string }): JSX.Element {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
       <div>
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.2em",
             color: "var(--co-muted)",
-            marginBottom: 6,
+            marginBottom: 8,
           }}
         >
           OPERATING PRINCIPLE
         </p>
-        <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--co-text)" }}>
+        <p style={{ fontSize: 16, lineHeight: 1.65, color: "var(--co-text)" }}>
           {data.operatingPrinciple}
         </p>
       </div>
@@ -486,10 +486,10 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             KEY PARAMETERS
@@ -505,7 +505,7 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
               <div
                 key={i}
                 style={{
-                  padding: "10px 12px",
+                  padding: "12px 14px",
                   backgroundColor: "var(--co-surface-2)",
                   border: "1px solid var(--co-border)",
                 }}
@@ -513,7 +513,7 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 9,
+                    fontSize: 11,
                     letterSpacing: "0.18em",
                     color: "var(--co-muted)",
                   }}
@@ -523,17 +523,17 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 16,
+                    fontSize: 18,
                     color: accent,
                     fontWeight: 700,
-                    marginTop: 4,
+                    marginTop: 6,
                   }}
                 >
                   {p.value}
-                  {p.unit ? <span style={{ fontSize: 12, opacity: 0.75, marginLeft: 4 }}>{p.unit}</span> : null}
+                  {p.unit ? <span style={{ fontSize: 13, opacity: 0.75, marginLeft: 4 }}>{p.unit}</span> : null}
                 </p>
                 {p.notes && (
-                  <p style={{ fontSize: 11, color: "var(--co-muted)", marginTop: 4, lineHeight: 1.4 }}>
+                  <p style={{ fontSize: 13, color: "var(--co-muted)", marginTop: 6, lineHeight: 1.5 }}>
                     {p.notes}
                   </p>
                 )}
@@ -548,15 +548,15 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 6,
+              marginBottom: 8,
             }}
           >
             DESIGN DECISIONS
           </p>
-          <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--co-text)" }}>
+          <p style={{ fontSize: 16, lineHeight: 1.65, color: "var(--co-text)" }}>
             {data.designDecisions}
           </p>
         </div>
@@ -567,15 +567,15 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             FAILURE MODES · {data.failureModes.length}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {data.failureModes.map((fm, i) => {
               const sevBg =
                 fm.severity === "high"
@@ -599,29 +599,29 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <div
                   key={i}
                   style={{
-                    padding: "10px 12px",
+                    padding: "12px 14px",
                     backgroundColor: sevBg,
                     border: `1px solid ${sevBorder}`,
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
                     <span
                       style={{
                         fontFamily: "var(--co-font-mono)",
-                        fontSize: 9,
+                        fontSize: 11,
                         letterSpacing: "0.18em",
-                        padding: "2px 8px",
+                        padding: "3px 9px",
                         backgroundColor: sevColor === "var(--co-muted)" ? "var(--co-surface-3)" : `${sevColor}1f`,
                         color: sevColor,
                       }}
                     >
                       {fm.severity.toUpperCase()}
                     </span>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--co-text)" }}>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: "var(--co-text)" }}>
                       {fm.scenario}
                     </p>
                   </div>
-                  <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)" }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
                     {fm.description}
                   </p>
                 </div>
@@ -636,31 +636,31 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             IMPROVEMENT SUGGESTIONS
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {data.improvements.map((imp, i) => (
               <div
                 key={i}
                 style={{
-                  padding: "10px 12px",
+                  padding: "12px 14px",
                   backgroundColor: `${accent}0d`,
                   border: `1px solid ${accent}33`,
                 }}
               >
-                <p style={{ fontSize: 12, fontWeight: 700, color: accent, marginBottom: 4 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: accent, marginBottom: 6, letterSpacing: "0.04em" }}>
                   ◇ {imp.area}
                 </p>
-                <p style={{ fontSize: 13, color: "var(--co-text)", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 15, color: "var(--co-text)", lineHeight: 1.55 }}>
                   {imp.suggestion}
                 </p>
-                <p style={{ fontSize: 12, color: "var(--co-text-dim)", marginTop: 4, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 14, color: "var(--co-text-dim)", marginTop: 6, lineHeight: 1.55 }}>
                   {imp.rationale}
                 </p>
               </div>
