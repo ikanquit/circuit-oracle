@@ -58,11 +58,11 @@ function BlueprintPanel({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "10px 14px",
+    padding: "12px 16px",
     backgroundColor: "var(--co-surface-2)",
     borderBottom: "1px solid var(--co-border)",
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
     color: "var(--co-text)",
@@ -697,7 +697,7 @@ export default function SampleAnalysisView({
       <nav
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 10,
+          fontSize: 12,
           letterSpacing: "0.18em",
           color: "var(--co-muted)",
           marginBottom: 16,
@@ -734,11 +734,11 @@ export default function SampleAnalysisView({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "10px 20px",
+            padding: "12px 20px",
             backgroundColor: `rgba(${accentRgb}, 0.14)`,
             borderBottom: `1px solid rgba(${accentRgb}, 0.3)`,
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             color: accent,
@@ -760,7 +760,7 @@ export default function SampleAnalysisView({
             <span
               style={{
                 fontFamily: "var(--co-font-mono)",
-                fontSize: 11,
+                fontSize: 13,
                 letterSpacing: "0.18em",
                 color: "var(--co-text-dim)",
               }}
@@ -784,10 +784,10 @@ export default function SampleAnalysisView({
             <p
               style={{
                 fontFamily: "var(--co-font-body)",
-                fontSize: 16,
-                lineHeight: 1.5,
+                fontSize: 17,
+                lineHeight: 1.55,
                 color: "var(--co-text-dim)",
-                marginTop: 8,
+                marginTop: 10,
                 maxWidth: 640,
               }}
             >
@@ -817,7 +817,7 @@ export default function SampleAnalysisView({
         <div
           style={{
             borderTop: "1px solid var(--co-border)",
-            padding: "10px 20px",
+            padding: "12px 20px",
             backgroundColor: "var(--co-surface-2)",
             display: "flex",
             alignItems: "center",
@@ -825,7 +825,7 @@ export default function SampleAnalysisView({
             gap: 12,
             flexWrap: "wrap",
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             color: "var(--co-muted)",
@@ -837,8 +837,9 @@ export default function SampleAnalysisView({
             style={{
               color: accent,
               textDecoration: "none",
-              padding: "4px 10px",
+              padding: "6px 12px",
               border: `1px solid ${accent}66`,
+              fontWeight: 700,
             }}
           >
             ▸ ANALYZE YOUR OWN
@@ -904,7 +905,7 @@ export default function SampleAnalysisView({
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.22em",
             color: "var(--co-muted)",
           }}
@@ -915,7 +916,7 @@ export default function SampleAnalysisView({
           style={{
             fontFamily: "var(--co-font-display)",
             fontWeight: 900,
-            fontSize: 28,
+            fontSize: 32,
             letterSpacing: "-0.01em",
             color: "var(--co-text)",
             textTransform: "uppercase",
@@ -924,18 +925,18 @@ export default function SampleAnalysisView({
         >
           Got a schematic of your own?
         </p>
-        <p style={{ fontSize: 14, color: "var(--co-text-dim)", maxWidth: 540 }}>
+        <p style={{ fontSize: 16, lineHeight: 1.55, color: "var(--co-text-dim)", maxWidth: 540 }}>
           CircuitOracle dispatches four specialized agents in parallel to give you the same depth of analysis on any image you upload.
         </p>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
           <Link
             href="/#upload-section"
             style={{
-              padding: "10px 18px",
+              padding: "12px 22px",
               backgroundColor: accent,
               color: "var(--co-bg)",
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 13,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               fontWeight: 700,
@@ -948,11 +949,11 @@ export default function SampleAnalysisView({
           <Link
             href="/samples"
             style={{
-              padding: "10px 18px",
+              padding: "12px 22px",
               backgroundColor: "transparent",
               color: "var(--co-text)",
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 13,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               fontWeight: 700,
