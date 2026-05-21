@@ -65,7 +65,7 @@ function TickerRun({ ariaHidden }: { ariaHidden?: boolean }): JSX.Element {
             <span
               className="co-mono"
               style={{
-                fontSize: "12px",
+                fontSize: "13px",
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
                 color: isPhosphor
@@ -79,7 +79,7 @@ function TickerRun({ ariaHidden }: { ariaHidden?: boolean }): JSX.Element {
               aria-hidden
               style={{
                 color: "var(--co-amber)",
-                fontSize: "10px",
+                fontSize: "11px",
                 lineHeight: 1,
                 transform: "translateY(-1px)",
               }}
@@ -107,7 +107,9 @@ export default function TickerFooter(): JSX.Element {
   const tickerTrackStyle: CSSProperties = {
     display: "inline-flex",
     width: "max-content",
-    animation: "co-ticker 40s linear infinite",
+    // Bumped from 40s -> 48s to compensate for the larger 13px text (~8% wider
+    // content), so per-character scroll velocity stays roughly the same.
+    animation: "co-ticker 48s linear infinite",
     willChange: "transform",
   };
 
@@ -131,7 +133,8 @@ export default function TickerFooter(): JSX.Element {
       {/* 1. Ticker row */}
       <div
         style={{
-          height: "36px",
+          // Bumped 36 -> 40 to give the 13px ticker text comfortable vertical room.
+          height: "40px",
           width: "100%",
           borderBottom: "1px solid var(--co-border)",
           overflow: "hidden",
@@ -172,7 +175,7 @@ export default function TickerFooter(): JSX.Element {
               className="co-label"
               style={{
                 color: "var(--co-muted)",
-                fontSize: "10px",
+                fontSize: "11px",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
               }}
@@ -183,8 +186,8 @@ export default function TickerFooter(): JSX.Element {
               className="co-mono"
               style={{
                 color: "var(--co-text)",
-                fontSize: "13px",
-                lineHeight: 1.45,
+                fontSize: "14px",
+                lineHeight: 1.5,
                 wordBreak: "break-word",
               }}
             >
@@ -257,12 +260,12 @@ export default function TickerFooter(): JSX.Element {
       <div
         style={{
           borderTop: "1px solid var(--co-border)",
-          padding: "12px 32px",
+          padding: "14px 32px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: "16px",
-          fontSize: "11px",
+          fontSize: "12px",
           backgroundColor: "var(--co-surface)",
           position: "relative",
           zIndex: 3,
