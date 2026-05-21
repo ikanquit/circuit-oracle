@@ -61,7 +61,7 @@ export default function AboutPage() {
             className="co-mono"
             style={{
               color: "var(--co-text-dim)",
-              fontSize: "11px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
             }}
@@ -72,7 +72,7 @@ export default function AboutPage() {
             className="co-mono"
             style={{
               color: "var(--co-muted)",
-              fontSize: "10px",
+              fontSize: "12px",
               letterSpacing: "0.18em",
             }}
           >
@@ -113,8 +113,8 @@ export default function AboutPage() {
         <p
           style={{
             fontFamily: "var(--co-font-body)",
-            fontSize: "19px",
-            lineHeight: 1.55,
+            fontSize: "21px",
+            lineHeight: 1.6,
             color: "var(--co-text-dim)",
             margin: "0 0 48px",
             maxWidth: "62ch",
@@ -156,10 +156,10 @@ export default function AboutPage() {
                 className="co-mono"
                 style={{
                   color: "var(--co-amber)",
-                  fontSize: "13px",
+                  fontSize: "14px",
                   letterSpacing: "0.18em",
                   lineHeight: 1.4,
-                  paddingTop: "2px",
+                  paddingTop: "3px",
                 }}
               >
                 {p.tag}
@@ -167,8 +167,8 @@ export default function AboutPage() {
               <p
                 style={{
                   fontFamily: "var(--co-font-body)",
-                  fontSize: "16px",
-                  lineHeight: 1.6,
+                  fontSize: "17px",
+                  lineHeight: 1.65,
                   color: "var(--co-text)",
                   margin: 0,
                   maxWidth: "62ch",
@@ -199,8 +199,8 @@ export default function AboutPage() {
           <p
             style={{
               fontFamily: "var(--co-font-body)",
-              fontSize: "15px",
-              lineHeight: 1.6,
+              fontSize: "17px",
+              lineHeight: 1.65,
               color: "var(--co-text)",
               margin: "0 0 16px",
               maxWidth: "62ch",
@@ -214,7 +214,7 @@ export default function AboutPage() {
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: "12px",
+              fontSize: "13px",
               lineHeight: 1.6,
               color: "var(--co-text-dim)",
               margin: 0,
@@ -247,7 +247,7 @@ export default function AboutPage() {
               padding: "14px 22px",
               backgroundColor: "var(--co-phosphor)",
               color: "var(--co-bg)",
-              fontSize: "12px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
               fontWeight: 700,
@@ -265,7 +265,7 @@ export default function AboutPage() {
               padding: "14px 22px",
               border: "1px solid var(--co-border-strong)",
               color: "var(--co-text)",
-              fontSize: "12px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
             }}
