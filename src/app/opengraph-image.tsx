@@ -359,7 +359,7 @@ export default async function OpengraphImage() {
             paddingTop: 18,
           }}
         >
-          <span>circuitoracle.app</span>
+          <span>github.com/ikanquit/circuit-oracle</span>
           <span
             style={{
               color: phosphor,

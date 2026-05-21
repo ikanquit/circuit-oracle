@@ -41,7 +41,7 @@ export function siteUrl(): string {
   const vercel = process.env.VERCEL_URL;
   if (vercel) return `https://${stripTrailingSlash(vercel)}`;
 
-  return "https://circuitoracle.app";
+  return "http://localhost:3000";
 }
 
 function stripTrailingSlash(s: string): string {

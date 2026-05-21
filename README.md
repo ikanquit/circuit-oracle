@@ -14,8 +14,6 @@ engineering review and streams it back token by token.
 
 ![Hero — drop a schematic, get an engineering review](docs/01-hero.jpg)
 
-> Live demo (if deployed): <https://circuitoracle.app>
-
 ## Sample analyses, curated
 
 The repo ships with nine hand-authored sample analyses (op-amps, BJT
