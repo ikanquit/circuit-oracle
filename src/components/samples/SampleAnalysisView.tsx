@@ -58,11 +58,11 @@ function BlueprintPanel({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "10px 14px",
+    padding: "12px 16px",
     backgroundColor: "var(--co-surface-2)",
     borderBottom: "1px solid var(--co-border)",
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
     color: "var(--co-text)",
@@ -121,7 +121,7 @@ function BlueprintPanel({
 function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent: string }): JSX.Element {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <p style={{ fontSize: 13, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
+      <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
         {data.summary}
       </p>
       <div
@@ -131,17 +131,17 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
           overflowX: "auto",
         }}
       >
-        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ backgroundColor: "var(--co-surface-2)" }}>
               {["REF", "TYPE", "VALUE", "ROLE"].map((h) => (
                 <th
                   key={h}
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     textAlign: "left",
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 9,
+                    fontSize: 11,
                     letterSpacing: "0.18em",
                     color: "var(--co-muted)",
                     fontWeight: 600,
@@ -164,32 +164,32 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
               >
                 <td
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     fontFamily: "var(--co-font-mono)",
                     color: accent,
-                    fontSize: 12,
+                    fontSize: 13,
                     whiteSpace: "nowrap",
                     verticalAlign: "top",
                   }}
                 >
                   {comp.designator ?? "—"}
                 </td>
-                <td style={{ padding: "8px 12px", color: "var(--co-text)", verticalAlign: "top" }}>
+                <td style={{ padding: "10px 14px", color: "var(--co-text)", verticalAlign: "top" }}>
                   {comp.type}
                 </td>
                 <td
                   style={{
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     fontFamily: "var(--co-font-mono)",
                     color: "var(--co-text)",
-                    fontSize: 12,
+                    fontSize: 13,
                     whiteSpace: "nowrap",
                     verticalAlign: "top",
                   }}
                 >
                   {comp.value ?? comp.partNumber ?? "—"}
                 </td>
-                <td style={{ padding: "8px 12px", color: "var(--co-text-dim)", verticalAlign: "top" }}>
+                <td style={{ padding: "10px 14px", color: "var(--co-text-dim)", verticalAlign: "top" }}>
                   {comp.functionalRole}
                 </td>
               </tr>
@@ -200,7 +200,7 @@ function ComponentsBlock({ data, accent }: { data: ComponentAgentResult; accent:
       <p
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 10,
+          fontSize: 11,
           letterSpacing: "0.18em",
           color: "var(--co-muted)",
         }}
@@ -216,13 +216,13 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div
         style={{
-          padding: "10px 14px",
+          padding: "12px 16px",
           backgroundColor: `rgba(${
             accent.includes("phosphor") ? "198,255,77" : "79,158,255"
           },0.08)`,
           border: `1px solid ${accent}40`,
           fontFamily: "var(--co-font-mono)",
-          fontSize: 13,
+          fontSize: 14,
           color: accent,
           letterSpacing: "0.02em",
         }}
@@ -235,7 +235,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
             }}
@@ -246,7 +246,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
             <div
               key={i}
               style={{
-                padding: "10px 12px",
+                padding: "12px 14px",
                 backgroundColor: "var(--co-surface-2)",
                 border: "1px solid var(--co-border)",
               }}
@@ -255,27 +255,27 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
                 <span
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 10,
+                    fontSize: 12,
                     color: "var(--co-muted)",
                     letterSpacing: "0.18em",
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--co-text)" }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: "var(--co-text)" }}>
                   {s.name}
                 </p>
               </div>
-              <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)", marginTop: 4 }}>
+              <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)", marginTop: 6 }}>
                 {s.description}
               </p>
               {s.components && s.components.length > 0 && (
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 11,
+                    fontSize: 12,
                     color: accent,
-                    marginTop: 6,
+                    marginTop: 8,
                     opacity: 0.85,
                   }}
                 >
@@ -288,11 +288,11 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
       )}
 
       {data.feedbackPaths.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
             }}
@@ -304,8 +304,8 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
               <span
                 style={{
                   fontFamily: "var(--co-font-mono)",
-                  fontSize: 9,
-                  padding: "2px 8px",
+                  fontSize: 11,
+                  padding: "3px 9px",
                   letterSpacing: "0.18em",
                   backgroundColor:
                     fb.type === "negative"
@@ -325,7 +325,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
               >
                 {fb.type.toUpperCase()}
               </span>
-              <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)" }}>
+              <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
                 {fb.description}
               </p>
             </div>
@@ -338,10 +338,10 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
-              marginBottom: 6,
+              marginBottom: 8,
             }}
           >
             KEY NODES
@@ -352,8 +352,8 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
                 key={i}
                 style={{
                   fontFamily: "var(--co-font-mono)",
-                  fontSize: 11,
-                  padding: "3px 8px",
+                  fontSize: 12,
+                  padding: "4px 10px",
                   backgroundColor: "var(--co-surface-2)",
                   border: "1px solid var(--co-border)",
                   color: "var(--co-text)",
@@ -393,7 +393,7 @@ function DomainInfo({
       <p
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 9,
+          fontSize: 11,
           letterSpacing: "0.2em",
           color: "var(--co-muted)",
         }}
@@ -402,10 +402,10 @@ function DomainInfo({
       </p>
       <p
         style={{
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: 600,
           color: highlight ? accent : "var(--co-text)",
-          marginTop: 2,
+          marginTop: 4,
           fontFamily: mono ? "var(--co-font-mono)" : "inherit",
         }}
       >
@@ -437,7 +437,7 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
 
       <div
         style={{
-          padding: "12px 14px",
+          padding: "14px 16px",
           backgroundColor: "var(--co-surface-2)",
           border: "1px solid var(--co-border)",
         }}
@@ -445,15 +445,15 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.2em",
             color: "var(--co-muted)",
-            marginBottom: 6,
+            marginBottom: 8,
           }}
         >
           APPLICATION
         </p>
-        <p style={{ fontSize: 13, lineHeight: 1.55, color: "var(--co-text)" }}>
+        <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text)" }}>
           {data.specificApplication}
         </p>
       </div>
@@ -463,20 +463,20 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
 
 function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: string }): JSX.Element {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
       <div>
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.2em",
             color: "var(--co-muted)",
-            marginBottom: 6,
+            marginBottom: 8,
           }}
         >
           OPERATING PRINCIPLE
         </p>
-        <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--co-text)" }}>
+        <p style={{ fontSize: 16, lineHeight: 1.65, color: "var(--co-text)" }}>
           {data.operatingPrinciple}
         </p>
       </div>
@@ -486,10 +486,10 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             KEY PARAMETERS
@@ -505,7 +505,7 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
               <div
                 key={i}
                 style={{
-                  padding: "10px 12px",
+                  padding: "12px 14px",
                   backgroundColor: "var(--co-surface-2)",
                   border: "1px solid var(--co-border)",
                 }}
@@ -513,7 +513,7 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 9,
+                    fontSize: 11,
                     letterSpacing: "0.18em",
                     color: "var(--co-muted)",
                   }}
@@ -523,17 +523,17 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 16,
+                    fontSize: 18,
                     color: accent,
                     fontWeight: 700,
-                    marginTop: 4,
+                    marginTop: 6,
                   }}
                 >
                   {p.value}
-                  {p.unit ? <span style={{ fontSize: 12, opacity: 0.75, marginLeft: 4 }}>{p.unit}</span> : null}
+                  {p.unit ? <span style={{ fontSize: 13, opacity: 0.75, marginLeft: 4 }}>{p.unit}</span> : null}
                 </p>
                 {p.notes && (
-                  <p style={{ fontSize: 11, color: "var(--co-muted)", marginTop: 4, lineHeight: 1.4 }}>
+                  <p style={{ fontSize: 13, color: "var(--co-muted)", marginTop: 6, lineHeight: 1.5 }}>
                     {p.notes}
                   </p>
                 )}
@@ -548,15 +548,15 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 6,
+              marginBottom: 8,
             }}
           >
             DESIGN DECISIONS
           </p>
-          <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--co-text)" }}>
+          <p style={{ fontSize: 16, lineHeight: 1.65, color: "var(--co-text)" }}>
             {data.designDecisions}
           </p>
         </div>
@@ -567,15 +567,15 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             FAILURE MODES · {data.failureModes.length}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {data.failureModes.map((fm, i) => {
               const sevBg =
                 fm.severity === "high"
@@ -599,29 +599,29 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
                 <div
                   key={i}
                   style={{
-                    padding: "10px 12px",
+                    padding: "12px 14px",
                     backgroundColor: sevBg,
                     border: `1px solid ${sevBorder}`,
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
                     <span
                       style={{
                         fontFamily: "var(--co-font-mono)",
-                        fontSize: 9,
+                        fontSize: 11,
                         letterSpacing: "0.18em",
-                        padding: "2px 8px",
+                        padding: "3px 9px",
                         backgroundColor: sevColor === "var(--co-muted)" ? "var(--co-surface-3)" : `${sevColor}1f`,
                         color: sevColor,
                       }}
                     >
                       {fm.severity.toUpperCase()}
                     </span>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--co-text)" }}>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: "var(--co-text)" }}>
                       {fm.scenario}
                     </p>
                   </div>
-                  <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)" }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
                     {fm.description}
                   </p>
                 </div>
@@ -636,31 +636,31 @@ function SynthesisBlock({ data, accent }: { data: SynthesisResult; accent: strin
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.2em",
               color: "var(--co-muted)",
-              marginBottom: 8,
+              marginBottom: 10,
             }}
           >
             IMPROVEMENT SUGGESTIONS
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {data.improvements.map((imp, i) => (
               <div
                 key={i}
                 style={{
-                  padding: "10px 12px",
+                  padding: "12px 14px",
                   backgroundColor: `${accent}0d`,
                   border: `1px solid ${accent}33`,
                 }}
               >
-                <p style={{ fontSize: 12, fontWeight: 700, color: accent, marginBottom: 4 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: accent, marginBottom: 6, letterSpacing: "0.04em" }}>
                   ◇ {imp.area}
                 </p>
-                <p style={{ fontSize: 13, color: "var(--co-text)", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 15, color: "var(--co-text)", lineHeight: 1.55 }}>
                   {imp.suggestion}
                 </p>
-                <p style={{ fontSize: 12, color: "var(--co-text-dim)", marginTop: 4, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 14, color: "var(--co-text-dim)", marginTop: 6, lineHeight: 1.55 }}>
                   {imp.rationale}
                 </p>
               </div>
@@ -697,7 +697,7 @@ export default function SampleAnalysisView({
       <nav
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 10,
+          fontSize: 12,
           letterSpacing: "0.18em",
           color: "var(--co-muted)",
           marginBottom: 16,
@@ -734,11 +734,11 @@ export default function SampleAnalysisView({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "10px 20px",
+            padding: "12px 20px",
             backgroundColor: `rgba(${accentRgb}, 0.14)`,
             borderBottom: `1px solid rgba(${accentRgb}, 0.3)`,
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             color: accent,
@@ -760,7 +760,7 @@ export default function SampleAnalysisView({
             <span
               style={{
                 fontFamily: "var(--co-font-mono)",
-                fontSize: 11,
+                fontSize: 13,
                 letterSpacing: "0.18em",
                 color: "var(--co-text-dim)",
               }}
@@ -784,10 +784,10 @@ export default function SampleAnalysisView({
             <p
               style={{
                 fontFamily: "var(--co-font-body)",
-                fontSize: 16,
-                lineHeight: 1.5,
+                fontSize: 17,
+                lineHeight: 1.55,
                 color: "var(--co-text-dim)",
-                marginTop: 8,
+                marginTop: 10,
                 maxWidth: 640,
               }}
             >
@@ -817,7 +817,7 @@ export default function SampleAnalysisView({
         <div
           style={{
             borderTop: "1px solid var(--co-border)",
-            padding: "10px 20px",
+            padding: "12px 20px",
             backgroundColor: "var(--co-surface-2)",
             display: "flex",
             alignItems: "center",
@@ -825,7 +825,7 @@ export default function SampleAnalysisView({
             gap: 12,
             flexWrap: "wrap",
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             color: "var(--co-muted)",
@@ -837,8 +837,9 @@ export default function SampleAnalysisView({
             style={{
               color: accent,
               textDecoration: "none",
-              padding: "4px 10px",
+              padding: "6px 12px",
               border: `1px solid ${accent}66`,
+              fontWeight: 700,
             }}
           >
             ▸ ANALYZE YOUR OWN
@@ -904,7 +905,7 @@ export default function SampleAnalysisView({
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.22em",
             color: "var(--co-muted)",
           }}
@@ -915,7 +916,7 @@ export default function SampleAnalysisView({
           style={{
             fontFamily: "var(--co-font-display)",
             fontWeight: 900,
-            fontSize: 28,
+            fontSize: 32,
             letterSpacing: "-0.01em",
             color: "var(--co-text)",
             textTransform: "uppercase",
@@ -924,18 +925,18 @@ export default function SampleAnalysisView({
         >
           Got a schematic of your own?
         </p>
-        <p style={{ fontSize: 14, color: "var(--co-text-dim)", maxWidth: 540 }}>
+        <p style={{ fontSize: 16, lineHeight: 1.55, color: "var(--co-text-dim)", maxWidth: 540 }}>
           CircuitOracle dispatches four specialized agents in parallel to give you the same depth of analysis on any image you upload.
         </p>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
           <Link
             href="/#upload-section"
             style={{
-              padding: "10px 18px",
+              padding: "12px 22px",
               backgroundColor: accent,
               color: "var(--co-bg)",
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 13,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               fontWeight: 700,
@@ -948,11 +949,11 @@ export default function SampleAnalysisView({
           <Link
             href="/samples"
             style={{
-              padding: "10px 18px",
+              padding: "12px 22px",
               backgroundColor: "transparent",
               color: "var(--co-text)",
               fontFamily: "var(--co-font-mono)",
-              fontSize: 11,
+              fontSize: 13,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               fontWeight: 700,
