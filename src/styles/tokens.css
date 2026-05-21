@@ -64,6 +64,43 @@
   font-weight: 500;
 }
 
+.co-label-lg {
+  font-family: var(--co-font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--co-muted);
+  font-weight: 500;
+}
+
+.co-body {
+  font-family: var(--co-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--co-text);
+}
+
+.co-body-dim {
+  font-family: var(--co-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--co-text-dim);
+}
+
+.co-caption {
+  font-family: var(--co-font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--co-muted);
+}
+
+.co-mono-sm {
+  font-family: var(--co-font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
 /* ============================================================
    Glow effects
    ============================================================ */
