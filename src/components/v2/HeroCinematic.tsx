@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { JSX } from "react";
 import HeroSpecimen from "@/components/v2/HeroSpecimen";
 
@@ -98,6 +99,49 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           display: inline-block;
         }
         .co-hero-cta:hover .co-hero-cta-arrow {
+          transform: translateX(4px);
+        }
+        .co-hero-cta-secondary {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 1.05rem 1.5rem;
+          border: 1px solid var(--co-border-strong);
+          color: var(--co-text-dim);
+          background: transparent;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          font-size: 0.875rem;
+          font-weight: 600;
+          text-decoration: none;
+          transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+          cursor: pointer;
+        }
+        .co-hero-cta-secondary::before {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          border: 1px solid var(--co-border-strong);
+          opacity: 0.4;
+          transform: translate(3px, 3px);
+          pointer-events: none;
+          transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease;
+        }
+        .co-hero-cta-secondary:hover {
+          color: var(--co-text);
+          border-color: var(--co-text);
+          background: rgba(240, 238, 230, 0.04);
+        }
+        .co-hero-cta-secondary:hover::before {
+          border-color: var(--co-text);
+          transform: translate(5px, 5px);
+          opacity: 0.6;
+        }
+        .co-hero-cta-secondary:active {
+          transform: translateY(1px);
+        }
+        .co-hero-cta-secondary:hover .co-hero-cta-arrow {
           transform: translateX(4px);
         }
         .co-hero-link {
@@ -366,6 +410,18 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                 <span>]</span>
               </button>
 
+              <Link
+                href="/samples"
+                aria-label="Browse sample analysis reports"
+                className="co-mono co-hero-cta-secondary"
+              >
+                <span>[ SEE SAMPLE RESULTS</span>
+                <span className="co-hero-cta-arrow" aria-hidden="true">
+                  &rarr;
+                </span>
+                <span>]</span>
+              </Link>
+
               <a
                 href="#sample-archive"
                 onClick={(e) => {
@@ -376,7 +432,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
                 }}
                 className="co-mono co-label text-[12px] co-hero-link"
               >
-                or see one we already read
+                or skim the archive below
               </a>
             </div>
 
