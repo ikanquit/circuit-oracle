@@ -12,12 +12,15 @@ import BlueprintResults from "@/components/v2/BlueprintResults";
 import StatusHUD from "@/components/v2/StatusHUD";
 import TickerFooter from "@/components/v2/TickerFooter";
 import SampleAnalysisStrip from "@/components/v2/SampleAnalysisStrip";
+import VerificationReport from "@/components/v2/VerificationReport";
 import {
   AnalysisResult as AnalysisResultType,
   AgentName,
+  AgentResult,
   ComponentAgentResult,
   TopologyAgentResult,
   DomainAgentResult,
+  VerifierResult,
 } from "@/lib/agents/types";
 
 type PipelineStage = "idle" | "parallel" | "synthesis" | "verification" | "done";
@@ -91,6 +94,10 @@ export default function HomePage() {
   const [synthStreaming, setSynthStreaming] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [jobId, setJobId] = useState<string>(() => generateJobId());
+  const [verificationResult, setVerificationResult] = useState<{
+    result: AgentResult<VerifierResult>;
+    durationMs: number;
+  } | null>(null);
 
   const synthRef = useRef("");
   const partialResult = useRef<Partial<AnalysisResultType>>({});
@@ -122,6 +129,7 @@ export default function HomePage() {
     setResult(null);
     setSynthStreaming("");
     setErrorMessage(null);
+    setVerificationResult(null);
     setJobId(generateJobId());
     synthRef.current = "";
     partialResult.current = {};
@@ -209,6 +217,12 @@ export default function HomePage() {
             partialResult.current.domain = agentResult as DomainAgentResult;
           } else if (agent === "synthesis") {
             updateAgentStatus("synthesis", "done", duration);
+          } else if (agent === "verifier") {
+            updateAgentStatus("verifier", hasError ? "error" : "done", duration);
+            setVerificationResult({
+              result: agentResult as AgentResult<VerifierResult>,
+              durationMs: duration,
+            });
           }
 
           if (
@@ -287,6 +301,7 @@ export default function HomePage() {
     setResult(null);
     setSynthStreaming("");
     setErrorMessage(null);
+    setVerificationResult(null);
     setPipelineStage("idle");
     setAgents(INITIAL_AGENTS);
     synthRef.current = "";
@@ -416,6 +431,15 @@ export default function HomePage() {
                   />
                 )}
               </BlueprintResults>
+            )}
+
+            {verificationResult && (
+              <div className="col-span-full mt-2">
+                <VerificationReport
+                  result={verificationResult.result}
+                  durationMs={verificationResult.durationMs}
+                />
+              </div>
             )}
           </div>
         </section>

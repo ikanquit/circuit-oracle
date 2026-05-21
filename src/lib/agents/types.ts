@@ -95,6 +95,13 @@ export interface AnalysisResult {
 
 export type AgentName = "component" | "topology" | "domain" | "synthesis" | "verifier";
 
+export interface VerifierResult {
+  verdict: "confirmed" | "likely" | "uncertain" | "mismatch";
+  confidence: number;
+  matchedCircuit?: string;
+  notes: string;
+}
+
 export interface AgentDoneEvent {
   agent: AgentName;
   result: AgentResult<ComponentAgentResult | TopologyAgentResult | DomainAgentResult>;
