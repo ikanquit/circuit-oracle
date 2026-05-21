@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { CSSProperties, JSX } from "react";
 
 interface StatusHUDProps {
-  pipelineStage?: "idle" | "parallel" | "synthesis" | "done";
+  pipelineStage?: "idle" | "parallel" | "synthesis" | "verification" | "done";
   modelName?: string;
   rateLimit?: string;
 }
@@ -21,6 +21,8 @@ function getPipelineDisplay(stage: StatusHUDProps["pipelineStage"]): PipelineDis
       return { label: "PARALLEL × 3", color: "var(--co-amber)", pulse: true };
     case "synthesis":
       return { label: "SYNTHESIS", color: "var(--co-phosphor)", pulse: true };
+    case "verification":
+      return { label: "VERIFICATION", color: "var(--co-blueprint)", pulse: true };
     case "done":
       return { label: "COMPLETE", color: "var(--co-phosphor)", pulse: false };
     case "idle":

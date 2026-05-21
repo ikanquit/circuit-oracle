@@ -20,7 +20,7 @@ import {
   DomainAgentResult,
 } from "@/lib/agents/types";
 
-type PipelineStage = "idle" | "parallel" | "synthesis" | "done";
+type PipelineStage = "idle" | "parallel" | "synthesis" | "verification" | "done";
 
 interface AgentRow {
   name: AgentName;
@@ -58,6 +58,13 @@ const INITIAL_AGENTS: AgentRow[] = [
     label: "SYNTHESIS",
     partNumber: "CO-7499S",
     description: "Reads the other three, writes the verdict.",
+    status: "pending",
+  },
+  {
+    name: "verifier",
+    label: "VERIFIER",
+    partNumber: "CO-7500V",
+    description: "Cross-checks analysis against known circuits.",
     status: "pending",
   },
 ];
@@ -176,6 +183,9 @@ export default function HomePage() {
           } else if (stage === "synthesis") {
             setPipelineStage("synthesis");
             updateAgentStatus("synthesis", "running");
+          } else if (stage === "verification") {
+            setPipelineStage("verification");
+            updateAgentStatus("verifier", "running");
           }
         } else if (event === "agent_done") {
           const agent = data.agent as AgentName;
