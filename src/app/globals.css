@@ -74,3 +74,44 @@ body {
     scroll-behavior: smooth;
   }
 }
+
+/* ============================================================
+   Long-form prose container — marketing / content pages
+   ============================================================ */
+.co-prose {
+  max-width: 65ch;
+  font-family: var(--co-font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--co-text);
+
+  & h2 {
+    font-family: var(--co-font-display);
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  & h3 {
+    font-family: var(--co-font-display);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    margin-top: 1.5em;
+    margin-bottom: 0.4em;
+  }
+
+  & p {
+    margin: 0 0 1em;
+  }
+
+  & a {
+    color: var(--co-phosphor);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
