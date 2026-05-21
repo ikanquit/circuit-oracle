@@ -91,17 +91,17 @@ export default function StatusHUD({
   const latencyColor = getLatencyColor(latencyMs);
 
   const barStyle: CSSProperties = {
-    height: 28,
+    height: 32,
     background: "color-mix(in srgb, var(--co-bg) 70%, transparent)",
     backdropFilter: "blur(10px) saturate(140%)",
     WebkitBackdropFilter: "blur(10px) saturate(140%)",
     borderTop: "1px solid var(--co-border-strong)",
     color: "var(--co-text)",
     fontFamily: "var(--co-font-mono)",
-    fontSize: 10,
-    letterSpacing: "0.15em",
+    fontSize: 12,
+    letterSpacing: "0.14em",
     textTransform: "uppercase",
-    padding: "0 16px",
+    padding: "0 18px",
   };
 
   const dividerStyle: CSSProperties = {
