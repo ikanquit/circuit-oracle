@@ -99,7 +99,7 @@ export default function HowItWorksPage() {
             className="co-mono"
             style={{
               color: "var(--co-text-dim)",
-              fontSize: "11px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
             }}
@@ -110,7 +110,7 @@ export default function HowItWorksPage() {
             className="co-mono"
             style={{
               color: "var(--co-muted)",
-              fontSize: "10px",
+              fontSize: "12px",
               letterSpacing: "0.18em",
             }}
           >
@@ -147,8 +147,8 @@ export default function HowItWorksPage() {
         <p
           style={{
             fontFamily: "var(--co-font-body)",
-            fontSize: "19px",
-            lineHeight: 1.55,
+            fontSize: "21px",
+            lineHeight: 1.6,
             color: "var(--co-text-dim)",
             margin: "0 0 48px",
             maxWidth: "62ch",
@@ -176,8 +176,8 @@ export default function HowItWorksPage() {
             id="agents-heading"
             className="co-display"
             style={{
-              fontSize: "28px",
-              lineHeight: 1,
+              fontSize: "32px",
+              lineHeight: 1.05,
               margin: "0 0 24px",
               color: "var(--co-text)",
             }}
@@ -222,7 +222,7 @@ export default function HowItWorksPage() {
                         spec.name === "SYNTHESIS"
                           ? "var(--co-amber)"
                           : "var(--co-phosphor)",
-                      fontSize: "16px",
+                      fontSize: "17px",
                       fontWeight: 700,
                       letterSpacing: "0.16em",
                     }}
@@ -233,7 +233,7 @@ export default function HowItWorksPage() {
                     className="co-mono"
                     style={{
                       color: "var(--co-muted)",
-                      fontSize: "10px",
+                      fontSize: "12px",
                       letterSpacing: "0.18em",
                     }}
                   >
@@ -241,11 +241,11 @@ export default function HowItWorksPage() {
                   </span>
                   <div
                     style={{
-                      marginTop: "8px",
+                      marginTop: "10px",
                       fontFamily: "var(--co-font-mono)",
-                      fontSize: "10px",
-                      letterSpacing: "0.06em",
-                      lineHeight: 1.6,
+                      fontSize: "12px",
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.65,
                       color: "var(--co-text-dim)",
                     }}
                   >
@@ -264,8 +264,8 @@ export default function HowItWorksPage() {
                 <p
                   style={{
                     fontFamily: "var(--co-font-body)",
-                    fontSize: "15px",
-                    lineHeight: 1.6,
+                    fontSize: "17px",
+                    lineHeight: 1.65,
                     color: "var(--co-text)",
                     margin: 0,
                     maxWidth: "58ch",
@@ -287,8 +287,8 @@ export default function HowItWorksPage() {
             id="why-heading"
             className="co-display"
             style={{
-              fontSize: "28px",
-              lineHeight: 1,
+              fontSize: "32px",
+              lineHeight: 1.05,
               margin: "0 0 24px",
               color: "var(--co-text)",
             }}
@@ -311,9 +311,9 @@ export default function HowItWorksPage() {
                   className="co-mono"
                   style={{
                     color: "var(--co-amber)",
-                    fontSize: "11px",
+                    fontSize: "12px",
                     letterSpacing: "0.18em",
-                    paddingTop: "4px",
+                    paddingTop: "6px",
                   }}
                 >
                   Q.{String(idx + 1).padStart(2, "0")}
@@ -323,9 +323,9 @@ export default function HowItWorksPage() {
                     style={{
                       fontFamily: "var(--co-font-display)",
                       fontWeight: 700,
-                      fontSize: "20px",
-                      lineHeight: 1.15,
-                      margin: "0 0 8px",
+                      fontSize: "22px",
+                      lineHeight: 1.2,
+                      margin: "0 0 10px",
                       color: "var(--co-text)",
                       letterSpacing: "-0.01em",
                     }}
@@ -335,8 +335,8 @@ export default function HowItWorksPage() {
                   <p
                     style={{
                       fontFamily: "var(--co-font-body)",
-                      fontSize: "15px",
-                      lineHeight: 1.6,
+                      fontSize: "17px",
+                      lineHeight: 1.65,
                       color: "var(--co-text-dim)",
                       margin: 0,
                       maxWidth: "62ch",
@@ -355,8 +355,8 @@ export default function HowItWorksPage() {
           <h2
             className="co-display"
             style={{
-              fontSize: "28px",
-              lineHeight: 1,
+              fontSize: "32px",
+              lineHeight: 1.05,
               margin: "0 0 20px",
               color: "var(--co-text)",
             }}
@@ -381,12 +381,12 @@ export default function HowItWorksPage() {
               ["MAX IMAGE", "10 MB · image/* only"],
               ["IMAGE STORAGE", "none · base64 in-memory only"],
             ].map(([label, value]) => (
-              <div key={label} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div key={label} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <span
                   className="co-label"
                   style={{
                     color: "var(--co-muted)",
-                    fontSize: "10px",
+                    fontSize: "12px",
                     letterSpacing: "0.18em",
                   }}
                 >
@@ -396,8 +396,8 @@ export default function HowItWorksPage() {
                   className="co-mono"
                   style={{
                     color: "var(--co-text)",
-                    fontSize: "13px",
-                    letterSpacing: "0.06em",
+                    fontSize: "14px",
+                    letterSpacing: "0.05em",
                   }}
                 >
                   {value}
@@ -426,7 +426,7 @@ export default function HowItWorksPage() {
               padding: "14px 22px",
               backgroundColor: "var(--co-phosphor)",
               color: "var(--co-bg)",
-              fontSize: "12px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
               fontWeight: 700,
@@ -444,7 +444,7 @@ export default function HowItWorksPage() {
               padding: "14px 22px",
               border: "1px solid var(--co-border-strong)",
               color: "var(--co-text)",
-              fontSize: "12px",
+              fontSize: "13px",
               letterSpacing: "0.16em",
               textDecoration: "none",
             }}
