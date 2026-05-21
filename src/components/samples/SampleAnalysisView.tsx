@@ -216,13 +216,13 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div
         style={{
-          padding: "10px 14px",
+          padding: "12px 16px",
           backgroundColor: `rgba(${
             accent.includes("phosphor") ? "198,255,77" : "79,158,255"
           },0.08)`,
           border: `1px solid ${accent}40`,
           fontFamily: "var(--co-font-mono)",
-          fontSize: 13,
+          fontSize: 14,
           color: accent,
           letterSpacing: "0.02em",
         }}
@@ -235,7 +235,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
             }}
@@ -246,7 +246,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
             <div
               key={i}
               style={{
-                padding: "10px 12px",
+                padding: "12px 14px",
                 backgroundColor: "var(--co-surface-2)",
                 border: "1px solid var(--co-border)",
               }}
@@ -255,27 +255,27 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
                 <span
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 10,
+                    fontSize: 12,
                     color: "var(--co-muted)",
                     letterSpacing: "0.18em",
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--co-text)" }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: "var(--co-text)" }}>
                   {s.name}
                 </p>
               </div>
-              <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)", marginTop: 4 }}>
+              <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)", marginTop: 6 }}>
                 {s.description}
               </p>
               {s.components && s.components.length > 0 && (
                 <p
                   style={{
                     fontFamily: "var(--co-font-mono)",
-                    fontSize: 11,
+                    fontSize: 12,
                     color: accent,
-                    marginTop: 6,
+                    marginTop: 8,
                     opacity: 0.85,
                   }}
                 >
@@ -288,11 +288,11 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
       )}
 
       {data.feedbackPaths.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
             }}
@@ -304,8 +304,8 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
               <span
                 style={{
                   fontFamily: "var(--co-font-mono)",
-                  fontSize: 9,
-                  padding: "2px 8px",
+                  fontSize: 11,
+                  padding: "3px 9px",
                   letterSpacing: "0.18em",
                   backgroundColor:
                     fb.type === "negative"
@@ -325,7 +325,7 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
               >
                 {fb.type.toUpperCase()}
               </span>
-              <p style={{ fontSize: 12, lineHeight: 1.55, color: "var(--co-text-dim)" }}>
+              <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text-dim)" }}>
                 {fb.description}
               </p>
             </div>
@@ -338,10 +338,10 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
           <p
             style={{
               fontFamily: "var(--co-font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               color: "var(--co-muted)",
-              marginBottom: 6,
+              marginBottom: 8,
             }}
           >
             KEY NODES
@@ -352,8 +352,8 @@ function TopologyBlock({ data, accent }: { data: TopologyAgentResult; accent: st
                 key={i}
                 style={{
                   fontFamily: "var(--co-font-mono)",
-                  fontSize: 11,
-                  padding: "3px 8px",
+                  fontSize: 12,
+                  padding: "4px 10px",
                   backgroundColor: "var(--co-surface-2)",
                   border: "1px solid var(--co-border)",
                   color: "var(--co-text)",
@@ -393,7 +393,7 @@ function DomainInfo({
       <p
         style={{
           fontFamily: "var(--co-font-mono)",
-          fontSize: 9,
+          fontSize: 11,
           letterSpacing: "0.2em",
           color: "var(--co-muted)",
         }}
@@ -402,10 +402,10 @@ function DomainInfo({
       </p>
       <p
         style={{
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: 600,
           color: highlight ? accent : "var(--co-text)",
-          marginTop: 2,
+          marginTop: 4,
           fontFamily: mono ? "var(--co-font-mono)" : "inherit",
         }}
       >
@@ -437,7 +437,7 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
 
       <div
         style={{
-          padding: "12px 14px",
+          padding: "14px 16px",
           backgroundColor: "var(--co-surface-2)",
           border: "1px solid var(--co-border)",
         }}
@@ -445,15 +445,15 @@ function DomainBlock({ data, accent }: { data: DomainAgentResult; accent: string
         <p
           style={{
             fontFamily: "var(--co-font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             letterSpacing: "0.2em",
             color: "var(--co-muted)",
-            marginBottom: 6,
+            marginBottom: 8,
           }}
         >
           APPLICATION
         </p>
-        <p style={{ fontSize: 13, lineHeight: 1.55, color: "var(--co-text)" }}>
+        <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--co-text)" }}>
           {data.specificApplication}
         </p>
       </div>
