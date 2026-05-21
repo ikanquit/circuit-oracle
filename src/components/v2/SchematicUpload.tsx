@@ -226,7 +226,7 @@ export default function SchematicUpload({
         <span
           className="co-mono"
           style={{
-            fontSize: 10,
+            fontSize: 11,
             color: "var(--co-muted)",
           }}
         >
@@ -249,7 +249,7 @@ export default function SchematicUpload({
           <span
             className="co-mono"
             style={{
-              fontSize: 10,
+              fontSize: 11,
               color: selectedFile ? "var(--co-phosphor)" : "var(--co-muted)",
             }}
           >
@@ -360,7 +360,7 @@ export default function SchematicUpload({
               className="co-mono"
               style={{
                 marginTop: 18,
-                fontSize: 13,
+                fontSize: 15,
                 color: "var(--co-text)",
                 letterSpacing: "0.2em",
               }}
@@ -371,7 +371,7 @@ export default function SchematicUpload({
               className="co-mono"
               style={{
                 marginTop: 6,
-                fontSize: 11,
+                fontSize: 13,
                 color: "var(--co-muted)",
                 letterSpacing: "0.12em",
               }}
@@ -392,7 +392,7 @@ export default function SchematicUpload({
               className="co-mono"
               style={{
                 marginTop: 10,
-                fontSize: 9,
+                fontSize: 11,
                 color: "var(--co-muted)",
                 letterSpacing: "0.18em",
               }}
@@ -432,7 +432,7 @@ export default function SchematicUpload({
                 <span
                   className="co-mono"
                   style={{
-                    fontSize: 11,
+                    fontSize: 13,
                     color: "var(--co-text)",
                     letterSpacing: "0.08em",
                     overflow: "hidden",
@@ -446,7 +446,7 @@ export default function SchematicUpload({
                 <span
                   className="co-mono"
                   style={{
-                    fontSize: 10,
+                    fontSize: 11,
                     color: "var(--co-muted)",
                     letterSpacing: "0.1em",
                     flexShrink: 0,
@@ -461,7 +461,7 @@ export default function SchematicUpload({
                 disabled={isAnalyzing}
                 className="co-mono"
                 style={{
-                  fontSize: 10,
+                  fontSize: 11,
                   letterSpacing: "0.18em",
                   color: "var(--co-amber)",
                   background: "transparent",
@@ -513,7 +513,7 @@ export default function SchematicUpload({
               ) : (
                 <div
                   className="co-mono"
-                  style={{ fontSize: 10, color: "var(--co-muted)" }}
+                  style={{ fontSize: 11, color: "var(--co-muted)" }}
                 >
                   GENERATING THUMBNAIL…
                 </div>
@@ -530,13 +530,13 @@ export default function SchematicUpload({
             >
               <span
                 className="co-mono"
-                style={{ fontSize: 9, color: "var(--co-muted)" }}
+                style={{ fontSize: 11, color: "var(--co-muted)" }}
               >
                 TYPE · {selectedFile.type.replace("image/", "").toUpperCase() || "BIN"}
               </span>
               <span
                 className="co-mono"
-                style={{ fontSize: 9, color: "var(--co-muted)" }}
+                style={{ fontSize: 11, color: "var(--co-muted)" }}
               >
                 STATUS · READY
               </span>
@@ -566,7 +566,7 @@ export default function SchematicUpload({
           <span
             className="co-mono"
             style={{
-              fontSize: 9,
+              fontSize: 11,
               color: "var(--co-muted)",
               letterSpacing: "0.15em",
             }}
@@ -596,7 +596,7 @@ export default function SchematicUpload({
             borderRadius: 2,
             resize: "vertical",
             fontFamily: "var(--co-font-mono)",
-            fontSize: 12,
+            fontSize: 13,
             letterSpacing: "0.04em",
             lineHeight: 1.55,
             transition: "border-color 160ms ease",
@@ -682,13 +682,13 @@ export default function SchematicUpload({
       >
         <span
           className="co-mono"
-          style={{ fontSize: 9, color: "var(--co-muted)" }}
+          style={{ fontSize: 11, color: "var(--co-muted)" }}
         >
           CH·01 · 3-AGENT PARALLEL PIPELINE
         </span>
         <span
           className="co-mono"
-          style={{ fontSize: 9, color: "var(--co-muted)" }}
+          style={{ fontSize: 11, color: "var(--co-muted)" }}
         >
           v2 · MK.II
         </span>
