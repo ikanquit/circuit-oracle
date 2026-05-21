@@ -35,7 +35,7 @@ export default function PipelineDiagram(): JSX.Element {
         style={{
           color: "var(--co-muted)",
           marginBottom: "16px",
-          fontSize: "10px",
+          fontSize: "12px",
           letterSpacing: "0.18em",
         }}
       >
@@ -352,7 +352,7 @@ export default function PipelineDiagram(): JSX.Element {
         style={{
           marginTop: "12px",
           color: "var(--co-muted)",
-          fontSize: "10px",
+          fontSize: "12px",
           letterSpacing: "0.14em",
           textAlign: "right",
         }}
