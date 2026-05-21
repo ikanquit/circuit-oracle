@@ -384,11 +384,11 @@ function FragmentBuckConverter({ color }: FragmentProps): JSX.Element {
 }
 
 const FRAGMENTS: Record<string, (props: FragmentProps) => JSX.Element> = {
-  "S-001": FragmentInvertingAmp,
-  "S-002": FragmentSquareWave,
-  "S-003": FragmentCommonEmitter,
-  "S-004": FragmentRCLowPass,
-  "S-005": FragmentBuckConverter,
+  "inverting-amp": FragmentInvertingAmp,
+  "555-astable": FragmentSquareWave,
+  "common-emitter": FragmentCommonEmitter,
+  "rc-low-pass": FragmentRCLowPass,
+  "buck-converter": FragmentBuckConverter,
 };
 
 /* ------------------------------------------------------------------ */
@@ -398,7 +398,7 @@ const FRAGMENTS: Record<string, (props: FragmentProps) => JSX.Element> = {
 function SampleCard({ sample }: { sample: Sample }): JSX.Element {
   const accentVar = ACCENT_VAR[sample.accent];
   const accentRgb = ACCENT_RGB[sample.accent];
-  const Fragment = FRAGMENTS[sample.id];
+  const Fragment = FRAGMENTS[sample.slug];
 
   const cardStyle: CSSProperties = {
     flex: "none",
