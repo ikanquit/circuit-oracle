@@ -367,7 +367,7 @@ export default function HomePage() {
                     ▲ FAULT DETECTED
                   </p>
                   <p
-                    className="text-xs"
+                    className="text-[13px]"
                     style={{ color: "var(--co-text-dim)" }}
                   >
                     {errorMessage}
@@ -390,7 +390,7 @@ export default function HomePage() {
                       waveform="sine"
                     />
                     <p
-                      className="co-mono text-xs"
+                      className="co-mono text-[13px]"
                       style={{ color: "var(--co-text-dim)" }}
                     >
                       Running component / topology / domain agents
