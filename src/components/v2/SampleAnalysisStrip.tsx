@@ -21,7 +21,7 @@ interface Sample {
 
 const SAMPLES: Sample[] = [
   {
-    id: "S-001",
+    id: "S-003",
     slug: "inverting-amp",
     title: "INVERTING AMPLIFIER",
     subtitle: "TL072 · OP-AMP",
@@ -34,7 +34,7 @@ const SAMPLES: Sample[] = [
     ],
   },
   {
-    id: "S-002",
+    id: "S-005",
     slug: "555-astable",
     title: "555 ASTABLE",
     subtitle: "NE555 · TIMER",
@@ -47,9 +47,9 @@ const SAMPLES: Sample[] = [
     ],
   },
   {
-    id: "S-003",
+    id: "S-004",
     slug: "common-emitter",
-    title: "COMMON-EMITTER",
+    title: "COMMON-EMITTER AMP",
     subtitle: "2N3904 · BJT",
     tag: "AMP",
     accent: "copper",
@@ -60,10 +60,10 @@ const SAMPLES: Sample[] = [
     ],
   },
   {
-    id: "S-004",
+    id: "S-002",
     slug: "rc-low-pass",
-    title: "RC LOW-PASS",
-    subtitle: "1st ORDER · PASSIVE",
+    title: "RC LOW-PASS FILTER",
+    subtitle: "1ST-ORDER · PASSIVE",
     tag: "FILTER",
     accent: "blueprint",
     specs: [
@@ -73,7 +73,7 @@ const SAMPLES: Sample[] = [
     ],
   },
   {
-    id: "S-005",
+    id: "S-008",
     slug: "buck-converter",
     title: "BUCK CONVERTER",
     subtitle: "LM2596 · SMPS",
@@ -676,7 +676,7 @@ export default function SampleAnalysisStrip(): JSX.Element {
         <div style={headerLeftStyle}>
           <span aria-hidden="true" style={phosphorSquareStyle} />
           <span className="co-label">
-            {"[ SAMPLE ARCHIVE · 05/127 ]"}
+            {"[ SAMPLE ARCHIVE · 05/09 ]"}
           </span>
         </div>
         <span style={headerRightStyle}>{"← SCROLL →"}</span>
