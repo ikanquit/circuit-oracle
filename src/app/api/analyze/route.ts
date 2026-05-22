@@ -52,8 +52,14 @@ export async function POST(req: NextRequest): Promise<Response> {
   const rateLimitResult = rateLimit(ip);
 
   if (!rateLimitResult.success) {
+    const isDailyCap = rateLimitResult.reason === "global_daily";
     return NextResponse.json(
-      { error: "Too many requests", code: "RATE_LIMITED" },
+      {
+        error: isDailyCap
+          ? "Daily capacity reached. Try again tomorrow."
+          : "Too many requests",
+        code: isDailyCap ? "DAILY_CAP" : "RATE_LIMITED",
+      },
       {
         status: 429,
         headers: {
