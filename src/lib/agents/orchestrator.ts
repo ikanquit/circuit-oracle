@@ -189,7 +189,11 @@ async function runSynthesisAgent(
       config: {
         systemInstruction: SYNTHESIS_AGENT_SYSTEM,
         responseMimeType: "application/json",
-        maxOutputTokens: 4096,
+        // 8192 — Gemini 2.5 Flash is more verbose than the SDK we swapped
+        // from, and synthesis with prose-heavy "operatingPrinciple" sections
+        // was truncating around 4k. Headroom matters here because a cut-off
+        // JSON string blows up parsing for the whole response.
+        maxOutputTokens: 8192,
       },
     });
 
