@@ -37,7 +37,19 @@ function parseJSONFromResponse(text: string): unknown {
     .replace(/^```(?:json)?\s*/im, "")
     .replace(/\s*```\s*$/im, "")
     .trim();
-  return JSON.parse(cleaned);
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    // Log the raw model output (truncated) so a malformed response is
+    // diagnosable from server logs without leaking it to the client.
+    console.error(
+      "[CircuitOracle] JSON parse failed. Raw output (first 500 chars):",
+      cleaned.slice(0, 500),
+      "Length:",
+      cleaned.length
+    );
+    throw err;
+  }
 }
 
 /**
@@ -104,6 +116,11 @@ async function callJsonAgent<T>(params: JsonAgentParams): Promise<T> {
       systemInstruction: params.systemPrompt,
       responseMimeType: "application/json",
       maxOutputTokens: params.maxOutputTokens,
+      // Gemini 2.5 Flash enables thinking by default; thinking tokens
+      // consume the same budget as visible output, which was truncating
+      // mid-JSON. We don't need the model to think before structured
+      // JSON answers — disable it for predictability and lower latency.
+      thinkingConfig: { thinkingBudget: 0 },
     },
   });
   const text = response.text ?? "";
@@ -189,11 +206,13 @@ async function runSynthesisAgent(
       config: {
         systemInstruction: SYNTHESIS_AGENT_SYSTEM,
         responseMimeType: "application/json",
-        // 8192 — Gemini 2.5 Flash is more verbose than the SDK we swapped
-        // from, and synthesis with prose-heavy "operatingPrinciple" sections
-        // was truncating around 4k. Headroom matters here because a cut-off
-        // JSON string blows up parsing for the whole response.
-        maxOutputTokens: 8192,
+        // Synthesis is prose-heavy — long operatingPrinciple, multiple
+        // failure modes, full design rationale. Flash's max output is
+        // 65536; 16384 is the smallest cap that didn't cut off our test
+        // schematics mid-string.
+        maxOutputTokens: 16384,
+        // Disable thinking — see callJsonAgent for the same reasoning.
+        thinkingConfig: { thinkingBudget: 0 },
       },
     });
 
