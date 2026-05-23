@@ -1,4 +1,4 @@
-import { anthropic, MODEL } from "@/lib/anthropic";
+import { getAnthropic, MODEL } from "@/lib/anthropic";
 import {
   ComponentAgentResult,
   TopologyAgentResult,
@@ -78,7 +78,7 @@ async function runComponentAgent(
   question?: string
 ): Promise<AgentResult<ComponentAgentResult>> {
   try {
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: MODEL,
       max_tokens: 2048,
       system: COMPONENT_AGENT_SYSTEM,
@@ -113,7 +113,7 @@ async function runTopologyAgent(
   question?: string
 ): Promise<AgentResult<TopologyAgentResult>> {
   try {
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: MODEL,
       max_tokens: 2048,
       system: TOPOLOGY_AGENT_SYSTEM,
@@ -148,7 +148,7 @@ async function runDomainAgent(
   question?: string
 ): Promise<AgentResult<DomainAgentResult>> {
   try {
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: MODEL,
       max_tokens: 1024,
       system: DOMAIN_AGENT_SYSTEM,
@@ -195,7 +195,7 @@ async function runSynthesisAgent(
   try {
     const prompt = buildSynthesisPrompt(componentResult, topologyResult, domainResult, question);
 
-    const stream = anthropic.messages.stream({
+    const stream = getAnthropic().messages.stream({
       model: MODEL,
       max_tokens: 4096,
       system: SYNTHESIS_AGENT_SYSTEM,
@@ -246,7 +246,7 @@ async function runVerifierAgent(
   synthesisText: string
 ): Promise<AgentResult<VerifierResult>> {
   try {
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: MODEL,
       max_tokens: 512,
       system: VERIFIER_AGENT_SYSTEM,
