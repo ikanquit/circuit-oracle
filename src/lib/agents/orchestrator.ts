@@ -60,8 +60,12 @@ function safeAgentMessage(err: unknown, agentLabel: string): string {
   if (lower.includes("overloaded") || lower.includes("503")) {
     return "AI service overloaded.";
   }
-  if (lower.includes("invalid_api_key") || lower.includes("authentication")) {
-    return "Server misconfiguration.";
+  if (
+    lower.includes("anthropic_api_key") ||
+    lower.includes("invalid_api_key") ||
+    lower.includes("authentication")
+  ) {
+    return "Server misconfiguration — Anthropic API key missing.";
   }
   if (
     err instanceof SyntaxError ||

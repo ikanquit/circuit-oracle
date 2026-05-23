@@ -37,8 +37,12 @@ function safeErrorMessage(err: unknown): string {
   if (lower.includes("overloaded") || lower.includes("503")) {
     return "AI service is overloaded right now. Try again in a moment.";
   }
-  if (lower.includes("invalid_api_key") || lower.includes("authentication")) {
-    return "Server misconfiguration. The team has been notified.";
+  if (
+    lower.includes("anthropic_api_key") ||
+    lower.includes("invalid_api_key") ||
+    lower.includes("authentication")
+  ) {
+    return "Server misconfiguration — Anthropic API key missing.";
   }
   if (lower.includes("image") && (lower.includes("decode") || lower.includes("format"))) {
     return "Could not decode the image. Try re-exporting as PNG or JPG.";
@@ -47,6 +51,19 @@ function safeErrorMessage(err: unknown): string {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  // Pre-flight: surface missing server config as a distinct 503 so the UI
+  // can show an actionable message instead of "agent failed" four times.
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json(
+      {
+        error:
+          "Demo backend not configured — no Anthropic API key set. Clone the repo and run it locally with your own key to try it.",
+        code: "MISSING_API_KEY",
+      },
+      { status: 503, headers: SECURITY_HEADERS }
+    );
+  }
+
   // Rate limiting
   const ip = getClientIP(req);
   const rateLimitResult = rateLimit(ip);
