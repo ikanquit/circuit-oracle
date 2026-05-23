@@ -52,7 +52,7 @@ function formatUTCClock(date: Date): string {
 
 export default function StatusHUD({
   pipelineStage = "idle",
-  modelName = "claude-sonnet-4-6",
+  modelName = "gemini-2.5-flash",
   rateLimit = "10 RPM",
 }: StatusHUDProps): JSX.Element {
   const [uptimeSeconds, setUptimeSeconds] = useState<number>(0);

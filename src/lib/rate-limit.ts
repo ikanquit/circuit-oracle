@@ -10,11 +10,11 @@ interface RateLimitResult {
 const WINDOW_MS = 60 * 1000; // 1 minute
 const MAX_REQUESTS = 10;
 
-// Global daily cap protects the Anthropic spend floor. In-memory and
+// Global daily cap protects the Gemini API quota. In-memory and
 // per-instance — under multi-instance Vercel scale this is per-warm-instance,
-// not truly global. For solo-scale traffic that's acceptable; the Anthropic
-// console monthly cap is the real ceiling. See TODOS.md for the Vercel KV
-// upgrade path when traffic justifies it.
+// not truly global. For solo-scale traffic that's acceptable; the Google AI
+// Studio free-tier quota is the real ceiling. See TODOS.md for the durable-
+// counter upgrade path when traffic justifies it.
 const GLOBAL_DAILY_MAX = 500;
 
 // Per-IP LRU. Bumped from 5k to 50k so eviction under a many-IP attack can't

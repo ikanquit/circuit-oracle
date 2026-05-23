@@ -39,7 +39,7 @@ export default function Header() {
               border: "1px solid var(--border)",
             }}
           >
-            claude-sonnet-4-6
+            gemini-2.5-flash
           </span>
           <span
             className="text-[13px] px-2.5 py-1 rounded font-mono"

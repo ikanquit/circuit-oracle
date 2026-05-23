@@ -124,7 +124,7 @@ export default function AboutPage() {
           they do four things at once. They list the parts. They trace the signal
           path. They decide what the thing is for. Then they tell you what they
           would change. CircuitOracle is that four-step habit, wired up as four
-          Claude agents running in parallel, with the synthesis streamed as it
+          Gemini agents running in parallel, with the synthesis streamed as it
           writes itself.
         </p>
 
@@ -221,7 +221,7 @@ export default function AboutPage() {
               letterSpacing: "0.04em",
             }}
           >
-            Stack: Next.js · Claude (claude-sonnet-4-6) · SSE · vision input ·
+            Stack: Next.js · Gemini (gemini-2.5-flash) · SSE · vision input ·
             no image retention, no training data extracted, no &quot;your
             schematic is now ours&quot; clause buried in TOS.
           </p>

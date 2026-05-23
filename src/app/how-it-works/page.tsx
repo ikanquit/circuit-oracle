@@ -8,7 +8,7 @@ import PipelineDiagram from "@/components/marketing/PipelineDiagram";
 export const metadata: Metadata = {
   title: "How it works — CircuitOracle",
   description:
-    "Four Claude agents, three running in parallel, one writing the synthesis — streamed token-by-token over SSE. The technical breakdown of CircuitOracle's pipeline.",
+    "Four Gemini agents, three running in parallel, one writing the synthesis — streamed token-by-token over SSE. The technical breakdown of CircuitOracle's pipeline.",
 };
 
 const AGENT_SPECS: ReadonlyArray<{
@@ -55,7 +55,7 @@ const AGENT_SPECS: ReadonlyArray<{
 const WHY_BULLETS: ReadonlyArray<{ q: string; a: string }> = [
   {
     q: "Why three specialists instead of one big prompt?",
-    a: "A single 2000-token system prompt covering components, topology, AND domain dilutes attention. Three focused prompts each get 100% of a Claude call. The synthesis agent then has structured JSON to argue against — not a wall of unstructured prose.",
+    a: "A single 2000-token system prompt covering components, topology, AND domain dilutes attention. Three focused prompts each get 100% of a Gemini call. The synthesis agent then has structured JSON to argue against — not a wall of unstructured prose.",
   },
   {
     q: "Why Promise.allSettled, not Promise.all?",
@@ -154,7 +154,7 @@ export default function HowItWorksPage() {
             maxWidth: "62ch",
           }}
         >
-          When you upload a schematic, three specialist Claude agents read the
+          When you upload a schematic, three specialist Gemini agents read the
           image simultaneously. Each writes structured JSON. A fourth agent —
           the synthesizer — takes the image plus all three JSON outputs and
           writes the engineer-depth analysis, streaming its tokens to your
@@ -374,7 +374,7 @@ export default function HowItWorksPage() {
             }}
           >
             {[
-              ["MODEL", "claude-sonnet-4-6"],
+              ["MODEL", "gemini-2.5-flash"],
               ["TRANSPORT", "SSE · text/event-stream"],
               ["RUNTIME", "Node.js · maxDuration 60s"],
               ["RATE LIMIT", "10 req / 60s / IP"],

@@ -1,4 +1,4 @@
-import { getAnthropic, MODEL } from "@/lib/anthropic";
+import { getGemini, MODEL } from "@/lib/gemini";
 import {
   ComponentAgentResult,
   TopologyAgentResult,
@@ -31,7 +31,8 @@ interface ImageInput {
 }
 
 function parseJSONFromResponse(text: string): unknown {
-  // Strip markdown code fences if present
+  // Gemini with responseMimeType=application/json usually returns clean JSON,
+  // but be defensive: strip markdown fences if a model decides to add them.
   const cleaned = text
     .replace(/^```(?:json)?\s*/im, "")
     .replace(/\s*```\s*$/im, "")
@@ -61,11 +62,14 @@ function safeAgentMessage(err: unknown, agentLabel: string): string {
     return "AI service overloaded.";
   }
   if (
-    lower.includes("anthropic_api_key") ||
+    lower.includes("gemini_api_key") ||
+    lower.includes("google_api_key") ||
+    lower.includes("api key not valid") ||
     lower.includes("invalid_api_key") ||
+    lower.includes("permission_denied") ||
     lower.includes("authentication")
   ) {
-    return "Server misconfiguration — Anthropic API key missing.";
+    return "Server misconfiguration — Gemini API key missing or invalid.";
   }
   if (
     err instanceof SyntaxError ||
@@ -77,36 +81,46 @@ function safeAgentMessage(err: unknown, agentLabel: string): string {
   return `${agentLabel} agent failed.`;
 }
 
+interface JsonAgentParams {
+  systemPrompt: string;
+  prompt: string;
+  image: ImageInput;
+  maxOutputTokens: number;
+}
+
+async function callJsonAgent<T>(params: JsonAgentParams): Promise<T> {
+  const response = await getGemini().models.generateContent({
+    model: MODEL,
+    contents: [
+      {
+        role: "user",
+        parts: [
+          { inlineData: { mimeType: params.image.mediaType, data: params.image.base64 } },
+          { text: params.prompt },
+        ],
+      },
+    ],
+    config: {
+      systemInstruction: params.systemPrompt,
+      responseMimeType: "application/json",
+      maxOutputTokens: params.maxOutputTokens,
+    },
+  });
+  const text = response.text ?? "";
+  return parseJSONFromResponse(text) as T;
+}
+
 async function runComponentAgent(
   image: ImageInput,
   question?: string
 ): Promise<AgentResult<ComponentAgentResult>> {
   try {
-    const response = await getAnthropic().messages.create({
-      model: MODEL,
-      max_tokens: 2048,
-      system: COMPONENT_AGENT_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: image.mediaType,
-                data: image.base64,
-              },
-            },
-            { type: "text", text: buildComponentPrompt(question) },
-          ],
-        },
-      ],
+    return await callJsonAgent<ComponentAgentResult>({
+      systemPrompt: COMPONENT_AGENT_SYSTEM,
+      prompt: buildComponentPrompt(question),
+      image,
+      maxOutputTokens: 2048,
     });
-
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
-    const parsed = parseJSONFromResponse(text) as ComponentAgentResult;
-    return parsed;
   } catch (err) {
     return { error: true, message: safeAgentMessage(err, "Component") };
   }
@@ -117,31 +131,12 @@ async function runTopologyAgent(
   question?: string
 ): Promise<AgentResult<TopologyAgentResult>> {
   try {
-    const response = await getAnthropic().messages.create({
-      model: MODEL,
-      max_tokens: 2048,
-      system: TOPOLOGY_AGENT_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: image.mediaType,
-                data: image.base64,
-              },
-            },
-            { type: "text", text: buildTopologyPrompt(question) },
-          ],
-        },
-      ],
+    return await callJsonAgent<TopologyAgentResult>({
+      systemPrompt: TOPOLOGY_AGENT_SYSTEM,
+      prompt: buildTopologyPrompt(question),
+      image,
+      maxOutputTokens: 2048,
     });
-
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
-    const parsed = parseJSONFromResponse(text) as TopologyAgentResult;
-    return parsed;
   } catch (err) {
     return { error: true, message: safeAgentMessage(err, "Topology") };
   }
@@ -152,31 +147,12 @@ async function runDomainAgent(
   question?: string
 ): Promise<AgentResult<DomainAgentResult>> {
   try {
-    const response = await getAnthropic().messages.create({
-      model: MODEL,
-      max_tokens: 1024,
-      system: DOMAIN_AGENT_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: image.mediaType,
-                data: image.base64,
-              },
-            },
-            { type: "text", text: buildDomainPrompt(question) },
-          ],
-        },
-      ],
+    return await callJsonAgent<DomainAgentResult>({
+      systemPrompt: DOMAIN_AGENT_SYSTEM,
+      prompt: buildDomainPrompt(question),
+      image,
+      maxOutputTokens: 1024,
     });
-
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
-    const parsed = parseJSONFromResponse(text) as DomainAgentResult;
-    return parsed;
   } catch (err) {
     return { error: true, message: safeAgentMessage(err, "Domain") };
   }
@@ -199,36 +175,29 @@ async function runSynthesisAgent(
   try {
     const prompt = buildSynthesisPrompt(componentResult, topologyResult, domainResult, question);
 
-    const stream = getAnthropic().messages.stream({
+    const stream = await getGemini().models.generateContentStream({
       model: MODEL,
-      max_tokens: 4096,
-      system: SYNTHESIS_AGENT_SYSTEM,
-      messages: [
+      contents: [
         {
           role: "user",
-          content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: image.mediaType,
-                data: image.base64,
-              },
-            },
-            { type: "text", text: prompt },
+          parts: [
+            { inlineData: { mimeType: image.mediaType, data: image.base64 } },
+            { text: prompt },
           ],
         },
       ],
+      config: {
+        systemInstruction: SYNTHESIS_AGENT_SYSTEM,
+        responseMimeType: "application/json",
+        maxOutputTokens: 4096,
+      },
     });
 
     let fullText = "";
 
     for await (const chunk of stream) {
-      if (
-        chunk.type === "content_block_delta" &&
-        chunk.delta.type === "text_delta"
-      ) {
-        const text = chunk.delta.text;
+      const text = chunk.text ?? "";
+      if (text) {
         fullText += text;
         send("synthesis_chunk", { text });
       }
@@ -250,31 +219,12 @@ async function runVerifierAgent(
   synthesisText: string
 ): Promise<AgentResult<VerifierResult>> {
   try {
-    const response = await getAnthropic().messages.create({
-      model: MODEL,
-      max_tokens: 512,
-      system: VERIFIER_AGENT_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: image.mediaType,
-                data: image.base64,
-              },
-            },
-            { type: "text", text: buildVerifierPrompt(synthesisText) },
-          ],
-        },
-      ],
+    return await callJsonAgent<VerifierResult>({
+      systemPrompt: VERIFIER_AGENT_SYSTEM,
+      prompt: buildVerifierPrompt(synthesisText),
+      image,
+      maxOutputTokens: 512,
     });
-
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
-    const parsed = parseJSONFromResponse(text) as VerifierResult;
-    return parsed;
   } catch (err) {
     return { error: true, message: safeAgentMessage(err, "Verifier") };
   }

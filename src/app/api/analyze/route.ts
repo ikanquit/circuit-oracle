@@ -38,11 +38,14 @@ function safeErrorMessage(err: unknown): string {
     return "AI service is overloaded right now. Try again in a moment.";
   }
   if (
-    lower.includes("anthropic_api_key") ||
+    lower.includes("gemini_api_key") ||
+    lower.includes("google_api_key") ||
+    lower.includes("api key not valid") ||
     lower.includes("invalid_api_key") ||
+    lower.includes("permission_denied") ||
     lower.includes("authentication")
   ) {
-    return "Server misconfiguration — Anthropic API key missing.";
+    return "Server misconfiguration — Gemini API key missing or invalid.";
   }
   if (lower.includes("image") && (lower.includes("decode") || lower.includes("format"))) {
     return "Could not decode the image. Try re-exporting as PNG or JPG.";
@@ -53,11 +56,11 @@ function safeErrorMessage(err: unknown): string {
 export async function POST(req: NextRequest): Promise<Response> {
   // Pre-flight: surface missing server config as a distinct 503 so the UI
   // can show an actionable message instead of "agent failed" four times.
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
     return NextResponse.json(
       {
         error:
-          "Demo backend not configured — no Anthropic API key set. Clone the repo and run it locally with your own key to try it.",
+          "Demo backend not configured — no Gemini API key set. Get a free key at https://aistudio.google.com/apikey, or clone the repo and run it locally.",
         code: "MISSING_API_KEY",
       },
       { status: 503, headers: SECURITY_HEADERS }

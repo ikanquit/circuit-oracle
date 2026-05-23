@@ -180,7 +180,7 @@ export default async function OpengraphImage() {
                 letterSpacing: "-0.01em",
               }}
             >
-              Upload a schematic. Four Claude agents read it in parallel.
+              Upload a schematic. Four Gemini agents read it in parallel.
             </div>
 
             <div
@@ -321,7 +321,7 @@ export default async function OpengraphImage() {
                   <svg width="10" height="10" viewBox="0 0 10 10" style={{ display: "block" }}>
                     <polygon points="5,1 9,9 1,9" fill={muted} />
                   </svg>
-                  AI / CLAUDE
+                  AI / GEMINI
                 </div>
               </div>
               {/* Bottom pins */}
@@ -380,7 +380,7 @@ export default async function OpengraphImage() {
             />
             LIVE / MULTI-AGENT
           </span>
-          <span>powered by claude sonnet</span>
+          <span>powered by gemini 2.5</span>
         </div>
       </div>
     ),

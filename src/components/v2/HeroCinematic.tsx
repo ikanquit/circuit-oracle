@@ -345,7 +345,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
         </span>
         <span className="tracking-[0.18em] flex items-center gap-3 sm:gap-5">
           <span className="hidden md:inline co-hero-marker-blue">
-            CLAUDE SONNET 4.6
+            GEMINI 2.5 FLASH
           </span>
           <span className="hidden md:inline opacity-50">/</span>
           <span className="hidden sm:inline">4 AGENTS &middot; PARALLEL</span>
@@ -398,7 +398,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
           <div className="mt-9 sm:mt-12 flex flex-col gap-7">
             <p className="co-hero-rise co-hero-subdeck" style={rise(440)}>
               Paste a photo, screenshot, or PNG of any analog or mixed-signal
-              schematic. <strong>Three Claude agents</strong> dissect
+              schematic. <strong>Three Gemini agents</strong> dissect
               components, topology, and intended use in parallel &mdash; a
               fourth synthesizes them into the brief you&rsquo;d hand a
               junior engineer before a design review.
@@ -542,7 +542,7 @@ export default function HeroCinematic({ onCtaClick }: HeroCinematicProps): JSX.E
         </span>
         <span className="opacity-80">
           <span className="opacity-50">MODEL:</span>{" "}
-          <span style={{ color: "var(--co-text)" }}>claude-sonnet-4-6</span>
+          <span style={{ color: "var(--co-text)" }}>gemini-2.5-flash</span>
         </span>
       </div>
     </section>

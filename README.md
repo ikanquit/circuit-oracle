@@ -2,13 +2,13 @@
 
 [![Live demo](https://img.shields.io/badge/live-circuitoracle.vercel.app-black?logo=vercel)](https://circuitoracle.vercel.app)
 [![CI](https://github.com/ikanquit/circuit-oracle/actions/workflows/ci.yml/badge.svg)](https://github.com/ikanquit/circuit-oracle/actions/workflows/ci.yml)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fikanquit%2Fcircuit-oracle&env=ANTHROPIC_API_KEY&envDescription=Anthropic%20API%20key%20with%20vision-capable%20model%20access&envLink=https%3A%2F%2Fconsole.anthropic.com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fikanquit%2Fcircuit-oracle&env=GEMINI_API_KEY&envDescription=Google%20Gemini%20API%20key%20with%20vision%20access%20%E2%80%94%20free%20at%20aistudio.google.com&envLink=https%3A%2F%2Faistudio.google.com%2Fapikey)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A multi-agent pipeline that reads circuit schematics the way a senior analog
 engineer would.
 
-Drop in a PNG, JPG, or screenshot of a schematic. Three Claude calls run in
+Drop in a PNG, JPG, or screenshot of a schematic. Three Gemini calls run in
 parallel — one catalogs every component, one traces the topology, one
 classifies what the circuit is *for* — then a fourth synthesizes a full
 engineering review and streams it back token by token.
@@ -72,15 +72,15 @@ Partial results beat a 500.
 git clone https://github.com/ikanquit/circuit-oracle.git
 cd circuit-oracle
 npm install
-cp .env.example .env.local        # then add your ANTHROPIC_API_KEY
+cp .env.example .env.local        # then add your GEMINI_API_KEY
 npm run dev
 ```
 
 Open <http://localhost:3000>, drop in a schematic image, watch the pipeline
 run.
 
-Requires Node 20+ and an Anthropic API key with vision-capable model access
-(<https://console.anthropic.com>).
+Requires Node 20+ and a Google Gemini API key with vision access — free at
+<https://aistudio.google.com/apikey>.
 
 ## Scripts
 
@@ -96,7 +96,7 @@ npm run type-check   tsc --noEmit
 
 - Next.js 15 (App Router, React 19)
 - Tailwind v4 + custom design tokens in `src/styles/tokens.css`
-- Claude `claude-sonnet-4-6` via `@anthropic-ai/sdk`
+- Gemini `gemini-2.5-flash` via `@google/genai`
 - SSE over `POST` + `ReadableStream` reader (so the request body can carry
   the image — `EventSource` only does GET)
 - LRU rate limiter, 10 req / 60 s / IP
@@ -110,7 +110,7 @@ The fastest path is Vercel — the project is a vanilla Next.js App Router
 build, no special infra. Click the button at the top of this README, or:
 
 1. Import the repo at <https://vercel.com/new>.
-2. Add `ANTHROPIC_API_KEY` under **Environment Variables**.
+2. Add `GEMINI_API_KEY` under **Environment Variables**.
 3. Deploy. Vercel detects Next.js automatically; no `vercel.json` needed.
 
 The `analyze` route is configured with `runtime = "nodejs"` and
@@ -126,8 +126,8 @@ type-check, and a full build on every push to `main` and every PR.
 
 ## Privacy
 
-Images are base64-encoded server-side and forwarded to Anthropic. They are
-never logged and never persisted; they live in request memory only.
+Images are base64-encoded server-side and forwarded to Google (Gemini API).
+They are never logged and never persisted; they live in request memory only.
 
 ## License
 

@@ -22,7 +22,7 @@ const NAV_LINKS: ReadonlyArray<{ label: string; href: string; external?: boolean
 ];
 
 const META_CELLS: ReadonlyArray<{ label: string; value: string }> = [
-  { label: "MODEL", value: "claude-sonnet-4-6" },
+  { label: "MODEL", value: "gemini-2.5-flash" },
   { label: "PIPELINE", value: "4 agents · parallel + synthesis" },
   { label: "RUNTIME", value: "Next.js · SSE · 60s max" },
 ];

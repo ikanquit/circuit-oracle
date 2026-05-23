@@ -1,6 +1,6 @@
 # CircuitOracle
 
-AI-powered circuit schematic analysis. Upload a schematic image → 3 Claude agents analyze it in parallel → synthesis agent produces engineering-depth explanation, streamed via SSE.
+AI-powered circuit schematic analysis. Upload a schematic image → 3 Gemini agents analyze it in parallel → synthesis agent produces engineering-depth explanation, streamed via SSE.
 
 ## Commands
 
@@ -11,7 +11,8 @@ npm run lint         # eslint
 npm run type-check   # tsc --noEmit
 ```
 
-Requires `ANTHROPIC_API_KEY` in `.env.local` (copy `.env.example`).
+Requires `GEMINI_API_KEY` in `.env.local` (copy `.env.example`). Get a free
+key at <https://aistudio.google.com/apikey>.
 
 ## Architecture
 
@@ -21,10 +22,10 @@ POST /api/analyze
   └─ rate limit (10 req/min/IP via LRU cache)
   └─ orchestrate() → ReadableStream (SSE)
        ├─ Promise.allSettled([componentAgent, topologyAgent, domainAgent])  ← parallel
-       └─ synthesisAgent(image + all 3 results)  ← streaming via anthropic.messages.stream()
+       └─ synthesisAgent(image + all 3 results)  ← streaming via gemini.models.generateContentStream()
 ```
 
-Each agent is a separate Claude API call with a specialized system prompt. Failures are isolated — one agent erroring doesn't abort the others.
+Each agent is a separate Gemini API call with a specialized system prompt. Failures are isolated — one agent erroring doesn't abort the others.
 
 **Key files:**
 - `src/lib/agents/orchestrator.ts` — parallel dispatch + synthesis streaming
@@ -40,7 +41,7 @@ Each agent is a separate Claude API call with a specialized system prompt. Failu
 stage          { stage: "parallel", agents: [...] }
 agent_done     { agent: "component"|"topology"|"domain"|"synthesis", result: {}, durationMs: number }
 stage          { stage: "synthesis" }
-synthesis_chunk { text: string }   ← token-by-token from Claude stream
+synthesis_chunk { text: string }   ← token-by-token from Gemini stream
 done           { full: AnalysisResult }
 error          { error: string }
 ```
@@ -49,7 +50,7 @@ Client reads via `ReadableStream` reader, not `EventSource` (allows POST bodies)
 
 ## Model
 
-`claude-sonnet-4-6` — set in `src/lib/anthropic.ts`. Change `MODEL` there to upgrade.
+`gemini-2.5-flash` — set in `src/lib/gemini.ts`. Change `MODEL` there to upgrade.
 
 ## Security
 
@@ -63,7 +64,7 @@ Client reads via `ReadableStream` reader, not `EventSource` (allows POST bodies)
 - `runtime = "nodejs"` and `maxDuration = 60` on the analyze route — synthesis can take 30–45s
 - Synthesis agent expects JSON output. `parseJSONFromResponse()` strips markdown code fences before parsing
 - `Promise.allSettled` not `Promise.all` — always get partial results even if 1 or 2 agents fail
-- Image is base64-encoded server-side before being sent to Claude, never passes through client unmodified
+- Image is base64-encoded server-side before being sent to Gemini, never passes through client unmodified
 
 ## Adding a New Agent
 

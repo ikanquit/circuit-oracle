@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "circuit analysis",
     "schematic analyzer",
     "AI electronics",
-    "Claude AI",
+    "Gemini AI",
     "multi-agent AI",
     "op-amp analysis",
     "component identification",
