@@ -42,3 +42,6 @@ next-env.d.ts
 /.playwright-mcp
 /home-full.jpg
 .gstack/
+
+# scratch dir for scripts/record_demo.js (webm + intermediate frames)
+/frames

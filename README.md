@@ -15,6 +15,14 @@ engineering review and streams it back token by token.
 
 ![Hero — drop a schematic, get an engineering review](docs/01-hero.jpg)
 
+## Walkthrough
+
+A short tour of the UI and a worked sample analysis (inverting amplifier).
+
+<video src="https://github.com/ikanquit/circuit-oracle/raw/main/docs/demo.mp4" controls muted playsinline width="720"></video>
+
+If your viewer doesn't render the embed, [open the MP4 directly](docs/demo.mp4).
+
 ## Sample analyses, curated
 
 The repo ships with nine hand-authored sample analyses (op-amps, BJT
